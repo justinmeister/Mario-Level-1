@@ -16,8 +16,8 @@ class Mario(pg.sprite.Sprite):
         self.x_vel = 0
         self.y_vel = 0
         self.max_x_vel = 4
-        self.x_accel = .15
-        self.max_y_vel = 4
+        self.x_accel = c.SMALL_ACCEL
+        self.jump_vel = c.JUMP_VEL
         self.gravity = c.GRAVITY
         self.load_from_sheet()
 
@@ -50,7 +50,7 @@ class Mario(pg.sprite.Sprite):
         elif self.state == c.JUMP:
             self.jumping(keys, current_time)
         elif self.state == c.FALL:
-            self.falling(keys)
+            self.falling(keys, current_time)
 
 
     def animation(self):
@@ -100,6 +100,9 @@ class Mario(pg.sprite.Sprite):
         """This function is called if Mario is standing still"""
         
         self.frame_index = 0
+        self.x_vel = 0
+        self.y_vel = 0
+        self.gravity = c.GRAVITY
 
         if keys[pg.K_LEFT]:
             self.facing_right = False
@@ -109,7 +112,7 @@ class Mario(pg.sprite.Sprite):
             self.state = c.WALK
         elif keys[pg.K_a]:
             self.state = c.JUMP
-            self.y_vel = -10
+            self.y_vel = self.jump_vel
         else:
             self.state = c.STAND
 
@@ -141,13 +144,17 @@ class Mario(pg.sprite.Sprite):
 
         if keys[pg.K_a]:
             self.state = c.JUMP
-            self.y_vel = -10
+            self.y_vel = c.JUMP_VEL
 
 
         if keys[pg.K_LEFT]:
             self.facing_right = False
             if self.x_vel > 0:
                 self.frame_index = 5
+                self.x_accel = c.SMALL_TURNAROUND
+            else:
+                self.x_accel = c.SMALL_ACCEL
+
             if self.x_vel > (self.max_x_vel * -1):
                 self.x_vel -= self.x_accel
 
@@ -155,6 +162,10 @@ class Mario(pg.sprite.Sprite):
             self.facing_right = True
             if self.x_vel < 0:
                 self.frame_index = 5
+                self.x_accel = c.SMALL_TURNAROUND
+            else:
+                self.x_accel = c.SMALL_ACCEL
+
             if self.x_vel < self.max_x_vel:
                 self.x_vel += self.x_accel
 
@@ -176,11 +187,37 @@ class Mario(pg.sprite.Sprite):
 
     def jumping(self, keys, current_time):
         self.frame_index = 4
+        self.gravity = c.JUMP_GRAVITY
         self.y_vel += self.gravity
+        if self.y_vel >= 0:
+            self.gravity += .4
+            self.state = c.FALL
+
+        if keys[pg.K_LEFT]:
+            self.facing_right = False
+            if self.x_vel > (self.max_x_vel * - 1):
+                self.x_vel -= self.x_accel
+
+        elif keys[pg.K_RIGHT]:
+            self.facing_right = True
+            if self.x_vel < self.max_x_vel:
+                self.x_vel += self.x_accel
+
+
+        if not keys[pg.K_a]:
+            self.gravity = c.GRAVITY
+            self.state = c.FALL
+
+
+
+
+    def falling(self, keys, current_time):
+        self.y_vel += self.gravity
+
         if (self.rect.bottom > (600 - self.rect.height)):
             self.y_vel = 0
+            self.gravity = c.GRAVITY
             self.state = c.WALK
-
 
         if keys[pg.K_LEFT]:
             self.facing_right = False
@@ -194,12 +231,15 @@ class Mario(pg.sprite.Sprite):
 
 
 
+
+
+
     def calculate_animation_speed(self):
         if self.x_vel == 0:
             animation_speed = 115
         elif self.x_vel > 0:
-            animation_speed = 115 - (self.x_vel * 12)
+            animation_speed = 115 - (self.x_vel * (12 + 1.5))
         else:
-            animation_speed = 115 - (self.x_vel * 12 * -1)
+            animation_speed = 115 - (self.x_vel * (12 + 1.5) * -1)
 
         return animation_speed

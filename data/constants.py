@@ -29,7 +29,8 @@ GOLD         = (255, 215,   0)
 BGCOLOR = WHITE
 
 SIZE_MULTIPLIER = 2.5
-GRAVITY = .4
+GRAVITY = 1.4
+JUMP_GRAVITY = .4
 
 #Mario States
 
@@ -37,3 +38,10 @@ STAND = 'standing'
 WALK = 'walk'
 JUMP = 'jump'
 FALL = 'fall'
+
+SMALL_ACCEL = .2
+SMALL_TURNAROUND = .35
+
+JUMP_VEL = -11
+
+

@@ -26,7 +26,7 @@
       <file leaf-file-name="mario.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/data/components/mario.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="100" column="8" selection-start="2947" selection-end="2947" vertical-scroll-proportion="-2.7931035" vertical-offset="2715" max-vertical-offset="3150">
+            <state line="104" column="32" selection-start="3087" selection-end="3087" vertical-scroll-proportion="-0.79310346" vertical-offset="1905" max-vertical-offset="3750">
               <folding>
                 <element signature="e#32#51#0" expanded="true" />
               </folding>
@@ -69,7 +69,7 @@
       <file leaf-file-name="main.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="1" selection-start="413" selection-end="413" vertical-scroll-proportion="0.0" vertical-offset="195" max-vertical-offset="285">
+            <state line="13" column="1" selection-start="413" selection-end="413" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
               <folding />
             </state>
           </provider>
@@ -78,7 +78,7 @@
       <file leaf-file-name="constants.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data/constants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="31" column="12" selection-start="712" selection-end="712" vertical-scroll-proportion="0.0" vertical-offset="210" max-vertical-offset="675">
+            <state line="34" column="13" selection-start="746" selection-end="746" vertical-scroll-proportion="0.0" vertical-offset="360" max-vertical-offset="795">
               <folding />
             </state>
           </provider>
@@ -111,7 +111,7 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="559" />
+    <option name="x" value="131" />
     <option name="y" value="22" />
     <option name="width" value="819" />
     <option name="height" value="819" />
@@ -161,6 +161,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -181,18 +182,17 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
-    <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="recentsLimit" value="5" />
-    <property name="restartRequiresConfirmation" value="true" />
+    <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/mario_level_1.py" />
+    <property name="restartRequiresConfirmation" value="true" />
     <property name="FullScreen" value="false" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -375,18 +375,18 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="559" y="22" width="819" height="819" extended-state="0" />
-    <editor active="false" />
+    <frame x="131" y="22" width="819" height="819" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2832723" sideWeight="0.6712707" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2832723" sideWeight="0.6712707" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32872927" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32872927" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -404,6 +404,7 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
+    <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="false" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -481,13 +482,6 @@
         <state line="32" column="36" selection-start="1030" selection-end="1030" vertical-scroll-proportion="0.7241379" vertical-offset="135" max-vertical-offset="600" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="1" selection-start="413" selection-end="413" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/states/level1.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="27" column="27" selection-start="700" selection-end="700" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="585">
@@ -502,14 +496,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/data/constants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="12" selection-start="712" selection-end="712" vertical-scroll-proportion="0.0" vertical-offset="210" max-vertical-offset="675">
+        <state line="34" column="13" selection-start="746" selection-end="746" vertical-scroll-proportion="0.0" vertical-offset="360" max-vertical-offset="795">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/data/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="1" selection-start="413" selection-end="413" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/data/components/mario.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="100" column="8" selection-start="2947" selection-end="2947" vertical-scroll-proportion="-2.7931035" vertical-offset="2715" max-vertical-offset="3150">
+        <state line="104" column="32" selection-start="3087" selection-end="3087" vertical-scroll-proportion="-0.79310346" vertical-offset="1905" max-vertical-offset="3750">
           <folding>
             <element signature="e#32#51#0" expanded="true" />
           </folding>
