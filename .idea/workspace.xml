@@ -26,7 +26,7 @@
       <file leaf-file-name="mario.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data/components/mario.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="149" column="24" selection-start="4399" selection-end="4399" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3900">
+            <state line="166" column="42" selection-start="4947" selection-end="4947" vertical-scroll-proportion="0.0" vertical-offset="3502" max-vertical-offset="3960">
               <folding>
                 <element signature="e#32#51#0" expanded="true" />
               </folding>
@@ -37,7 +37,7 @@
       <file leaf-file-name="level1.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/data/states/level1.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="27" selection-start="700" selection-end="700" vertical-scroll-proportion="0.6877729" vertical-offset="45" max-vertical-offset="540">
+            <state line="33" column="21" selection-start="1001" selection-end="1001" vertical-scroll-proportion="0.5414847" vertical-offset="202" max-vertical-offset="810">
               <folding />
             </state>
           </provider>
@@ -73,7 +73,7 @@
       <file leaf-file-name="constants.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/data/constants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="13" selection-start="746" selection-end="746" vertical-scroll-proportion="0.0" vertical-offset="360" max-vertical-offset="795">
+            <state line="32" column="18" selection-start="745" selection-end="745" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="825">
               <folding />
             </state>
           </provider>
@@ -99,9 +99,9 @@
         <option value="$PROJECT_DIR$/data/tools.py" />
         <option value="$PROJECT_DIR$/data/states/main_menu.py" />
         <option value="$PROJECT_DIR$/data/states/load_screen.py" />
-        <option value="$PROJECT_DIR$/data/states/level1.py" />
         <option value="$PROJECT_DIR$/data/constants.py" />
         <option value="$PROJECT_DIR$/data/components/mario.py" />
+        <option value="$PROJECT_DIR$/data/states/level1.py" />
       </list>
     </option>
   </component>
@@ -171,6 +171,38 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="Mario Level 1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mariover2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Mario Level 1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mariover2" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Mario Level 1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="resources" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="graphics" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -477,13 +509,6 @@
         <state line="32" column="36" selection-start="1030" selection-end="1030" vertical-scroll-proportion="0.7241379" vertical-offset="135" max-vertical-offset="600" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/data/constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="13" selection-start="746" selection-end="746" vertical-scroll-proportion="0.0" vertical-offset="360" max-vertical-offset="795">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/data/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="13" column="1" selection-start="413" selection-end="413" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="270">
@@ -491,9 +516,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/data/constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="18" selection-start="745" selection-end="745" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="825">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/data/components/mario.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="149" column="24" selection-start="4399" selection-end="4399" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3900">
+        <state line="166" column="42" selection-start="4947" selection-end="4947" vertical-scroll-proportion="0.0" vertical-offset="3502" max-vertical-offset="3960">
           <folding>
             <element signature="e#32#51#0" expanded="true" />
           </folding>
@@ -502,7 +534,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/data/states/level1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="27" selection-start="700" selection-end="700" vertical-scroll-proportion="0.6877729" vertical-offset="45" max-vertical-offset="540">
+        <state line="33" column="21" selection-start="1001" selection-end="1001" vertical-scroll-proportion="0.5414847" vertical-offset="202" max-vertical-offset="810">
           <folding />
         </state>
       </provider>
