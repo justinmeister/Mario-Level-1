@@ -27,6 +27,7 @@ class Mario(pg.sprite.Sprite):
 
         self.facing_right = True
         self.walking_timer = 0
+        self.allow_jump = True
 
 
 
@@ -98,6 +99,7 @@ class Mario(pg.sprite.Sprite):
 
     def standing(self, keys, current_time):
         """This function is called if Mario is standing still"""
+        self.check_to_allow_jump(keys)
         
         self.frame_index = 0
         self.x_vel = 0
@@ -111,8 +113,9 @@ class Mario(pg.sprite.Sprite):
             self.facing_right = True
             self.state = c.WALK
         elif keys[pg.K_a]:
-            self.state = c.JUMP
-            self.y_vel = self.jump_vel
+            if self.allow_jump:
+                self.state = c.JUMP
+                self.y_vel = self.jump_vel
         else:
             self.state = c.STAND
 
@@ -121,6 +124,8 @@ class Mario(pg.sprite.Sprite):
         """This function is called when Mario is in a walking state"""
         """It changes the frame, checks for holding down the run button,
         checks for a jump, then adjusts the state if necessary"""
+
+        self.check_to_allow_jump(keys)
 
         if self.frame_index == 0:
             self.frame_index += 1
@@ -143,8 +148,9 @@ class Mario(pg.sprite.Sprite):
 
 
         if keys[pg.K_a]:
-            self.state = c.JUMP
-            self.y_vel = c.JUMP_VEL
+            if self.allow_jump:
+                self.state = c.JUMP
+                self.y_vel = c.JUMP_VEL
 
 
         if keys[pg.K_LEFT]:
@@ -186,6 +192,7 @@ class Mario(pg.sprite.Sprite):
 
 
     def jumping(self, keys, current_time):
+        self.allow_jump = False
         self.frame_index = 4
         self.gravity = c.JUMP_GRAVITY
         self.y_vel += self.gravity
@@ -231,6 +238,9 @@ class Mario(pg.sprite.Sprite):
 
 
 
+    def check_to_allow_jump(self, keys):
+        if not keys[pg.K_a]:
+            self.allow_jump = True
 
 
 
