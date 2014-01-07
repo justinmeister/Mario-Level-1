@@ -2,6 +2,9 @@ __author__ = 'justinarmstrong'
 
 from . import setup,tools
 from .states import main_menu,load_screen,level1
+import profile
+
+
 
 def main():
     """Add states to control here."""
@@ -12,3 +15,6 @@ def main():
 
     run_it.setup_states(state_dict,"MAIN_MENU")
     run_it.main()
+
+
+

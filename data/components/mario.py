@@ -142,9 +142,9 @@ class Mario(pg.sprite.Sprite):
 
 
         if keys[pg.K_s]:
-            self.max_x_vel = 6
+            self.max_x_vel = 5
         else:
-            self.max_x_vel = 4
+            self.max_x_vel = 3
 
 
         if keys[pg.K_a]:
@@ -224,11 +224,6 @@ class Mario(pg.sprite.Sprite):
 
     def falling(self, keys, current_time):
         self.y_vel += self.gravity
-
-        if (self.rect.bottom > (c.SCREEN_HEIGHT - c.GROUND_HEIGHT)):
-            self.y_vel = 0
-            self.gravity = c.GRAVITY
-            self.state = c.WALK
 
         if keys[pg.K_LEFT]:
             self.facing_right = False
