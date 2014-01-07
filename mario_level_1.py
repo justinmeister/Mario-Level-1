@@ -8,9 +8,10 @@ Super Mario Bros for the NES.
 import sys
 import pygame as pg
 from data.main import main
+import cProfile
 
 
 if __name__=='__main__':
-    main()
+    cProfile.run('main()')
     pg.quit()
     sys.exit()

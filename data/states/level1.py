@@ -9,7 +9,6 @@ from .. components import collider
 
 
 
-
 class Level1(tools._State):
     def __init__(self):
         tools._State.__init__(self)
@@ -38,14 +37,19 @@ class Level1(tools._State):
 
 
     def setup_mario_location(self):
+        """Places Mario at the beginning of the level"""
+
         self.mario.rect.x = 110
         self.mario.rect.bottom = c.GROUND_HEIGHT
 
+
     def setup_ground(self):
-        self.ground_rect1 = collider.Collider(0, c.GROUND_HEIGHT,    2940, 60)
-        self.ground_rect2 = collider.Collider(3040, c.GROUND_HEIGHT,  629, 60)
-        self.ground_rect3 = collider.Collider(3811, c.GROUND_HEIGHT, 2724, 60)
-        self.ground_rect4 = collider.Collider(6631, c.GROUND_HEIGHT, 2992, 60)
+        """Create collideable rects for each section of the ground"""
+
+        self.ground_rect1 = collider.Collider(0, c.GROUND_HEIGHT,    2953, 60)
+        self.ground_rect2 = collider.Collider(3048, c.GROUND_HEIGHT,  635, 60)
+        self.ground_rect3 = collider.Collider(3819, c.GROUND_HEIGHT, 2735, 60)
+        self.ground_rect4 = collider.Collider(6647, c.GROUND_HEIGHT, 2300, 60)
 
         self.ground_group = pg.sprite.Group(self.ground_rect1,
                                            self.ground_rect2,
@@ -53,6 +57,8 @@ class Level1(tools._State):
                                            self.ground_rect4)
 
     def setup_pipes(self):
+        """Create collideable rects for all the pipes"""
+
         self.pipe1 = collider.Collider(1202, 452, 83, 82)
         self.pipe2 = collider.Collider(1631, 409, 83, 140)
         self.pipe3 = collider.Collider(1973, 366, 83, 170)
@@ -65,6 +71,8 @@ class Level1(tools._State):
                                           self.pipe5, self.pipe6)
 
     def setup_steps(self):
+        """Create collideable rects for all the steps"""
+
         self.step1 = collider.Collider(5745, 495, 40, 44)
         self.step2 = collider.Collider(5788, 452, 40, 44)
         self.step3 = collider.Collider(5831, 409, 40, 44)
@@ -76,10 +84,45 @@ class Level1(tools._State):
         self.step7 = collider.Collider(6087, 452, 40, 40)
         self.step8 = collider.Collider(6130, 495, 40, 40)
 
+        self.step9 = collider.Collider(6345, 495, 40, 40)
+        self.step10 = collider.Collider(6388, 452, 40, 40)
+        self.step11 = collider.Collider(6431, 409, 40, 40)
+        self.step12 = collider.Collider(6474, 366, 40, 40)
+        self.step13 = collider.Collider(6517, 366, 40, 176)
+
+        self.step14 = collider.Collider(6644, 366, 40, 176)
+        self.step15 = collider.Collider(6687, 408, 40, 40)
+        self.step16 = collider.Collider(6728, 452, 40, 40)
+        self.step17 = collider.Collider(6771, 495, 40, 40)
+
+        self.step18 = collider.Collider(7760, 495, 40, 40)
+        self.step19 = collider.Collider(7803, 452, 40, 40)
+        self.step20 = collider.Collider(7845, 409, 40, 40)
+        self.step21 = collider.Collider(7888, 366, 40, 40)
+        self.step22 = collider.Collider(7931, 323, 40, 40)
+        self.step23 = collider.Collider(7974, 280, 40, 40)
+        self.step24 = collider.Collider(8017, 237, 40, 40)
+        self.step25 = collider.Collider(8060, 194, 40, 40)
+        self.step26 = collider.Collider(8103, 194, 40, 360)
+
+        self.step27 = collider.Collider(8488, 495, 40, 40)
+
+
+
         self.step_group = pg.sprite.Group(self.step1, self.step2,
                                           self.step3, self.step4,
                                           self.step5, self.step6,
-                                          self.step7, self.step8)
+                                          self.step7, self.step8,
+                                          self.step9, self.step10,
+                                          self.step11, self.step12,
+                                          self.step13, self.step14,
+                                          self.step15, self.step16,
+                                          self.step17, self.step18,
+                                          self.step19, self.step20,
+                                          self.step21, self.step22,
+                                          self.step23, self.step24,
+                                          self.step25, self.step26,
+                                          self.step27)
 
 
     def camera(self):
@@ -135,6 +178,7 @@ class Level1(tools._State):
 
     def update(self, surface, keys, current_time):
         """Updates level"""
+
         self.current_time = current_time
         self.all_sprites.update(keys, current_time)
         self.update_mario_position(keys)
@@ -143,6 +187,6 @@ class Level1(tools._State):
         self.all_sprites.draw(surface)
         #self.ground_group.draw(surface)
         #self.pipe_group.draw(surface)
-        self.step_group.draw(surface)
+        #self.step_group.draw(surface)
 
 
