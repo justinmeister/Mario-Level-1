@@ -1,7 +1,6 @@
 __author__ = 'justinarmstrong'
 
 import pygame as pg
-import copy
 from .. import setup, tools
 from .. import constants as c
 from .. components import mario
@@ -30,9 +29,10 @@ class Level1(tools._State):
                                   int(self.back_rect.height*c.BACK_SIZE_MULTIPLER)))
 
         self.mario = mario.Mario()
-        self.setup_mario_location()
         self.all_sprites = pg.sprite.Group(self.mario)
+        self.setup_mario_location()
         self.camera_adjust = 0
+
 
 
 
@@ -132,11 +132,11 @@ class Level1(tools._State):
             self.camera_adjust = 0
 
         self.back_rect.x -= self.camera_adjust
+
         for collider in self.collide_group:
             collider.rect.x -= self.camera_adjust
 
-        for sprite in self.all_sprites:
-            sprite.rect.x -= self.camera_adjust
+        self.mario.rect.x -= self.camera_adjust
 
 
     def update_mario_position(self, keys):
@@ -175,16 +175,22 @@ class Level1(tools._State):
             self.mario.rect.x = 5
 
 
+    def check_for_reset(self, keys):
+        if self.mario.dead:
+            self.startup(keys, self.persistant)
+
+
 
     def update(self, surface, keys, current_time):
         """Updates level"""
 
         self.current_time = current_time
-        self.all_sprites.update(keys, current_time)
-        self.update_mario_position(keys)
+        self.mario.update(keys, current_time, self.collide_group)
+        #self.update_mario_position(keys)
         self.camera()
         surface.blit(self.background, self.back_rect)
         self.all_sprites.draw(surface)
+        self.check_for_reset(keys)
         #self.ground_group.draw(surface)
         #self.pipe_group.draw(surface)
         #self.step_group.draw(surface)

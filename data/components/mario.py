@@ -3,6 +3,7 @@ __author__ = 'justinarmstrong'
 import pygame as pg
 from .. import setup, tools
 from .. import constants as c
+import copy
 
 
 class Mario(pg.sprite.Sprite):
@@ -28,19 +29,17 @@ class Mario(pg.sprite.Sprite):
         self.facing_right = True
         self.walking_timer = 0
         self.allow_jump = True
+        self.dead = False
 
 
 
 
-    def update(self, keys, current_time):
+
+    def update(self, keys, current_time, rects):
         self.handle_state(keys, current_time)
-        self.update_position()
+        self.adjust_position(keys, rects)
         self.animation()
 
-
-    def update_position(self):
-        self.rect.x += self.x_vel
-        self.rect.y += self.y_vel
 
 
     def handle_state(self, keys, current_time):
@@ -63,6 +62,49 @@ class Mario(pg.sprite.Sprite):
 
 
 
+
+
+
+    def adjust_position(self, keys, rects):
+        """Rects are anything mario can stand on (pipes, ground, etc."""
+
+        self.rect.y += self.y_vel
+
+        collider = pg.sprite.spritecollideany(self, rects)
+
+        if collider:
+            if self.y_vel > 0:
+                self.y_vel = 0
+                self.rect.bottom = collider.rect.top
+                self.state = c.WALK
+        else:
+            test_sprite = copy.deepcopy(self)
+            test_sprite.rect.y += 1
+            if not pg.sprite.spritecollideany(test_sprite, rects):
+                if self.state != c.JUMP:
+                    self.state = c.FALL
+
+        self.rect.x += self.x_vel
+
+        collider = pg.sprite.spritecollideany(self, rects)
+
+        if collider:
+            if self.x_vel > 0:
+                self.rect.right = collider.rect.left
+            else:
+                self.rect.left = collider.rect.right
+
+            self.x_vel = 0
+
+        if self.rect.y > c.SCREEN_HEIGHT:
+            self.dead = True
+
+        if self.rect.x < 5:
+            self.rect.x = 5
+
+
+
+
     def get_image(self, x, y, width, height):
         image = pg.Surface([width, height]).convert()
         rect = image.get_rect()
@@ -77,17 +119,17 @@ class Mario(pg.sprite.Sprite):
 
     def load_from_sheet(self):
         self.right_frames.append(
-            self.get_image(178, 32, 12, 16)) #right
+            self.get_image(178, 32, 12, 16))  #right
         self.right_frames.append(
-            self.get_image(80,  32, 15, 16)) #right walking 1
+            self.get_image(80,  32, 15, 16))  #right walking 1
         self.right_frames.append(
-            self.get_image(99,  32, 15, 16)) #right walking 2
+            self.get_image(99,  32, 15, 16))  #right walking 2
         self.right_frames.append(
-            self.get_image(114, 32, 15, 16)) #right walking 3
+            self.get_image(114,  32, 15, 16))  #right walking 3
         self.right_frames.append(
-            self.get_image(144, 32, 16, 16)) #right jump
+            self.get_image(144, 32, 16, 16))  #right jump
         self.right_frames.append(
-            self.get_image(130, 32, 14, 16)) #right skid
+            self.get_image(130, 32, 14, 16))  #right skid
 
         #The left image frames are numbered the same as the right
         #frames but are simply reversed.
@@ -142,9 +184,9 @@ class Mario(pg.sprite.Sprite):
 
 
         if keys[pg.K_s]:
-            self.max_x_vel = 5
+            self.max_x_vel = 8
         else:
-            self.max_x_vel = 3
+            self.max_x_vel = 4
 
 
         if keys[pg.K_a]:
@@ -245,10 +287,10 @@ class Mario(pg.sprite.Sprite):
 
     def calculate_animation_speed(self):
         if self.x_vel == 0:
-            animation_speed = 115
+            animation_speed = 130
         elif self.x_vel > 0:
-            animation_speed = 115 - (self.x_vel * (12 + 1.5))
+            animation_speed = 130 - (self.x_vel * (10))
         else:
-            animation_speed = 115 - (self.x_vel * (12 + 1.5) * -1)
+            animation_speed = 130 - (self.x_vel * (10) * -1)
 
         return animation_speed
