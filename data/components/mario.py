@@ -73,10 +73,14 @@ class Mario(pg.sprite.Sprite):
         collider = pg.sprite.spritecollideany(self, rects)
 
         if collider:
-            if self.y_vel > 0:
+            if collider.rect.bottom > self.rect.bottom:
                 self.y_vel = 0
                 self.rect.bottom = collider.rect.top
                 self.state = c.WALK
+            elif collider.rect.top < self.rect.top:
+                self.y_vel = 7
+                self.rect.top = collider.rect.bottom
+                self.state = c.FALL
         else:
             test_sprite = copy.deepcopy(self)
             test_sprite.rect.y += 1

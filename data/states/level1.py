@@ -5,6 +5,8 @@ from .. import setup, tools
 from .. import constants as c
 from .. components import mario
 from .. components import collider
+from .. components import break_brick
+from .. components import coin_box
 
 
 
@@ -17,9 +19,14 @@ class Level1(tools._State):
         self.setup_ground()
         self.setup_pipes()
         self.setup_steps()
+        self.setup_bricks()
+        self.setup_coin_boxes()
         self.collide_group = pg.sprite.Group(self.ground_group,
                                              self.pipe_group,
-                                             self.step_group)
+                                             self.step_group,
+                                             self.brick_group,
+                                             self.coin_box_group)
+
         self.background = setup.GFX['level_1']
         self.back_rect = self.background.get_rect()
         self.back_rect.x = 0
@@ -124,6 +131,25 @@ class Level1(tools._State):
                                           self.step25, self.step26,
                                           self.step27)
 
+    def setup_bricks(self):
+        self.brick1 = break_brick.Brick(856, 365)
+        self.brick2 = break_brick.Brick(942, 365)
+        self.brick3 = break_brick.Brick(1029, 365)
+
+        self.brick_group = pg.sprite.Group(self.brick1, self.brick2,
+                                           self.brick3)
+
+
+    def setup_coin_boxes(self):
+        self.coin_box1 = coin_box.Coin_box(685, 365)
+        self.coin_box2 = coin_box.Coin_box(901, 365)
+        self.coin_box3 = coin_box.Coin_box(987, 365)
+        self.coin_box4 = coin_box.Coin_box(943, 193)
+
+        self.coin_box_group = pg.sprite.Group(self.coin_box1, self.coin_box2,
+                                              self.coin_box3, self.coin_box4)
+
+
 
     def camera(self):
         if self.mario.rect.right > c.SCREEN_WIDTH / 3:
@@ -138,41 +164,6 @@ class Level1(tools._State):
 
         self.mario.rect.x -= self.camera_adjust
 
-
-    def update_mario_position(self, keys):
-        self.mario.rect.y += self.mario.y_vel
-
-        collider = pg.sprite.spritecollideany(self.mario, self.collide_group)
-
-        if collider:
-            if self.mario.y_vel > 0:
-                self.mario.y_vel = 0
-                self.mario.rect.bottom = collider.rect.top
-                self.mario.state = c.WALK
-        else:
-            test_sprite = copy.deepcopy(self.mario)
-            test_sprite.rect.y += 1
-            if not pg.sprite.spritecollideany(test_sprite, self.collide_group):
-                if self.mario.state != c.JUMP:
-                    self.mario.state = c.FALL
-
-        self.mario.rect.x += self.mario.x_vel
-
-        collider = pg.sprite.spritecollideany(self.mario, self.collide_group)
-
-        if collider:
-            if self.mario.x_vel > 0:
-                self.mario.rect.right = collider.rect.left
-            else:
-                self.mario.rect.left = collider.rect.right
-
-            self.mario.x_vel = 0
-
-        if self.mario.rect.y > c.SCREEN_HEIGHT:
-            self.startup(keys, self.persistant)
-
-        if self.mario.rect.x < 5:
-            self.mario.rect.x = 5
 
 
     def check_for_reset(self, keys):
@@ -194,5 +185,7 @@ class Level1(tools._State):
         #self.ground_group.draw(surface)
         #self.pipe_group.draw(surface)
         #self.step_group.draw(surface)
+        self.brick_group.draw(surface)
+        self.coin_box_group.draw(surface)
 
 
