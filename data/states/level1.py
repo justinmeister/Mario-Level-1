@@ -233,7 +233,7 @@ class Level1(tools._State):
 
         self.current_time = current_time
         self.mario.update(keys, current_time, self.collide_group)
-        #self.update_mario_position(keys)
+        self.coin_box_group.update(current_time)
         self.camera()
         surface.blit(self.background, self.back_rect)
         self.all_sprites.draw(surface)
