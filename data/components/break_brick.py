@@ -12,7 +12,7 @@ class Brick(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['tile_set']
 
-        self.image = self.get_image(15, 0, 17, 16)
+        self.image = self.get_image(16, 0, 16, 16)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y

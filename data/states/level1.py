@@ -132,12 +132,33 @@ class Level1(tools._State):
                                           self.step27)
 
     def setup_bricks(self):
-        self.brick1 = break_brick.Brick(856, 365)
-        self.brick2 = break_brick.Brick(942, 365)
-        self.brick3 = break_brick.Brick(1029, 365)
+        self.brick1  = break_brick.Brick(858,  365)
+        self.brick2  = break_brick.Brick(944,  365)
+        self.brick3  = break_brick.Brick(1030, 365)
+        self.brick4  = break_brick.Brick(3299, 365)
+        self.brick5  = break_brick.Brick(3385, 365)
+        self.brick6  = break_brick.Brick(3430, 193)
+        self.brick7  = break_brick.Brick(3473, 193)
+        self.brick8  = break_brick.Brick(3516, 193)
+        self.brick9  = break_brick.Brick(3559, 193)
+        self.brick10 = break_brick.Brick(3602, 193)
+        self.brick11 = break_brick.Brick(3645, 193)
+        self.brick12 = break_brick.Brick(3688, 193)
+        self.brick13 = break_brick.Brick(3731, 193)
+        self.brick14 = break_brick.Brick(3901, 193)
+        self.brick15 = break_brick.Brick(3944, 193)
+        self.brick16 = break_brick.Brick(3987, 193)
+        self.brick17 = break_brick.Brick(4030, 365)
 
-        self.brick_group = pg.sprite.Group(self.brick1, self.brick2,
-                                           self.brick3)
+        self.brick_group = pg.sprite.Group(self.brick1,  self.brick2,
+                                           self.brick3,  self.brick4,
+                                           self.brick5,  self.brick6,
+                                           self.brick7,  self.brick8,
+                                           self.brick9,  self.brick10,
+                                           self.brick11, self.brick12,
+                                           self.brick13, self.brick14,
+                                           self.brick15, self.brick16,
+                                           self.brick17)
 
 
     def setup_coin_boxes(self):
@@ -145,9 +166,12 @@ class Level1(tools._State):
         self.coin_box2 = coin_box.Coin_box(901, 365)
         self.coin_box3 = coin_box.Coin_box(987, 365)
         self.coin_box4 = coin_box.Coin_box(943, 193)
+        self.coin_box5 = coin_box.Coin_box(3342, 365)
+        self.coin_box6 = coin_box.Coin_box(4030, 193)
 
         self.coin_box_group = pg.sprite.Group(self.coin_box1, self.coin_box2,
-                                              self.coin_box3, self.coin_box4)
+                                              self.coin_box3, self.coin_box4,
+                                              self.coin_box5, self.coin_box6)
 
 
 
