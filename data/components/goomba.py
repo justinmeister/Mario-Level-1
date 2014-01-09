@@ -20,6 +20,7 @@ class Goomba(pg.sprite.Sprite):
         self.rect.x = x
         self.rect.bottom = y
         self.direction = direction
+        self.state = c.WALK
 
         if self.direction == c.LEFT:
             self.x_vel = c.GOOMBA_VEL * -1
@@ -52,7 +53,19 @@ class Goomba(pg.sprite.Sprite):
         return image
 
 
-    def update(self, current_time):
+
+
+    def handle_state(self, current_time):
+        if self.state == c.WALK:
+            self.walking(current_time)
+        elif self.state == c.FALL:
+            self.falling(current_time)
+        elif self.state == c.JUMPED_ON:
+            self.jumped_on(current_time)
+
+
+
+    def walking(self, current_time):
         if (current_time - self.animate_timer) > 125:
             if self.frame_index == 0:
                 self.frame_index += 1
@@ -61,7 +74,49 @@ class Goomba(pg.sprite.Sprite):
 
             self.animate_timer = current_time
 
+
+
+    def animation(self):
         self.image = self.frames[self.frame_index]
 
+
+
+    def move_position(self, rects):
+        """Rects are anything a goomba can bounce into"""
+
         self.rect.x += self.x_vel
+
+        sprite = pg.sprite.spritecollideany(self, rects)
+
+        if sprite:
+            if sprite.rect.left < self.rect.left:
+                self.rect.left = sprite.rect.right
+                self.direction = c.RIGHT
+            elif sprite.rect.right > self.rect.right:
+                self.rect.right = sprite.rect.left
+                self.direction = c.LEFT
+
+            self.x_vel = (self.x_vel * -1)
+
+        self.if_need_to_kill()
+
+
+
+    def if_need_to_kill(self):
+        if self.rect.x < -1000:
+            self.kill()
+
+
+
+    def update(self, current_time, colliders):
+        self.handle_state(current_time)
+        self.move_position(colliders)
+        self.animation()
+
+
+
+
+
+
+
 

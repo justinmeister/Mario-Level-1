@@ -208,9 +208,16 @@ class Level1(tools._State):
                                               self.coin_box11, self.coin_box12)
 
     def setup_enemies(self):
-        goomba1 = goomba.Goomba(858, c.GROUND_HEIGHT, c.LEFT)
+        goomba1 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT)
+        goomba2 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT)
 
-        self.enemies = pg.sprite.Group(goomba1)
+        self.goombas = [goomba1, goomba2]
+
+        self.enemies = pg.sprite.Group()
+
+
+
+
 
 
 
@@ -237,22 +244,39 @@ class Level1(tools._State):
             self.startup(keys, self.persistant)
 
 
+    def create_enemies(self):
+        if self.mario.distance > 530:
+            self.enemies.add(self.goombas[0])
+            self.all_sprites.add(self.enemies)
+
+        if self.mario.distance > 1400:
+            self.enemies.add(self.goombas[1])
+            self.all_sprites.add(self.enemies)
+
+
+
 
     def update(self, surface, keys, current_time):
         """Updates level"""
 
         self.current_time = current_time
         self.mario.update(keys, current_time, self.collide_group)
-        self.enemies.update(current_time)
+        self.create_enemies()
+        self.enemies.update(current_time, self.collide_group)
         self.coin_box_group.update(current_time)
         self.camera()
         surface.blit(self.background, self.back_rect)
         self.all_sprites.draw(surface)
         self.check_for_reset(keys)
-        #self.ground_group.draw(surface)
-        #self.pipe_group.draw(surface)
-        #self.step_group.draw(surface)
         self.brick_group.draw(surface)
         self.coin_box_group.draw(surface)
+
+
+
+
+
+
+
+        
 
 
