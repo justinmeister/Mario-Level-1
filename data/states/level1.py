@@ -149,6 +149,9 @@ class Level1(tools._State):
         self.brick15 = break_brick.Brick(3944, 193)
         self.brick16 = break_brick.Brick(3987, 193)
         self.brick17 = break_brick.Brick(4030, 365)
+        self.brick18 = break_brick.Brick(4287, 365)
+        self.brick19 = break_brick.Brick(4330, 365)
+
 
         self.brick_group = pg.sprite.Group(self.brick1,  self.brick2,
                                            self.brick3,  self.brick4,
@@ -158,7 +161,8 @@ class Level1(tools._State):
                                            self.brick11, self.brick12,
                                            self.brick13, self.brick14,
                                            self.brick15, self.brick16,
-                                           self.brick17)
+                                           self.brick17, self.brick18,
+                                           self.brick19)
 
 
     def setup_coin_boxes(self):
@@ -168,10 +172,12 @@ class Level1(tools._State):
         self.coin_box4 = coin_box.Coin_box(943, 193)
         self.coin_box5 = coin_box.Coin_box(3342, 365)
         self.coin_box6 = coin_box.Coin_box(4030, 193)
+        self.coin_box7 = coin_box.Coin_box(4544, 365)
 
         self.coin_box_group = pg.sprite.Group(self.coin_box1, self.coin_box2,
                                               self.coin_box3, self.coin_box4,
-                                              self.coin_box5, self.coin_box6)
+                                              self.coin_box5, self.coin_box6,
+                                              self.coin_box7)
 
 
 
