@@ -30,6 +30,7 @@ class Mario(pg.sprite.Sprite):
         self.walking_timer = 0
         self.allow_jump = True
         self.dead = False
+        self.distance = 110
 
 
 
@@ -89,6 +90,7 @@ class Mario(pg.sprite.Sprite):
                     self.state = c.FALL
 
         self.rect.x += self.x_vel
+        self.distance += self.x_vel
 
         collider = pg.sprite.spritecollideany(self, rects)
 

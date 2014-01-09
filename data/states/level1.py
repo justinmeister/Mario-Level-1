@@ -7,6 +7,7 @@ from .. components import mario
 from .. components import collider
 from .. components import break_brick
 from .. components import coin_box
+from .. components import goomba
 
 
 
@@ -21,6 +22,7 @@ class Level1(tools._State):
         self.setup_steps()
         self.setup_bricks()
         self.setup_coin_boxes()
+        self.setup_enemies()
         self.collide_group = pg.sprite.Group(self.ground_group,
                                              self.pipe_group,
                                              self.step_group,
@@ -36,7 +38,7 @@ class Level1(tools._State):
                                   int(self.back_rect.height*c.BACK_SIZE_MULTIPLER)))
 
         self.mario = mario.Mario()
-        self.all_sprites = pg.sprite.Group(self.mario)
+        self.all_sprites = pg.sprite.Group(self.mario, self.enemies)
         self.setup_mario_location()
         self.camera_adjust = 0
 
@@ -205,6 +207,11 @@ class Level1(tools._State):
                                               self.coin_box9, self.coin_box10,
                                               self.coin_box11, self.coin_box12)
 
+    def setup_enemies(self):
+        goomba1 = goomba.Goomba(858, c.GROUND_HEIGHT, c.LEFT)
+
+        self.enemies = pg.sprite.Group(goomba1)
+
 
 
     def camera(self):
@@ -220,6 +227,9 @@ class Level1(tools._State):
 
         self.mario.rect.x -= self.camera_adjust
 
+        for enemy in self.enemies:
+            enemy.rect.x -= self.camera_adjust
+
 
 
     def check_for_reset(self, keys):
@@ -233,6 +243,7 @@ class Level1(tools._State):
 
         self.current_time = current_time
         self.mario.update(keys, current_time, self.collide_group)
+        self.enemies.update(current_time)
         self.coin_box_group.update(current_time)
         self.camera()
         surface.blit(self.background, self.back_rect)
