@@ -151,6 +151,19 @@ class Level1(tools._State):
         self.brick17 = break_brick.Brick(4030, 365)
         self.brick18 = break_brick.Brick(4287, 365)
         self.brick19 = break_brick.Brick(4330, 365)
+        self.brick20 = break_brick.Brick(5058, 365)
+        self.brick21 = break_brick.Brick(5187, 193)
+        self.brick22 = break_brick.Brick(5230, 193)
+        self.brick23 = break_brick.Brick(5273, 193)
+        self.brick24 = break_brick.Brick(5488, 193)
+        self.brick25 = break_brick.Brick(5574, 193)
+        self.brick26 = break_brick.Brick(5617, 193)
+        self.brick27 = break_brick.Brick(5531, 365)
+        self.brick28 = break_brick.Brick(5574, 365)
+        self.brick29 = break_brick.Brick(7202, 365)
+        self.brick30 = break_brick.Brick(7245, 365)
+        self.brick31 = break_brick.Brick(7331, 365)
+
 
 
         self.brick_group = pg.sprite.Group(self.brick1,  self.brick2,
@@ -162,22 +175,35 @@ class Level1(tools._State):
                                            self.brick13, self.brick14,
                                            self.brick15, self.brick16,
                                            self.brick17, self.brick18,
-                                           self.brick19)
+                                           self.brick19, self.brick20,
+                                           self.brick21, self.brick22,
+                                           self.brick23, self.brick24,
+                                           self.brick25, self.brick26,
+                                           self.brick27, self.brick28,
+                                           self.brick29, self.brick30,
+                                           self.brick31)
 
 
     def setup_coin_boxes(self):
-        self.coin_box1 = coin_box.Coin_box(685, 365)
-        self.coin_box2 = coin_box.Coin_box(901, 365)
-        self.coin_box3 = coin_box.Coin_box(987, 365)
-        self.coin_box4 = coin_box.Coin_box(943, 193)
-        self.coin_box5 = coin_box.Coin_box(3342, 365)
-        self.coin_box6 = coin_box.Coin_box(4030, 193)
-        self.coin_box7 = coin_box.Coin_box(4544, 365)
+        self.coin_box1  = coin_box.Coin_box(685, 365)
+        self.coin_box2  = coin_box.Coin_box(901, 365)
+        self.coin_box3  = coin_box.Coin_box(987, 365)
+        self.coin_box4  = coin_box.Coin_box(943, 193)
+        self.coin_box5  = coin_box.Coin_box(3342, 365)
+        self.coin_box6  = coin_box.Coin_box(4030, 193)
+        self.coin_box7  = coin_box.Coin_box(4544, 365)
+        self.coin_box8  = coin_box.Coin_box(4672, 365)
+        self.coin_box9  = coin_box.Coin_box(4672, 193)
+        self.coin_box10 = coin_box.Coin_box(4800, 365)
+        self.coin_box11 = coin_box.Coin_box(5531, 193)
+        self.coin_box12 = coin_box.Coin_box(7288, 365)
 
         self.coin_box_group = pg.sprite.Group(self.coin_box1, self.coin_box2,
                                               self.coin_box3, self.coin_box4,
                                               self.coin_box5, self.coin_box6,
-                                              self.coin_box7)
+                                              self.coin_box7, self.coin_box8,
+                                              self.coin_box9, self.coin_box10,
+                                              self.coin_box11, self.coin_box12)
 
 
 
