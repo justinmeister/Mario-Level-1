@@ -191,12 +191,10 @@ class Mario(pg.sprite.Sprite):
             self.state = c.FALL
 
         if keys[pg.K_LEFT]:
-            self.facing_right = False
             if self.x_vel > (self.max_x_vel * - 1):
                 self.x_vel -= self.x_accel
 
         elif keys[pg.K_RIGHT]:
-            self.facing_right = True
             if self.x_vel < self.max_x_vel:
                 self.x_vel += self.x_accel
 
@@ -210,12 +208,10 @@ class Mario(pg.sprite.Sprite):
         self.y_vel += self.gravity
 
         if keys[pg.K_LEFT]:
-            self.facing_right = False
             if self.x_vel > (self.max_x_vel * - 1):
                 self.x_vel -= self.x_accel
 
         elif keys[pg.K_RIGHT]:
-            self.facing_right = True
             if self.x_vel < self.max_x_vel:
                 self.x_vel += self.x_accel
 

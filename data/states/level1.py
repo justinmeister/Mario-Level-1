@@ -29,6 +29,7 @@ class Level1(tools._State):
         self.setup_coin_boxes()
         self.setup_enemies()
         self.setup_mario()
+        self.setup_checkpoints()
 
         self.collide_group = pg.sprite.Group(self.ground_group,
                                              self.pipe_group,
@@ -37,6 +38,9 @@ class Level1(tools._State):
                                              self.coin_box_group)
 
         self.all_sprites = pg.sprite.Group(self.mario, self.enemies)
+
+
+
 
 
     def setup_background(self):
@@ -214,11 +218,13 @@ class Level1(tools._State):
         goomba1 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba1')
         goomba2 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba2')
         goomba3 = goomba.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba3')
-        goomba4 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba4')
-        goomba5 = goomba.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba5')
+        goomba4 = goomba.Goomba(800, 193,             c.LEFT, 'goomba4')
+        goomba5 = goomba.Goomba(900, 193,             c.LEFT, 'goomba5')
+        goomba6 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba6')
+        goomba7 = goomba.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba7')
 
         self.goombas = [goomba0, goomba1, goomba2, goomba3,
-                        goomba4, goomba5]
+                        goomba4, goomba5, goomba6, goomba7]
 
         self.enemies = pg.sprite.Group()
 
@@ -231,15 +237,20 @@ class Level1(tools._State):
         self.mario.rect.bottom = c.GROUND_HEIGHT
 
 
+    def setup_checkpoints(self):
+        self.check_point1 = False
+        self.check_point2 = False
+        self.check_point3 = False
+        self.check_point4 = False
+        self.check_point5 = False
+        self.check_point6 = False
+
+
     def update(self, surface, keys, current_time):
         """Updates Entire level"""
 
         self.update_all_sprites(keys, current_time)
         self.blit_everything(surface)
-
-        for enemy in self.enemies:
-            if enemy.name == 'goomba1':
-                print enemy.rect.x
 
 
     def update_all_sprites(self, keys, current_time):
@@ -262,23 +273,34 @@ class Level1(tools._State):
     def add_enemies(self):
         """Enemies are created based on Mario's distance travelled"""
 
-        if self.mario.distance > 530:
+        if self.mario.distance > 530 and self.check_point1 == False:
             self.enemies.add(self.goombas[0])
             self.all_sprites.add(self.enemies)
+            self.check_point1 = True
 
-        if self.mario.distance > 1400:
+        elif self.mario.distance > 1400 and self.check_point2 == False:
             self.enemies.add(self.goombas[1])
             self.all_sprites.add(self.enemies)
+            self.check_point2 = True
 
-        if self.mario.distance > 1755:
+
+        elif self.mario.distance > 1755 and self.check_point3 == False:
             self.enemies.add(self.goombas[2])
             self.enemies.add(self.goombas[3])
             self.all_sprites.add(self.enemies)
+            self.check_point3 = True
 
-        if self.mario.distance > 3750:
+        elif self.mario.distance > 3100 and self.check_point4 == False:
             self.enemies.add(self.goombas[4])
             self.enemies.add(self.goombas[5])
             self.all_sprites.add(self.enemies)
+            self.check_point4 = True
+
+        elif self.mario.distance > 3750 and self.check_point5 == False:
+            self.enemies.add(self.goombas[6])
+            self.enemies.add(self.goombas[7])
+            self.all_sprites.add(self.enemies)
+            self.check_point5 = True
 
 
     def adjust_sprite_positions(self):
@@ -338,14 +360,14 @@ class Level1(tools._State):
         collider = pg.sprite.spritecollideany(enemy, self.collide_group)
 
         if collider:
-            if collider.rect.bottom > enemy.rect.bottom:
-                enemy.y_vel = 0
-                enemy.rect.bottom = collider.rect.top
-                enemy.state = c.WALK
-            elif collider.rect.top < enemy.rect.top:
+            if enemy.rect.bottom > collider.rect.bottom:
                 enemy.y_vel = 7
                 enemy.rect.top = collider.rect.bottom
                 enemy.state = c.FALL
+            elif enemy.rect.top < collider.rect.top:
+                enemy.y_vel = 0
+                enemy.rect.bottom = collider.rect.top
+                enemy.state = c.WALK
         else:
             test_sprite = copy.deepcopy(enemy)
             test_sprite.rect.y += 1

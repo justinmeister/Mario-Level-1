@@ -14,7 +14,7 @@ class Goomba(pg.sprite.Sprite):
         self.frames = []
         self.frame_index = 0
         self.animate_timer = 0
-        self.gravity = .4
+        self.gravity = 1.5
         self.setup_frames()
 
         self.image = self.frames[self.frame_index]
@@ -79,10 +79,8 @@ class Goomba(pg.sprite.Sprite):
             self.animate_timer = current_time
 
     def falling(self, current_time):
-        self.y_vel += self.gravity
-
-
-
+        if self.y_vel < 10:
+            self.y_vel += self.gravity
 
 
     def animation(self):
