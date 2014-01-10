@@ -27,6 +27,8 @@ class Goomba(pg.sprite.Sprite):
         else:
             self.x_vel = c.GOOMBA_VEL
 
+        self.y_vel = 0
+
 
     def setup_frames(self):
         """Put the image frames in a list to be animated"""
@@ -80,37 +82,8 @@ class Goomba(pg.sprite.Sprite):
         self.image = self.frames[self.frame_index]
 
 
-
-    def move_position(self, rects):
-        """Rects are anything a goomba can bounce into"""
-
-        self.rect.x += self.x_vel
-
-        sprite = pg.sprite.spritecollideany(self, rects)
-
-        if sprite:
-            if sprite.rect.left < self.rect.left:
-                self.rect.left = sprite.rect.right
-                self.direction = c.RIGHT
-            elif sprite.rect.right > self.rect.right:
-                self.rect.right = sprite.rect.left
-                self.direction = c.LEFT
-
-            self.x_vel = (self.x_vel * -1)
-
-        self.if_need_to_kill()
-
-
-
-    def if_need_to_kill(self):
-        if self.rect.x < -1000:
-            self.kill()
-
-
-
     def update(self, current_time, colliders):
         self.handle_state(current_time)
-        self.move_position(colliders)
         self.animation()
 
 

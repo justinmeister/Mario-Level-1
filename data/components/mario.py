@@ -20,57 +20,17 @@ class Mario(pg.sprite.Sprite):
         self.x_accel = c.SMALL_ACCEL
         self.jump_vel = c.JUMP_VEL
         self.gravity = c.GRAVITY
-        self.load_from_sheet()
-
         self.state = c.STAND
-        self.image = self.right_frames[self.frame_index]
-        self.rect = self.image.get_rect()
-
         self.facing_right = True
         self.walking_timer = 0
         self.allow_jump = True
         self.dead = False
         self.distance = 110
 
+        self.load_from_sheet()
+        self.image = self.right_frames[self.frame_index]
+        self.rect = self.image.get_rect()
 
-
-
-
-    def update(self, keys, current_time, rects):
-        self.handle_state(keys, current_time)
-        #self.adjust_position(keys, rects)
-        self.animation()
-
-
-
-    def handle_state(self, keys, current_time):
-        if self.state == c.STAND:
-            self.standing(keys, current_time)
-        elif self.state == c.WALK:
-            self.walking(keys, current_time)
-        elif self.state == c.JUMP:
-            self.jumping(keys, current_time)
-        elif self.state == c.FALL:
-            self.falling(keys, current_time)
-
-
-    def animation(self):
-        if self.facing_right:
-            self.image = self.right_frames[self.frame_index]
-        else:
-            self.image = self.left_frames[self.frame_index]
-
-
-    def get_image(self, x, y, width, height):
-        image = pg.Surface([width, height]).convert()
-        rect = image.get_rect()
-
-        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
-        image.set_colorkey(c.BLACK)
-        image = pg.transform.scale(image,
-                                   (int(rect.width*c.SIZE_MULTIPLIER),
-                                    int(rect.height*c.SIZE_MULTIPLIER)))
-        return image
 
 
     def load_from_sheet(self):
@@ -93,6 +53,34 @@ class Mario(pg.sprite.Sprite):
         for frame in self.right_frames:
             new_image = pg.transform.flip(frame, True, False)
             self.left_frames.append(new_image)
+
+
+    def get_image(self, x, y, width, height):
+        image = pg.Surface([width, height]).convert()
+        rect = image.get_rect()
+
+        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
+        image.set_colorkey(c.BLACK)
+        image = pg.transform.scale(image,
+                                   (int(rect.width*c.SIZE_MULTIPLIER),
+                                    int(rect.height*c.SIZE_MULTIPLIER)))
+        return image
+
+
+    def update(self, keys, current_time):
+        self.handle_state(keys, current_time)
+        self.animation()
+
+
+    def handle_state(self, keys, current_time):
+        if self.state == c.STAND:
+            self.standing(keys, current_time)
+        elif self.state == c.WALK:
+            self.walking(keys, current_time)
+        elif self.state == c.JUMP:
+            self.jumping(keys, current_time)
+        elif self.state == c.FALL:
+            self.falling(keys, current_time)
 
 
     def standing(self, keys, current_time):
@@ -119,8 +107,8 @@ class Mario(pg.sprite.Sprite):
 
 
     def walking(self, keys, current_time):
-        """This function is called when Mario is in a walking state"""
-        """It changes the frame, checks for holding down the run button,
+        """This function is called when Mario is in a walking state
+        It changes the frame, checks for holding down the run button,
         checks for a jump, then adjusts the state if necessary"""
 
         self.check_to_allow_jump(keys)
@@ -218,8 +206,6 @@ class Mario(pg.sprite.Sprite):
             self.state = c.FALL
 
 
-
-
     def falling(self, keys, current_time):
         self.y_vel += self.gravity
 
@@ -234,11 +220,9 @@ class Mario(pg.sprite.Sprite):
                 self.x_vel += self.x_accel
 
 
-
     def check_to_allow_jump(self, keys):
         if not keys[pg.K_a]:
             self.allow_jump = True
-
 
 
     def calculate_animation_speed(self):
@@ -250,3 +234,10 @@ class Mario(pg.sprite.Sprite):
             animation_speed = 130 - (self.x_vel * (10) * -1)
 
         return animation_speed
+
+
+    def animation(self):
+        if self.facing_right:
+            self.image = self.right_frames[self.frame_index]
+        else:
+            self.image = self.left_frames[self.frame_index]
