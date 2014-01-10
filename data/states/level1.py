@@ -210,10 +210,15 @@ class Level1(tools._State):
         """Creates a list of Goomba objects that will be added to the
         self.enemies sprite group when Mario gets a certain distance"""
 
-        goomba1 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT)
-        goomba2 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT)
+        goomba0 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba0')
+        goomba1 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba1')
+        goomba2 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba2')
+        goomba3 = goomba.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba3')
+        goomba4 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba4')
+        goomba5 = goomba.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba5')
 
-        self.goombas = [goomba1, goomba2]
+        self.goombas = [goomba0, goomba1, goomba2, goomba3,
+                        goomba4, goomba5]
 
         self.enemies = pg.sprite.Group()
 
@@ -226,17 +231,20 @@ class Level1(tools._State):
         self.mario.rect.bottom = c.GROUND_HEIGHT
 
 
-
     def update(self, surface, keys, current_time):
         """Updates Entire level"""
 
         self.update_all_sprites(keys, current_time)
         self.blit_everything(surface)
 
+        for enemy in self.enemies:
+            if enemy.name == 'goomba1':
+                print enemy.rect.x
+
 
     def update_all_sprites(self, keys, current_time):
         self.mario.update(keys, current_time)
-        self.create_enemies()
+        self.add_enemies()
         self.enemies.update(current_time, self.collide_group)
         self.coin_box_group.update(current_time)
         self.adjust_sprite_positions()
@@ -251,7 +259,7 @@ class Level1(tools._State):
         self.coin_box_group.draw(surface)
 
 
-    def create_enemies(self):
+    def add_enemies(self):
         """Enemies are created based on Mario's distance travelled"""
 
         if self.mario.distance > 530:
@@ -260,6 +268,16 @@ class Level1(tools._State):
 
         if self.mario.distance > 1400:
             self.enemies.add(self.goombas[1])
+            self.all_sprites.add(self.enemies)
+
+        if self.mario.distance > 1755:
+            self.enemies.add(self.goombas[2])
+            self.enemies.add(self.goombas[3])
+            self.all_sprites.add(self.enemies)
+
+        if self.mario.distance > 3750:
+            self.enemies.add(self.goombas[4])
+            self.enemies.add(self.goombas[5])
             self.all_sprites.add(self.enemies)
 
 
@@ -317,7 +335,23 @@ class Level1(tools._State):
 
 
     def check_enemy_y_collisions(self, enemy):
-        pass
+        collider = pg.sprite.spritecollideany(enemy, self.collide_group)
+
+        if collider:
+            if collider.rect.bottom > enemy.rect.bottom:
+                enemy.y_vel = 0
+                enemy.rect.bottom = collider.rect.top
+                enemy.state = c.WALK
+            elif collider.rect.top < enemy.rect.top:
+                enemy.y_vel = 7
+                enemy.rect.top = collider.rect.bottom
+                enemy.state = c.FALL
+        else:
+            test_sprite = copy.deepcopy(enemy)
+            test_sprite.rect.y += 1
+            if not pg.sprite.spritecollideany(test_sprite, self.collide_group):
+                if enemy.state != c.JUMP:
+                    enemy.state = c.FALL
 
 
     def check_enemy_x_collisions(self, enemy):
@@ -325,18 +359,24 @@ class Level1(tools._State):
         collider = pg.sprite.spritecollideany(enemy, self.collide_group)
 
         if collider:
-            if collider.rect.left < enemy.rect.left:
-                enemy.rect.left = collider.rect.right
-                enemy.direction = c.RIGHT
-            elif collider.rect.right > enemy.rect.right:
+            if enemy.x_vel > 0:
                 enemy.rect.right = collider.rect.left
                 enemy.direction = c.LEFT
+            else:
+                enemy.rect.left = collider.rect.right
+                enemy.direction = c.RIGHT
 
-            enemy.x_vel = (enemy.x_vel * -1)
+            if enemy.direction == c.LEFT:
+                enemy.x_vel = -2
+            else:
+                enemy.x_vel = 2
 
 
     def delete_if_off_screen(self, enemy):
-        if enemy.rect.x < -1000:
+        if enemy.rect.x < -500:
+            enemy.kill()
+
+        elif enemy.rect.y > 600:
             enemy.kill()
 
 
@@ -351,10 +391,12 @@ class Level1(tools._State):
         for collider in self.collide_group:
             collider.rect.x -= self.camera_adjustment
 
-        self.mario.rect.x -= self.camera_adjustment
-
         for enemy in self.enemies:
             enemy.rect.x -= self.camera_adjustment
+
+        self.mario.rect.x -= self.camera_adjustment
+
+
 
 
     def check_for_mario_death(self, keys):

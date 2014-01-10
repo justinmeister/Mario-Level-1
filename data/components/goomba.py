@@ -7,12 +7,14 @@ from .. import constants as c
 
 class Goomba(pg.sprite.Sprite):
 
-    def __init__(self, x, y, direction):
+    def __init__(self, x, y, direction, name):
         pg.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['smb_enemies_sheet']
+        self.name = name
         self.frames = []
         self.frame_index = 0
         self.animate_timer = 0
+        self.gravity = .4
         self.setup_frames()
 
         self.image = self.frames[self.frame_index]
@@ -75,6 +77,11 @@ class Goomba(pg.sprite.Sprite):
                 self.frame_index = 0
 
             self.animate_timer = current_time
+
+    def falling(self, current_time):
+        self.y_vel += self.gravity
+
+
 
 
 
