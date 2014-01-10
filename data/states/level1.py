@@ -1,6 +1,7 @@
 __author__ = 'justinarmstrong'
 
 import pygame as pg
+import copy
 from .. import setup, tools
 from .. import constants as c
 from .. components import mario
@@ -233,6 +234,7 @@ class Level1(tools._State):
         self.create_enemies()
         self.enemies.update(current_time, self.collide_group)
         self.coin_box_group.update(current_time)
+        self.check_collisions()
         self.adjust_camera()
 
         surface.blit(self.background, self.back_rect)
@@ -245,7 +247,7 @@ class Level1(tools._State):
 
     def create_enemies(self):
         """Enemies are created based on Mario's distance travelled"""
-        
+
         if self.mario.distance > 530:
             self.enemies.add(self.goombas[0])
             self.all_sprites.add(self.enemies)
@@ -253,6 +255,48 @@ class Level1(tools._State):
         if self.mario.distance > 1400:
             self.enemies.add(self.goombas[1])
             self.all_sprites.add(self.enemies)
+
+
+    def check_collisions(self):
+
+        self.mario.rect.y += self.mario.y_vel
+
+        collider = pg.sprite.spritecollideany(self.mario, self.collide_group)
+
+        if collider:
+            if collider.rect.bottom > self.mario.rect.bottom:
+                self.mario.y_vel = 0
+                self.mario.rect.bottom = collider.rect.top
+                self.mario.state = c.WALK
+            elif collider.rect.top < self.mario.rect.top:
+                self.mario.y_vel = 7
+                self.mario.rect.top = collider.rect.bottom
+                self.mario.state = c.FALL
+        else:
+            test_sprite = copy.deepcopy(self.mario)
+            test_sprite.rect.y += 1
+            if not pg.sprite.spritecollideany(test_sprite, self.collide_group):
+                if self.mario.state != c.JUMP:
+                    self.mario.state = c.FALL
+
+        self.mario.rect.x += self.mario.x_vel
+        self.mario.distance += self.mario.x_vel
+
+        collider = pg.sprite.spritecollideany(self.mario, self.collide_group)
+
+        if collider:
+            if self.mario.x_vel > 0:
+                self.mario.rect.right = collider.rect.left
+            else:
+                self.rect.rect.mario.left = collider.rect.right
+
+            self.mario.x_vel = 0
+
+        if self.mario.rect.y > c.SCREEN_HEIGHT:
+            self.mario.dead = True
+
+        if self.mario.rect.x < 5:
+            self.mario.rect.x = 5
 
 
     def adjust_camera(self):
@@ -276,21 +320,4 @@ class Level1(tools._State):
     def check_for_reset(self, keys):
         if self.mario.dead:
             self.startup(keys, self.persistant)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
 

@@ -38,7 +38,7 @@ class Mario(pg.sprite.Sprite):
 
     def update(self, keys, current_time, rects):
         self.handle_state(keys, current_time)
-        self.adjust_position(keys, rects)
+        #self.adjust_position(keys, rects)
         self.animation()
 
 
@@ -59,56 +59,6 @@ class Mario(pg.sprite.Sprite):
             self.image = self.right_frames[self.frame_index]
         else:
             self.image = self.left_frames[self.frame_index]
-
-
-
-
-
-
-
-    def adjust_position(self, keys, rects):
-        """Rects are anything mario can stand on (pipes, ground, etc."""
-
-        self.rect.y += self.y_vel
-
-        collider = pg.sprite.spritecollideany(self, rects)
-
-        if collider:
-            if collider.rect.bottom > self.rect.bottom:
-                self.y_vel = 0
-                self.rect.bottom = collider.rect.top
-                self.state = c.WALK
-            elif collider.rect.top < self.rect.top:
-                self.y_vel = 7
-                self.rect.top = collider.rect.bottom
-                self.state = c.FALL
-        else:
-            test_sprite = copy.deepcopy(self)
-            test_sprite.rect.y += 1
-            if not pg.sprite.spritecollideany(test_sprite, rects):
-                if self.state != c.JUMP:
-                    self.state = c.FALL
-
-        self.rect.x += self.x_vel
-        self.distance += self.x_vel
-
-        collider = pg.sprite.spritecollideany(self, rects)
-
-        if collider:
-            if self.x_vel > 0:
-                self.rect.right = collider.rect.left
-            else:
-                self.rect.left = collider.rect.right
-
-            self.x_vel = 0
-
-        if self.rect.y > c.SCREEN_HEIGHT:
-            self.dead = True
-
-        if self.rect.x < 5:
-            self.rect.x = 5
-
-
 
 
     def get_image(self, x, y, width, height):
