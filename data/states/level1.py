@@ -214,17 +214,27 @@ class Level1(tools._State):
         """Creates a list of Goomba objects that will be added to the
         self.enemies sprite group when Mario gets a certain distance"""
 
-        goomba0 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba0')
-        goomba1 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba1')
-        goomba2 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba2')
-        goomba3 = goomba.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba3')
-        goomba4 = goomba.Goomba(800, 193,             c.LEFT, 'goomba4')
-        goomba5 = goomba.Goomba(900, 193,             c.LEFT, 'goomba5')
-        goomba6 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba6')
-        goomba7 = goomba.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba7')
+        goomba0 = goomba.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba0')
+        goomba1 = goomba.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba1')
+        goomba2 = goomba.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba2')
+        goomba3 = goomba.Goomba( 860, c.GROUND_HEIGHT, c.LEFT, 'goomba3')
+        goomba4 = goomba.Goomba( 800, 193,             c.LEFT, 'goomba4')
+        goomba5 = goomba.Goomba( 900, 193,             c.LEFT, 'goomba5')
+        goomba6 = goomba.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba6')
+        goomba7 = goomba.Goomba( 860, c.GROUND_HEIGHT, c.LEFT, 'goomba7')
+        goomba8 = goomba.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba8')
+        goomba9 = goomba.Goomba( 860, c.GROUND_HEIGHT, c.LEFT, 'goomba9')
+        goomba10 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba10')
+        goomba11 = goomba.Goomba(869, c.GROUND_HEIGHT, c.LEFT, 'goomba11')
+        goomba12 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba12')
+        goomba13 = goomba.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba13')
+        goomba14 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba14')
+        goomba15 = goomba.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba15')
 
         self.goombas = [goomba0, goomba1, goomba2, goomba3,
-                        goomba4, goomba5, goomba6, goomba7]
+                        goomba4, goomba5, goomba6, goomba7,
+                        goomba8, goomba9, goomba10, goomba11,
+                        goomba12, goomba13, goomba14, goomba15]
 
         self.enemies = pg.sprite.Group()
 
@@ -238,12 +248,16 @@ class Level1(tools._State):
 
 
     def setup_checkpoints(self):
-        self.check_point1 = False
-        self.check_point2 = False
-        self.check_point3 = False
-        self.check_point4 = False
-        self.check_point5 = False
-        self.check_point6 = False
+        self.check_point1  = False
+        self.check_point2  = False
+        self.check_point3  = False
+        self.check_point4  = False
+        self.check_point5  = False
+        self.check_point6  = False
+        self.check_point7  = False
+        self.check_point8  = False
+        self.check_point9  = False
+        self.check_point10 = False
 
 
     def update(self, surface, keys, current_time):
@@ -301,6 +315,30 @@ class Level1(tools._State):
             self.enemies.add(self.goombas[7])
             self.all_sprites.add(self.enemies)
             self.check_point5 = True
+
+        elif self.mario.distance > 4470 and self.check_point7 == False:
+            self.enemies.add(self.goombas[8])
+            self.enemies.add(self.goombas[9])
+            self.all_sprites.add(self.enemies)
+            self.check_point7 = True
+
+        elif self.mario.distance > 4950 and self.check_point8 == False:
+            self.enemies.add(self.goombas[10])
+            self.enemies.add(self.goombas[11])
+            self.all_sprites.add(self.enemies)
+            self.check_point8 = True
+
+        elif self.mario.distance > 5200 and self.check_point9 == False:
+            self.enemies.add(self.goombas[12])
+            self.enemies.add(self.goombas[13])
+            self.all_sprites.add(self.enemies)
+            self.check_point9 = True
+
+        elif self.mario.distance > 7100 and self.check_point10 == False:
+            self.enemies.add(self.goombas[14])
+            self.enemies.add(self.goombas[15])
+            self.all_sprites.add(self.enemies)
+            self.check_point10 = True
 
 
     def adjust_sprite_positions(self):
