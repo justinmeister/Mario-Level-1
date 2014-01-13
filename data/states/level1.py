@@ -8,7 +8,7 @@ from .. components import mario
 from .. components import collider
 from .. components import break_brick
 from .. components import coin_box
-from .. components import goomba
+from .. components import enemies
 
 
 
@@ -214,27 +214,32 @@ class Level1(tools._State):
         """Creates a list of Goomba objects that will be added to the
         self.enemies sprite group when Mario gets a certain distance"""
 
-        goomba0 = goomba.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba0')
-        goomba1 = goomba.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba1')
-        goomba2 = goomba.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba2')
-        goomba3 = goomba.Goomba( 860, c.GROUND_HEIGHT, c.LEFT, 'goomba3')
-        goomba4 = goomba.Goomba( 800, 193,             c.LEFT, 'goomba4')
-        goomba5 = goomba.Goomba( 900, 193,             c.LEFT, 'goomba5')
-        goomba6 = goomba.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba6')
-        goomba7 = goomba.Goomba( 860, c.GROUND_HEIGHT, c.LEFT, 'goomba7')
-        goomba8 = goomba.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba8')
-        goomba9 = goomba.Goomba( 860, c.GROUND_HEIGHT, c.LEFT, 'goomba9')
-        goomba10 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba10')
-        goomba11 = goomba.Goomba(869, c.GROUND_HEIGHT, c.LEFT, 'goomba11')
-        goomba12 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba12')
-        goomba13 = goomba.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba13')
-        goomba14 = goomba.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba14')
-        goomba15 = goomba.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba15')
+        goomba0 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba0')
+        goomba1 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba1')
+        goomba2 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba2')
+        goomba3 = enemies.Goomba( 860, c.GROUND_HEIGHT, c.LEFT, 'goomba3')
+        goomba4 = enemies.Goomba( 800, 193,             c.LEFT, 'goomba4')
+        goomba5 = enemies.Goomba( 900, 193,             c.LEFT, 'goomba5')
+        goomba6 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba6')
+        goomba7 = enemies.Goomba( 860, c.GROUND_HEIGHT, c.LEFT, 'goomba7')
+        goomba8 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba8')
+        goomba9 = enemies.Goomba( 860, c.GROUND_HEIGHT, c.LEFT, 'goomba9')
+        goomba10 = enemies.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba10')
+        goomba11 = enemies.Goomba(869, c.GROUND_HEIGHT, c.LEFT, 'goomba11')
+        goomba12 = enemies.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba12')
+        goomba13 = enemies.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba13')
+        goomba14 = enemies.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba14')
+        goomba15 = enemies.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba15')
 
         self.goombas = [goomba0, goomba1, goomba2, goomba3,
                         goomba4, goomba5, goomba6, goomba7,
                         goomba8, goomba9, goomba10, goomba11,
                         goomba12, goomba13, goomba14, goomba15]
+
+
+        koopa0 = enemies.Koopa( 800, c.GROUND_HEIGHT, c.LEFT, 'koopa0')
+
+        self.koopas = [koopa0]
 
         self.enemies = pg.sprite.Group()
 
@@ -258,6 +263,7 @@ class Level1(tools._State):
         self.check_point8  = False
         self.check_point9  = False
         self.check_point10 = False
+        self.check_point11 = False
 
 
     def update(self, surface, keys, current_time):
@@ -270,7 +276,7 @@ class Level1(tools._State):
     def update_all_sprites(self, keys, current_time):
         self.mario.update(keys, current_time)
         self.add_enemies()
-        self.enemies.update(current_time, self.collide_group)
+        self.enemies.update(current_time)
         self.coin_box_group.update(current_time)
         self.adjust_sprite_positions()
         self.adjust_camera()
@@ -316,6 +322,11 @@ class Level1(tools._State):
             self.all_sprites.add(self.enemies)
             self.check_point5 = True
 
+        elif self.mario.distance > 4150 and self.check_point6 == False:
+            self.enemies.add(self.koopas[0])
+            self.all_sprites.add(self.enemies)
+            self.check_point6 = True
+
         elif self.mario.distance > 4470 and self.check_point7 == False:
             self.enemies.add(self.goombas[8])
             self.enemies.add(self.goombas[9])
@@ -328,7 +339,7 @@ class Level1(tools._State):
             self.all_sprites.add(self.enemies)
             self.check_point8 = True
 
-        elif self.mario.distance > 5200 and self.check_point9 == False:
+        elif self.mario.distance > 5100 and self.check_point9 == False:
             self.enemies.add(self.goombas[12])
             self.enemies.add(self.goombas[13])
             self.all_sprites.add(self.enemies)
