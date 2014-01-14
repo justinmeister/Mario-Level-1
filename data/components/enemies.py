@@ -42,6 +42,7 @@ class Enemy(pg.sprite.Sprite):
         self.frames = []
         self.frame_index = 0
         self.animate_timer = 0
+        self.death_timer = 0
         self.gravity = 1.5
         self.state = c.WALK
 
@@ -82,6 +83,10 @@ class Enemy(pg.sprite.Sprite):
             self.y_vel += self.gravity
 
 
+    def jumped_on(self, current_time):
+        pass
+
+
     def animation(self):
         self.image = self.frames[self.frame_index]
 
@@ -107,6 +112,17 @@ class Goomba(Enemy):
             self.get_image(0, 4, 16, 16))
         self.frames.append(
             self.get_image(30, 4, 16, 16))
+        self.frames.append(
+            self.get_image(61, 0, 16, 16))
+
+
+    def jumped_on(self, current_time):
+        self.frame_index = 2
+
+        if (current_time - self.death_timer) > 500:
+            self.kill()
+
+
 
 
 class Koopa(Enemy):
@@ -122,6 +138,17 @@ class Koopa(Enemy):
             self.get_image(150, 0, 16, 24))
         self.frames.append(
             self.get_image(180, 0, 16, 24))
+        self.frames.append(
+            self.get_image(360, 5, 16, 15))
+
+
+    def jumped_on(self, current_time):
+        self.frame_index = 2
+        shell_y = self.rect.bottom
+        shell_x = self.rect.x
+        self.rect = self.frames[self.frame_index].get_rect()
+        self.rect.x = shell_x
+        self.rect.bottom = shell_y
 
 
 

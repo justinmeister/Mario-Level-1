@@ -52,6 +52,7 @@ JUMP_VEL = -10
 
 LEFT = 'left'
 RIGHT = 'right'
+JUMPED_ON = 'jumped on'
 
 
 

@@ -243,6 +243,7 @@ class Level1(tools._State):
         self.koopas = [koopa0]
 
         self.enemies = pg.sprite.Group()
+        self.death_group = pg.sprite.Group()
 
 
     def setup_mario(self):
@@ -278,8 +279,9 @@ class Level1(tools._State):
         self.mario.update(keys, current_time)
         self.add_enemies()
         self.enemies.update(current_time)
+        self.death_group.update(current_time)
         self.coin_box_group.update(current_time)
-        self.adjust_sprite_positions()
+        self.adjust_sprite_positions(current_time)
         self.adjust_camera()
         self.check_for_mario_death(keys)
 
@@ -289,6 +291,7 @@ class Level1(tools._State):
         self.all_sprites.draw(surface)
         self.brick_group.draw(surface)
         self.coin_box_group.draw(surface)
+        self.death_group.draw(surface)
 
 
     def add_enemies(self):
@@ -346,17 +349,18 @@ class Level1(tools._State):
             self.all_sprites.add(self.enemies)
             self.check_point9 = True
 
-        elif self.mario.distance > 7100 and self.check_point10 == False:
+        elif self.mario.distance > 7200 and self.check_point10 == False:
+            print 'added'
             self.enemies.add(self.goombas[14])
             self.enemies.add(self.goombas[15])
             self.all_sprites.add(self.enemies)
             self.check_point10 = True
 
 
-    def adjust_sprite_positions(self):
+    def adjust_sprite_positions(self, current_time):
 
         self.mario.rect.y += self.mario.y_vel
-        self.check_mario_y_collisions()
+        self.check_mario_y_collisions(current_time)
 
         self.mario.rect.x += self.mario.x_vel
         self.mario.distance += self.mario.x_vel
@@ -374,8 +378,9 @@ class Level1(tools._State):
             self.delete_if_off_screen(enemy)
 
 
-    def check_mario_y_collisions(self):
+    def check_mario_y_collisions(self, current_time):
         collider = pg.sprite.spritecollideany(self.mario, self.collide_group)
+        enemy = pg.sprite.spritecollideany(self.mario, self.enemies)
 
         if collider:
             if collider.rect.bottom > self.mario.rect.bottom:
@@ -393,9 +398,19 @@ class Level1(tools._State):
                 if self.mario.state != c.JUMP:
                     self.mario.state = c.FALL
 
+        if enemy:
+            if self.mario.y_vel > 0:
+                self.mario.state = c.JUMP
+                self.mario.y_vel = -5
+                enemy.state = c.JUMPED_ON
+                enemy.death_timer = current_time
+                enemy.kill()
+                self.death_group.add(enemy)
+
 
     def check_mario_x_collisions(self):
         collider = pg.sprite.spritecollideany(self.mario, self.collide_group)
+        enemy = pg.sprite.spritecollideany(self.mario, self.enemies)
 
         if collider:
             if self.mario.x_vel > 0:
@@ -404,6 +419,9 @@ class Level1(tools._State):
                 self.mario.rect.left = collider.rect.right
 
             self.mario.x_vel = 0
+
+        if enemy:
+            self.mario.dead = True
 
 
     def check_enemy_y_collisions(self, enemy):
@@ -489,6 +507,9 @@ class Level1(tools._State):
             collider.rect.x -= self.camera_adjustment
 
         for enemy in self.enemies:
+            enemy.rect.x -= self.camera_adjustment
+
+        for enemy in self.death_group:
             enemy.rect.x -= self.camera_adjustment
 
         self.mario.rect.x -= self.camera_adjustment
