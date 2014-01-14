@@ -52,6 +52,6 @@ JUMP_VEL = -10
 
 LEFT = 'left'
 RIGHT = 'right'
-GOOMBA_VEL = 2
+
 
 

@@ -49,6 +49,7 @@ class Level1(tools._State):
         self.background = pg.transform.scale(self.background,
                                   (int(self.back_rect.width*c.BACKGROUND_MULTIPLER),
                                   int(self.back_rect.height*c.BACKGROUND_MULTIPLER)))
+        self.back_rect = self.background.get_rect()
 
 
     def setup_ground(self):
@@ -409,38 +410,61 @@ class Level1(tools._State):
         collider = pg.sprite.spritecollideany(enemy, self.collide_group)
 
         if collider:
+            print
             if enemy.rect.bottom > collider.rect.bottom:
                 enemy.y_vel = 7
                 enemy.rect.top = collider.rect.bottom
                 enemy.state = c.FALL
-            elif enemy.rect.top < collider.rect.top:
+            elif enemy.rect.bottom < collider.rect.bottom:
                 enemy.y_vel = 0
                 enemy.rect.bottom = collider.rect.top
                 enemy.state = c.WALK
         else:
             test_sprite = copy.deepcopy(enemy)
             test_sprite.rect.y += 1
-            if not pg.sprite.spritecollideany(test_sprite, self.collide_group):
+            if pg.sprite.spritecollideany(test_sprite, self.collide_group) == None:
                 if enemy.state != c.JUMP:
                     enemy.state = c.FALL
+
+
 
 
     def check_enemy_x_collisions(self, enemy):
 
         collider = pg.sprite.spritecollideany(enemy, self.collide_group)
 
+        enemy.kill()
+        enemy_collider = pg.sprite.spritecollideany(enemy, self.enemies)
+
         if collider:
-            if enemy.x_vel > 0:
+            if enemy.direction == c.RIGHT:
                 enemy.rect.right = collider.rect.left
                 enemy.direction = c.LEFT
-            else:
+                enemy.x_vel = -2
+            elif enemy.direction == c.LEFT:
                 enemy.rect.left = collider.rect.right
                 enemy.direction = c.RIGHT
-
-            if enemy.direction == c.LEFT:
-                enemy.x_vel = -2
-            else:
                 enemy.x_vel = 2
+
+
+        elif enemy_collider:
+            if enemy.direction == c.RIGHT:
+                enemy.rect.right = enemy_collider.rect.left
+                enemy.direction = c.LEFT
+                enemy_collider.direction = c.RIGHT
+                enemy.x_vel = -2
+                enemy_collider.x_vel = 2
+            elif enemy.direction == c.LEFT:
+                enemy.rect.left = enemy_collider.rect.right
+                enemy.direction = c.RIGHT
+                enemy_collider.direction = c.LEFT
+                enemy.x_vel = 2
+                enemy_collider.x_vel = -2
+
+        self.enemies.add(enemy)
+        self.all_sprites.add(self.enemies)
+
+
 
 
     def delete_if_off_screen(self, enemy):
@@ -452,7 +476,9 @@ class Level1(tools._State):
 
 
     def adjust_camera(self):
-        if self.mario.rect.right > c.SCREEN_WIDTH / 3:
+        if self.back_rect.right <= 800:
+            self.camera_adjustment = 0
+        elif self.mario.rect.right > c.SCREEN_WIDTH / 3:
             self.camera_adjustment = self.mario.rect.right - c.SCREEN_WIDTH / 3
         else:
             self.camera_adjustment = 0
