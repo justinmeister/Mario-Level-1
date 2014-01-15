@@ -54,5 +54,9 @@ LEFT = 'left'
 RIGHT = 'right'
 JUMPED_ON = 'jumped on'
 
+#KOOPA STUFF
+
+SHELL_SLIDE = 'shell slide'
+
 
 

@@ -65,6 +65,8 @@ class Enemy(pg.sprite.Sprite):
             self.falling(current_time)
         elif self.state == c.JUMPED_ON:
             self.jumped_on(current_time)
+        elif self.state == c.SHELL_SLIDE:
+            self.shell_sliding()
 
 
 
@@ -143,12 +145,20 @@ class Koopa(Enemy):
 
 
     def jumped_on(self, current_time):
+        self.x_vel = 0
         self.frame_index = 2
         shell_y = self.rect.bottom
         shell_x = self.rect.x
         self.rect = self.frames[self.frame_index].get_rect()
         self.rect.x = shell_x
         self.rect.bottom = shell_y
+
+
+    def shell_sliding(self):
+        if self.direction == c.RIGHT:
+            self.x_vel = 10
+        elif self.direction == c.LEFT:
+            self.x_vel = -10
 
 
 
