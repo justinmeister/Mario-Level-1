@@ -34,8 +34,7 @@ class Level1(tools._State):
         self.collide_group = pg.sprite.Group(self.ground_group,
                                              self.pipe_group,
                                              self.step_group,
-                                             self.brick_group,
-                                             self.coin_box_group)
+                                             )
 
         self.all_sprites = pg.sprite.Group(self.mario, self.enemies)
 
@@ -392,10 +391,29 @@ class Level1(tools._State):
 
     def check_mario_x_collisions(self):
         collider = pg.sprite.spritecollideany(self.mario, self.collide_group)
+        coin_box = pg.sprite.spritecollideany(self.mario, self.coin_box_group)
+        brick = pg.sprite.spritecollideany(self.mario, self.brick_group)
         enemy = pg.sprite.spritecollideany(self.mario, self.enemies)
         shell = pg.sprite.spritecollideany(self.mario, self.shell_group)
 
-        if collider:
+
+        if coin_box:
+            if self.mario.rect.x < coin_box.rect.x:
+                self.mario.rect.right = coin_box.rect.left
+            else:
+                self.mario.rect.left = coin_box.rect.right
+
+            self.mario.x_vel = 0
+
+        elif brick:
+            if self.mario.rect.x < brick.rect.x:
+                self.mario.rect.right = brick.rect.left
+            else:
+                self.mario.rect.left = brick.rect.right
+
+            self.mario.x_vel = 0
+
+        elif collider:
             if self.mario.x_vel > 0:
                 self.mario.rect.right = collider.rect.left
             else:
@@ -403,10 +421,11 @@ class Level1(tools._State):
 
             self.mario.x_vel = 0
 
+
         if enemy:
             self.mario.dead = True
 
-        if shell:
+        elif shell:
             if shell.state == c.JUMPED_ON:
                 if self.mario.rect.x < shell.rect.x:
                     self.mario.rect.right = shell.rect.left
@@ -433,7 +452,34 @@ class Level1(tools._State):
         brick = pg.sprite.spritecollideany(self.mario, self.brick_group)
         coin_box = pg.sprite.spritecollideany(self.mario, self.coin_box_group)
 
-        if collider:
+
+        if coin_box:
+            if self.mario.rect.y > coin_box.rect.y:
+                if coin_box.state == c.RESTING:
+                    coin_box.state = c.BUMPED
+                    coin_box.start_bump()
+
+                self.mario.y_vel = 7
+                self.mario.rect.y = coin_box.rect.bottom
+                self.mario.state = c.FALL
+            else:
+                self.mario.y_vel = 0
+                self.mario.rect.bottom = coin_box.rect.top
+                self.mario.state = c.WALK
+
+        elif brick:
+            if self.mario.rect.y > brick.rect.y:
+                brick.state = c.BUMPED
+                brick.start_bump()
+                self.mario.y_vel = 7
+                self.mario.rect.y = brick.rect.bottom
+                self.mario.state = c.FALL
+            else:
+                self.mario.y_vel = 0
+                self.mario.rect.bottom = brick.rect.top
+                self.mario.state = c.WALK
+
+        elif collider:
             if collider.rect.bottom > self.mario.rect.bottom:
                 self.mario.y_vel = 0
                 self.mario.rect.bottom = collider.rect.top
@@ -445,21 +491,15 @@ class Level1(tools._State):
         else:
             test_sprite = copy.deepcopy(self.mario)
             test_sprite.rect.y += 1
-            if not pg.sprite.spritecollideany(test_sprite, self.collide_group):
+            test_collide_group = pg.sprite.Group(self.collide_group,
+                                                 self.brick_group,
+                                                 self.coin_box_group)
+
+
+            if not pg.sprite.spritecollideany(test_sprite, test_collide_group):
                 if self.mario.state != c.JUMP:
                     self.mario.state = c.FALL
 
-
-        if coin_box:
-            if self.mario.rect.y > coin_box.rect.y:
-                if coin_box.state == c.RESTING:
-                    coin_box.state = c.BUMPED
-                    coin_box.start_bump()
-
-        elif brick:
-            if self.mario.rect.y > brick.rect.y:
-                brick.state = c.BUMPED
-                brick.start_bump()
 
 
 
@@ -531,6 +571,8 @@ class Level1(tools._State):
 
     def check_enemy_y_collisions(self, enemy):
         collider = pg.sprite.spritecollideany(enemy, self.collide_group)
+        brick = pg.sprite.spritecollideany(enemy, self.brick_group)
+        coin_box = pg.sprite.spritecollideany(enemy, self.coin_box_group)
 
         if collider:
             if enemy.rect.bottom > collider.rect.bottom:
@@ -538,13 +580,41 @@ class Level1(tools._State):
                 enemy.rect.top = collider.rect.bottom
                 enemy.state = c.FALL
             elif enemy.rect.bottom < collider.rect.bottom:
+
                 enemy.y_vel = 0
                 enemy.rect.bottom = collider.rect.top
                 enemy.state = c.WALK
+
+        elif brick:
+            if brick.state == c.BUMPED:
+                enemy.kill()
+            elif enemy.rect.x > brick.rect.x:
+                enemy.y_vel = 7
+                enemy.rect.top = brick.rect.bottom
+                enemy.state = c.FALL
+            else:
+                enemy.y_vel = 0
+                enemy.rect.bottom = brick.rect.top
+                enemy.state = c.WALK
+
+        elif coin_box:
+            if enemy.rect.x > coin_box.rect.x:
+                enemy.y_vel = 7
+                enemy.rect.top = coin_box.rect.bottom
+                enemy.state = c.FALL
+            else:
+                enemy.y_vel = 0
+                enemy.rect.bottom = coin_box.rect.top
+                enemy.state = c.WALK
+
+
         else:
             test_sprite = copy.deepcopy(enemy)
             test_sprite.rect.y += 1
-            if pg.sprite.spritecollideany(test_sprite, self.collide_group) == None:
+            test_group = pg.sprite.Group(self.collide_group,
+                                         self.coin_box_group,
+                                         self.brick_group)
+            if pg.sprite.spritecollideany(test_sprite, test_group) == None:
                 if enemy.state != c.JUMP:
                     enemy.state = c.FALL
 
@@ -602,6 +672,12 @@ class Level1(tools._State):
 
         for collider in self.collide_group:
             collider.rect.x -= self.camera_adjustment
+
+        for coin_box in self.coin_box_group:
+            coin_box.rect.x -= self.camera_adjustment
+
+        for brick in self.brick_group:
+            brick.rect.x -= self.camera_adjustment
 
         for enemy in self.enemies:
             enemy.rect.x -= self.camera_adjustment
