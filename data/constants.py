@@ -66,5 +66,9 @@ BUMPED = 'bumped'
 #COIN STATES
 OPENED = 'opened'
 
+#MUSHROOM STATES
+
+REVEAL = 'reveal'
+
 
 
