@@ -63,5 +63,8 @@ SHELL_SLIDE = 'shell slide'
 RESTING = 'resting'
 BUMPED = 'bumped'
 
+#COIN STATES
+OPENED = 'opened'
+
 
 
