@@ -282,6 +282,7 @@ class Level1(tools._State):
         self.enemies.update(current_time)
         self.death_group.update(current_time)
         self.shell_group.update(current_time)
+        self.brick_group.update()
         self.coin_box_group.update(current_time)
         self.adjust_sprite_positions(current_time)
         self.adjust_camera()
@@ -426,6 +427,7 @@ class Level1(tools._State):
         collider = pg.sprite.spritecollideany(self.mario, self.collide_group)
         enemy = pg.sprite.spritecollideany(self.mario, self.enemies)
         shell = pg.sprite.spritecollideany(self.mario, self.shell_group)
+        brick = pg.sprite.spritecollideany(self.mario, self.brick_group)
 
         if collider:
             if collider.rect.bottom > self.mario.rect.bottom:
@@ -443,6 +445,11 @@ class Level1(tools._State):
                 if self.mario.state != c.JUMP:
                     self.mario.state = c.FALL
 
+        if brick:
+            if self.mario.rect.y > brick.rect.y:
+                brick.state = c.BUMPED
+                brick.start_bump()
+
         if enemy:
             if self.mario.y_vel > 0:
                 enemy.state = c.JUMPED_ON
@@ -459,11 +466,14 @@ class Level1(tools._State):
 
         if shell:
             if self.mario.y_vel > 0:
-                shell.state = c.SHELL_SLIDE
-                if self.mario.rect.centerx < shell.rect.centerx:
-                    shell.direction = c.RIGHT
+                if shell.state == c.JUMPED_ON:
+                    shell.state = c.SHELL_SLIDE
+                    if self.mario.rect.centerx < shell.rect.centerx:
+                        shell.direction = c.RIGHT
+                    else:
+                        shell.direction = c.LEFT
                 else:
-                    shell.direction = c.LEFT
+                    shell.state = c.JUMPED_ON
 
                 self.mario.rect.bottom = shell.rect.top
                 self.mario.state = c.JUMP

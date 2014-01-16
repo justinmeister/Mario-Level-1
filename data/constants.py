@@ -58,5 +58,10 @@ JUMPED_ON = 'jumped on'
 
 SHELL_SLIDE = 'shell slide'
 
+#BRICK STATES
+
+RESTING = 'resting'
+BUMPED = 'bumped'
+
 
 

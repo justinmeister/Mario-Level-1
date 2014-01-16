@@ -16,6 +16,11 @@ class Brick(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.bumped_up = False
+        self.rest_height = y
+        self.state = c.RESTING
+        self.y_vel = 0
+        self.gravity = 1.2
 
 
 
@@ -29,5 +34,36 @@ class Brick(pg.sprite.Sprite):
                                    (int(rect.width*c.BRICK_SIZE_MULTIPLIER),
                                     int(rect.height*c.BRICK_SIZE_MULTIPLIER)))
         return image
+
+
+    def update(self):
+        self.handle_states()
+
+
+    def handle_states(self):
+        if self.state == c.RESTING:
+            pass
+        elif self.state == c.BUMPED:
+            self.bumped()
+
+
+    def bumped(self):
+
+        self.rect.y += self.y_vel
+        self.y_vel += self.gravity
+
+        if self.rect.y >= (self.rest_height + 5):
+            self.rect.y = self.rest_height
+            self.state = c.RESTING
+
+
+    def start_bump(self):
+        self.y_vel = -6
+
+
+
+
+
+
 
 
