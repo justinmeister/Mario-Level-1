@@ -8,7 +8,7 @@ from .. import constants as c
 class Brick(pg.sprite.Sprite):
     """Bricks that can be destroyed"""
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, name = 'brick'):
         pg.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['tile_set']
 

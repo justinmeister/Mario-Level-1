@@ -9,7 +9,7 @@ from .. components import collider
 from .. components import break_brick
 from .. components import coin_box
 from .. components import enemies
-from .. components import powerups
+from .. components import checkpoint
 
 
 
@@ -239,6 +239,17 @@ class Level1(tools._State):
 
         self.koopas = [koopa0]
 
+        self.enemy_group1 = pg.sprite.Group(goomba0)
+        self.enemy_group2 = pg.sprite.Group(goomba1)
+        self.enemy_group3 = pg.sprite.Group(goomba2, goomba3)
+        self.enemy_group4 = pg.sprite.Group(goomba4, goomba5)
+        self.enemy_group5 = pg.sprite.Group(goomba6, goomba7)
+        self.enemy_group6 = pg.sprite.Group(koopa0)
+        self.enemy_group7 = pg.sprite.Group(goomba8, goomba9)
+        self.enemy_group8 = pg.sprite.Group(goomba10, goomba11)
+        self.enemy_group9 = pg.sprite.Group(goomba12, goomba13)
+        self.enemy_group10 = pg.sprite.Group(goomba14, goomba15)
+
         self.enemies = pg.sprite.Group()
         self.death_group = pg.sprite.Group()
         self.shell_group = pg.sprite.Group()
@@ -253,17 +264,21 @@ class Level1(tools._State):
 
 
     def setup_checkpoints(self):
-        self.check_point1  = False
-        self.check_point2  = False
-        self.check_point3  = False
-        self.check_point4  = False
-        self.check_point5  = False
-        self.check_point6  = False
-        self.check_point7  = False
-        self.check_point8  = False
-        self.check_point9  = False
-        self.check_point10 = False
-        self.check_point11 = False
+        check1 = checkpoint.Checkpoint(530, "1")
+        check2 = checkpoint.Checkpoint(1350, '2')
+        check3 = checkpoint.Checkpoint(1650, '3')
+        check4 = checkpoint.Checkpoint(3000, '4')
+        check5 = checkpoint.Checkpoint(3750, '5')
+        check6 = checkpoint.Checkpoint(4150, '6')
+        check7 = checkpoint.Checkpoint(4470, '7')
+        check8 = checkpoint.Checkpoint(4950, '8')
+        check9 = checkpoint.Checkpoint(5100, '9')
+        check10 = checkpoint.Checkpoint(6800, '10')
+
+        self.check_point_group = pg.sprite.Group(check1, check2, check3,
+                                                 check4, check5, check6,
+                                                 check7, check8, check9,
+                                                 check10)
 
 
     def update(self, surface, keys, current_time):
@@ -276,7 +291,7 @@ class Level1(tools._State):
 
     def update_all_sprites(self, keys, current_time):
         self.mario.update(keys, current_time)
-        self.add_enemies()
+        self.check_points_check()
         self.enemies.update(current_time)
         self.death_group.update(current_time)
         self.shell_group.update(current_time)
@@ -288,76 +303,35 @@ class Level1(tools._State):
         self.check_for_mario_death(keys)
 
 
-    def blit_everything(self, surface):
-        surface.blit(self.background, self.back_rect)
-        self.all_sprites.draw(surface)
-        self.powerups.draw(surface)
-        self.brick_group.draw(surface)
-        self.coin_box_group.draw(surface)
-        self.death_group.draw(surface)
-        self.shell_group.draw(surface)
+    def check_points_check(self):
+        checkpoint = pg.sprite.spritecollideany(self.mario,
+                                                 self.check_point_group)
 
+        if checkpoint:
+            checkpoint.kill()
 
-    def add_enemies(self):
-        """Enemies are created based on Mario's distance travelled"""
+            if checkpoint.name == '1':
+                self.enemies.add(self.enemy_group1)
+            elif checkpoint.name == '2':
+                self.enemies.add(self.enemy_group2)
+            elif checkpoint.name == '3':
+                self.enemies.add(self.enemy_group3)
+            elif checkpoint.name == '4':
+                self.enemies.add(self.enemy_group4)
+            elif checkpoint.name == '5':
+                self.enemies.add(self.enemy_group5)
+            elif checkpoint.name == '6':
+                self.enemies.add(self.enemy_group6)
+            elif checkpoint.name == '7':
+                self.enemies.add(self.enemy_group7)
+            elif checkpoint.name == '8':
+                self.enemies.add(self.enemy_group8)
+            elif checkpoint.name == '9':
+                self.enemies.add(self.enemy_group9)
+            elif checkpoint.name == '10':
+                self.enemies.add(self.enemy_group10)
 
-        if self.mario.distance > 530 and self.check_point1 == False:
-            self.enemies.add(self.goombas[0])
             self.all_sprites.add(self.enemies)
-            self.check_point1 = True
-
-        elif self.mario.distance > 1400 and self.check_point2 == False:
-            self.enemies.add(self.goombas[1])
-            self.all_sprites.add(self.enemies)
-            self.check_point2 = True
-
-
-        elif self.mario.distance > 1755 and self.check_point3 == False:
-            self.enemies.add(self.goombas[2])
-            self.enemies.add(self.goombas[3])
-            self.all_sprites.add(self.enemies)
-            self.check_point3 = True
-
-        elif self.mario.distance > 3100 and self.check_point4 == False:
-            self.enemies.add(self.goombas[4])
-            self.enemies.add(self.goombas[5])
-            self.all_sprites.add(self.enemies)
-            self.check_point4 = True
-
-        elif self.mario.distance > 3750 and self.check_point5 == False:
-            self.enemies.add(self.goombas[6])
-            self.enemies.add(self.goombas[7])
-            self.all_sprites.add(self.enemies)
-            self.check_point5 = True
-
-        elif self.mario.distance > 4150 and self.check_point6 == False:
-            self.enemies.add(self.koopas[0])
-            self.all_sprites.add(self.enemies)
-            self.check_point6 = True
-
-        elif self.mario.distance > 4470 and self.check_point7 == False:
-            self.enemies.add(self.goombas[8])
-            self.enemies.add(self.goombas[9])
-            self.all_sprites.add(self.enemies)
-            self.check_point7 = True
-
-        elif self.mario.distance > 4950 and self.check_point8 == False:
-            self.enemies.add(self.goombas[10])
-            self.enemies.add(self.goombas[11])
-            self.all_sprites.add(self.enemies)
-            self.check_point8 = True
-
-        elif self.mario.distance > 5100 and self.check_point9 == False:
-            self.enemies.add(self.goombas[12])
-            self.enemies.add(self.goombas[13])
-            self.all_sprites.add(self.enemies)
-            self.check_point9 = True
-
-        elif self.mario.distance > 7200 and self.check_point10 == False:
-            self.enemies.add(self.goombas[14])
-            self.enemies.add(self.goombas[15])
-            self.all_sprites.add(self.enemies)
-            self.check_point10 = True
 
 
     def adjust_sprite_positions(self, current_time):
@@ -756,6 +730,10 @@ class Level1(tools._State):
         elif enemy.rect.y > 600:
             enemy.kill()
 
+        elif enemy.state == c.SHELL_SLIDE:
+            if enemy.rect.x > 1000:
+                enemy.kill()
+
 
     def adjust_camera(self):
         if self.back_rect.right <= 800:
@@ -788,9 +766,10 @@ class Level1(tools._State):
         for powerup in self.powerups:
             powerup.rect.x -= self.camera_adjustment
 
+        for checkpoint in self.check_point_group:
+            checkpoint.rect.x -= self.camera_adjustment
+
         self.mario.rect.x -= self.camera_adjustment
-
-
 
 
     def check_for_mario_death(self, keys):
@@ -799,4 +778,14 @@ class Level1(tools._State):
 
         if self.mario.dead:
             self.startup(keys, self.persistant)
+
+
+    def blit_everything(self, surface):
+        surface.blit(self.background, self.back_rect)
+        self.all_sprites.draw(surface)
+        self.powerups.draw(surface)
+        self.brick_group.draw(surface)
+        self.coin_box_group.draw(surface)
+        self.death_group.draw(surface)
+        self.shell_group.draw(surface)
 
