@@ -9,6 +9,7 @@ from .. components import collider
 from .. components import break_brick
 from .. components import coin_box
 from .. components import enemies
+from .. components import powerups
 
 
 
@@ -39,9 +40,6 @@ class Level1(tools._State):
         self.all_sprites = pg.sprite.Group(self.mario, self.enemies)
 
 
-
-
-
     def setup_background(self):
         self.background = setup.GFX['level_1']
         self.back_rect = self.background.get_rect()
@@ -52,8 +50,6 @@ class Level1(tools._State):
 
 
     def setup_ground(self):
-        """Create collideable rects for each section of the ground"""
-
         ground_rect1 = collider.Collider(0, c.GROUND_HEIGHT,    2953, 60)
         ground_rect2 = collider.Collider(3048, c.GROUND_HEIGHT,  635, 60)
         ground_rect3 = collider.Collider(3819, c.GROUND_HEIGHT, 2735, 60)
@@ -189,15 +185,17 @@ class Level1(tools._State):
 
 
     def setup_coin_boxes(self):
+        self.powerups = pg.sprite.Group()
+
         coin_box1  = coin_box.Coin_box(685, 365)
-        coin_box2  = coin_box.Coin_box(901, 365)
+        coin_box2  = coin_box.Coin_box(901, 365, 'powerup', self.powerups)
         coin_box3  = coin_box.Coin_box(987, 365)
         coin_box4  = coin_box.Coin_box(943, 193)
-        coin_box5  = coin_box.Coin_box(3342, 365)
+        coin_box5  = coin_box.Coin_box(3342, 365, 'powerup', self.powerups)
         coin_box6  = coin_box.Coin_box(4030, 193)
         coin_box7  = coin_box.Coin_box(4544, 365)
         coin_box8  = coin_box.Coin_box(4672, 365)
-        coin_box9  = coin_box.Coin_box(4672, 193)
+        coin_box9  = coin_box.Coin_box(4672, 193, 'powerup', self.powerups)
         coin_box10 = coin_box.Coin_box(4800, 365)
         coin_box11 = coin_box.Coin_box(5531, 193)
         coin_box12 = coin_box.Coin_box(7288, 365)
@@ -275,6 +273,7 @@ class Level1(tools._State):
         self.blit_everything(surface)
 
 
+
     def update_all_sprites(self, keys, current_time):
         self.mario.update(keys, current_time)
         self.add_enemies()
@@ -283,6 +282,7 @@ class Level1(tools._State):
         self.shell_group.update(current_time)
         self.brick_group.update()
         self.coin_box_group.update(current_time)
+        self.powerups.update()
         self.adjust_sprite_positions(current_time)
         self.adjust_camera()
         self.check_for_mario_death(keys)
@@ -291,6 +291,7 @@ class Level1(tools._State):
     def blit_everything(self, surface):
         surface.blit(self.background, self.back_rect)
         self.all_sprites.draw(surface)
+        self.powerups.draw(surface)
         self.brick_group.draw(surface)
         self.coin_box_group.draw(surface)
         self.death_group.draw(surface)
@@ -360,7 +361,13 @@ class Level1(tools._State):
 
 
     def adjust_sprite_positions(self, current_time):
+        self.adjust_mario_position(current_time)
+        self.adjust_enemy_position()
+        self.adjust_shell_position()
+        self.adjust_powerup_position()
 
+
+    def adjust_mario_position(self, current_time):
         self.mario.rect.x += self.mario.x_vel
         self.mario.distance += self.mario.x_vel
         self.check_mario_x_collisions()
@@ -370,23 +377,6 @@ class Level1(tools._State):
 
         if self.mario.rect.x < 5:
             self.mario.rect.x = 5
-
-        for enemy in self.enemies:
-            enemy.rect.x += enemy.x_vel
-            self.check_enemy_x_collisions(enemy)
-            self.delete_if_off_screen(enemy)
-
-            enemy.rect.y += enemy.y_vel
-            self.check_enemy_y_collisions(enemy)
-
-        for shell in self.shell_group:
-            shell.rect.x += shell.x_vel
-            self.check_shell_x_collisions(shell)
-            self.delete_if_off_screen(shell)
-
-            shell.rect.y += shell.y_vel
-            self.check_shell_y_collisions(shell)
-
 
 
     def check_mario_x_collisions(self):
@@ -398,51 +388,48 @@ class Level1(tools._State):
 
 
         if coin_box:
-            if self.mario.rect.x < coin_box.rect.x:
-                self.mario.rect.right = coin_box.rect.left
-            else:
-                self.mario.rect.left = coin_box.rect.right
-
-            self.mario.x_vel = 0
+            self.adjust_mario_for_x_collisions(coin_box)
 
         elif brick:
-            if self.mario.rect.x < brick.rect.x:
-                self.mario.rect.right = brick.rect.left
-            else:
-                self.mario.rect.left = brick.rect.right
-
-            self.mario.x_vel = 0
+            self.adjust_mario_for_x_collisions(brick)
 
         elif collider:
-            if self.mario.x_vel > 0:
-                self.mario.rect.right = collider.rect.left
-            else:
-                self.mario.rect.left = collider.rect.right
+            self.adjust_mario_for_x_collisions(collider)
 
-            self.mario.x_vel = 0
-
-
-        if enemy:
+        elif enemy:
             self.mario.dead = True
 
         elif shell:
-            if shell.state == c.JUMPED_ON:
-                if self.mario.rect.x < shell.rect.x:
-                    self.mario.rect.right = shell.rect.left
-                    shell.direction = c.RIGHT
-                    shell.x_vel = 5
-                    shell.rect.x += 5
+            self.adjust_mario_for_x_shell_collisions(shell)
 
-                else:
-                    self.mario.rect.left = shell.rect.right
-                    shell.direction = c.LEFT
-                    shell.x_vel = -5
-                    shell.rect.x += -5
 
-                shell.state = c.SHELL_SLIDE
+    def adjust_mario_for_x_collisions(self, collider):
+        if self.mario.rect.x < collider.rect.x:
+            self.mario.rect.right = collider.rect.left
+        else:
+            self.mario.rect.left = collider.rect.right
 
-            elif shell.state == c.SHELL_SLIDE:
-                self.mario.dead = True
+        self.mario.x_vel = 0
+
+
+    def adjust_mario_for_x_shell_collisions(self, shell):
+        if shell.state == c.JUMPED_ON:
+            if self.mario.rect.x < shell.rect.x:
+                self.mario.rect.right = shell.rect.left
+                shell.direction = c.RIGHT
+                shell.x_vel = 5
+                shell.rect.x += 5
+
+            else:
+                self.mario.rect.left = shell.rect.right
+                shell.direction = c.LEFT
+                shell.x_vel = -5
+                shell.rect.x += -5
+
+            shell.state = c.SHELL_SLIDE
+
+        elif shell.state == c.SHELL_SLIDE:
+            self.mario.dead = True
 
 
     def check_mario_y_collisions(self, current_time):
@@ -454,83 +441,138 @@ class Level1(tools._State):
 
 
         if coin_box:
-            if self.mario.rect.y > coin_box.rect.y:
-                if coin_box.state == c.RESTING:
-                    coin_box.state = c.BUMPED
-                    coin_box.start_bump()
-
-                self.mario.y_vel = 7
-                self.mario.rect.y = coin_box.rect.bottom
-                self.mario.state = c.FALL
-            else:
-                self.mario.y_vel = 0
-                self.mario.rect.bottom = coin_box.rect.top
-                self.mario.state = c.WALK
+            self.adjust_mario_for_y_coin_box_collisions(coin_box)
 
         elif brick:
-            if self.mario.rect.y > brick.rect.y:
-                brick.state = c.BUMPED
-                brick.start_bump()
-                self.mario.y_vel = 7
-                self.mario.rect.y = brick.rect.bottom
-                self.mario.state = c.FALL
-            else:
-                self.mario.y_vel = 0
-                self.mario.rect.bottom = brick.rect.top
-                self.mario.state = c.WALK
+            self.adjust_mario_for_y_brick_collisions(brick)
 
         elif collider:
-            if collider.rect.bottom > self.mario.rect.bottom:
-                self.mario.y_vel = 0
-                self.mario.rect.bottom = collider.rect.top
-                self.mario.state = c.WALK
-            elif collider.rect.top < self.mario.rect.top:
-                self.mario.y_vel = 7
-                self.mario.rect.top = collider.rect.bottom
-                self.mario.state = c.FALL
+            self.adjust_mario_for_y_ground_pipe_collisions(collider)
+
         else:
-            test_sprite = copy.deepcopy(self.mario)
-            test_sprite.rect.y += 1
-            test_collide_group = pg.sprite.Group(self.collide_group,
+            self.test_if_mario_is_falling()
+
+
+        if enemy:
+            self.adjust_mario_for_y_enemy_collisions(enemy, current_time)
+
+
+        elif shell:
+            self.adjust_mario_for_y_shell_collisions(shell)
+
+
+    def adjust_mario_for_y_coin_box_collisions(self, coin_box):
+        if self.mario.rect.y > coin_box.rect.y:
+            if coin_box.state == c.RESTING:
+                coin_box.state = c.BUMPED
+                coin_box.start_bump()
+
+            self.mario.y_vel = 7
+            self.mario.rect.y = coin_box.rect.bottom
+            self.mario.state = c.FALL
+        else:
+            self.mario.y_vel = 0
+            self.mario.rect.bottom = coin_box.rect.top
+            self.mario.state = c.WALK
+
+
+    def adjust_mario_for_y_brick_collisions(self, brick):
+        if self.mario.rect.y > brick.rect.y:
+            brick.state = c.BUMPED
+            brick.start_bump()
+            self.mario.y_vel = 7
+            self.mario.rect.y = brick.rect.bottom
+            self.mario.state = c.FALL
+        else:
+            self.mario.y_vel = 0
+            self.mario.rect.bottom = brick.rect.top
+            self.mario.state = c.WALK
+
+
+    def adjust_mario_for_y_ground_pipe_collisions(self, collider):
+        if collider.rect.bottom > self.mario.rect.bottom:
+            self.mario.y_vel = 0
+            self.mario.rect.bottom = collider.rect.top
+            self.mario.state = c.WALK
+        elif collider.rect.top < self.mario.rect.top:
+            self.mario.y_vel = 7
+            self.mario.rect.top = collider.rect.bottom
+            self.mario.state = c.FALL
+
+
+    def test_if_mario_is_falling(self):
+        test_sprite = copy.deepcopy(self.mario)
+        test_sprite.rect.y += 1
+        test_collide_group = pg.sprite.Group(self.collide_group,
                                                  self.brick_group,
                                                  self.coin_box_group)
 
 
-            if not pg.sprite.spritecollideany(test_sprite, test_collide_group):
-                if self.mario.state != c.JUMP:
-                    self.mario.state = c.FALL
+        if not pg.sprite.spritecollideany(test_sprite, test_collide_group):
+            if self.mario.state != c.JUMP:
+                self.mario.state = c.FALL
 
 
+    def adjust_mario_for_y_enemy_collisions(self, enemy, current_time):
+        if self.mario.y_vel > 0:
+            enemy.state = c.JUMPED_ON
+            enemy.kill()
+            if enemy.name == 'goomba':
+                enemy.death_timer = current_time
+                self.death_group.add(enemy)
+            elif enemy.name == 'koopa':
+                self.shell_group.add(enemy)
+
+            self.mario.rect.bottom = enemy.rect.top
+            self.mario.state = c.JUMP
+            self.mario.y_vel = -5
 
 
-        if enemy:
-            if self.mario.y_vel > 0:
-                enemy.state = c.JUMPED_ON
-                enemy.kill()
-                if enemy.name == 'goomba':
-                    enemy.death_timer = current_time
-                    self.death_group.add(enemy)
-                elif enemy.name == 'koopa':
-                    self.shell_group.add(enemy)
-
-                self.mario.rect.bottom = enemy.rect.top
-                self.mario.state = c.JUMP
-                self.mario.y_vel = -5
-
-        if shell:
-            if self.mario.y_vel > 0:
-                if shell.state == c.JUMPED_ON:
-                    shell.state = c.SHELL_SLIDE
-                    if self.mario.rect.centerx < shell.rect.centerx:
-                        shell.direction = c.RIGHT
-                    else:
-                        shell.direction = c.LEFT
+    def adjust_mario_for_y_shell_collisions(self, shell):
+        if self.mario.y_vel > 0:
+            if shell.state == c.JUMPED_ON:
+                shell.state = c.SHELL_SLIDE
+                if self.mario.rect.centerx < shell.rect.centerx:
+                    shell.direction = c.RIGHT
                 else:
-                    shell.state = c.JUMPED_ON
+                    shell.direction = c.LEFT
+            else:
+                shell.state = c.JUMPED_ON
 
-                self.mario.rect.bottom = shell.rect.top
-                self.mario.state = c.JUMP
-                self.mario.y_vel = -5
+            self.mario.rect.bottom = shell.rect.top
+            self.mario.state = c.JUMP
+            self.mario.y_vel = -5
+
+
+    def adjust_enemy_position(self):
+        for enemy in self.enemies:
+            enemy.rect.x += enemy.x_vel
+            self.check_enemy_x_collisions(enemy)
+            self.delete_if_off_screen(enemy)
+
+            enemy.rect.y += enemy.y_vel
+            self.check_enemy_y_collisions(enemy)
+
+
+    def adjust_shell_position(self):
+        for shell in self.shell_group:
+            shell.rect.x += shell.x_vel
+            self.check_shell_x_collisions(shell)
+            self.delete_if_off_screen(shell)
+
+            shell.rect.y += shell.y_vel
+            self.check_shell_y_collisions(shell)
+
+
+    def adjust_powerup_position(self):
+        for powerup in self.powerups:
+            if powerup.state != c.REVEAL:
+                powerup.rect.x += powerup.x_vel
+                self.check_mushroom_x_collisions(powerup)
+                self.delete_if_off_screen(powerup)
+
+                powerup.rect.y += powerup.y_vel
+                self.check_mushroom_y_collisions(powerup)
 
 
     def check_enemy_x_collisions(self, enemy):
@@ -651,6 +693,61 @@ class Level1(tools._State):
                 shell.state = c.FALL
 
 
+    def check_mushroom_x_collisions(self, mushroom):
+        collider = pg.sprite.spritecollideany(mushroom, self.collide_group)
+        brick = pg.sprite.spritecollideany(mushroom, self.brick_group)
+        coin_box = pg.sprite.spritecollideany(mushroom, self.coin_box_group)
+
+        if collider:
+            self.adjust_for_collision_x(mushroom, collider)
+
+        elif brick:
+            self.adjust_for_collision_x(mushroom, brick)
+
+        elif coin_box:
+            self.adjust_for_collision_x(mushroom, coin_box)
+
+
+    def check_mushroom_y_collisions(self, mushroom):
+        collider = pg.sprite.spritecollideany(mushroom, self.collide_group)
+        brick = pg.sprite.spritecollideany(mushroom, self.brick_group)
+        coin_box = pg.sprite.spritecollideany(mushroom, self.coin_box_group)
+
+        if collider:
+            self.adjust_for_collision_y(mushroom, collider)
+        elif brick:
+            self.adjust_for_collision_y(mushroom, brick)
+        elif coin_box:
+            self.adjust_for_collision_y(mushroom, coin_box)
+        else:
+            self.check_if_falling(mushroom, self.collide_group)
+            self.check_if_falling(mushroom, self.brick_group)
+            self.check_if_falling(mushroom, self.coin_box_group)
+
+
+    def adjust_for_collision_x(self, item, collider):
+        if item.rect.x < collider.rect.x:
+            item.rect.right = collider.rect.x
+            item.direction = c.LEFT
+        else:
+            item.rect.x = collider.rect.right
+            item.direction = c.RIGHT
+
+
+    def adjust_for_collision_y(self, item, collider):
+        item.rect.bottom = collider.rect.y
+        item.state = c.SLIDE
+        item.y_vel = 0
+
+
+    def check_if_falling(self, item, sprite_group):
+        test_sprite = copy.deepcopy(item)
+        test_sprite.rect.y += 1
+
+        if pg.sprite.spritecollideany(item, sprite_group) == None:
+            item.state = c.FALL
+
+
 
     def delete_if_off_screen(self, enemy):
         if enemy.rect.x < -500:
@@ -687,6 +784,9 @@ class Level1(tools._State):
 
         for shell in self.shell_group:
             shell.rect.x -= self.camera_adjustment
+
+        for powerup in self.powerups:
+            powerup.rect.x -= self.camera_adjustment
 
         self.mario.rect.x -= self.camera_adjustment
 

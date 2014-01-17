@@ -69,6 +69,7 @@ OPENED = 'opened'
 #MUSHROOM STATES
 
 REVEAL = 'reveal'
+SLIDE = 'slide'
 
 
 
