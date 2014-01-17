@@ -629,7 +629,7 @@ class Level1(tools._State):
             test_group = pg.sprite.Group(self.collide_group,
                                          self.coin_box_group,
                                          self.brick_group)
-            if pg.sprite.spritecollideany(test_sprite, test_group) == None:
+            if pg.sprite.spritecollideany(test_sprite, test_group) is None:
                 if enemy.state != c.JUMP:
                     enemy.state = c.FALL
 
@@ -662,7 +662,7 @@ class Level1(tools._State):
         else:
             test_sprite = copy.deepcopy(shell)
             test_sprite.rect.y += 1
-            if pg.sprite.spritecollideany(test_sprite, self.collide_group) == None:
+            if pg.sprite.spritecollideany(test_sprite, self.collide_group) is None:
                 shell.state = c.FALL
 
 
@@ -717,7 +717,7 @@ class Level1(tools._State):
         test_sprite = copy.deepcopy(item)
         test_sprite.rect.y += 1
 
-        if pg.sprite.spritecollideany(item, sprite_group) == None:
+        if pg.sprite.spritecollideany(item, sprite_group) is None:
             item.state = c.FALL
 
 
