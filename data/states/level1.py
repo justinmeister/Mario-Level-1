@@ -343,7 +343,6 @@ class Level1(tools._State):
 
     def adjust_mario_position(self, current_time):
         self.mario.rect.x += self.mario.x_vel
-        self.mario.distance += self.mario.x_vel
         self.check_mario_x_collisions()
 
         self.mario.rect.y += self.mario.y_vel

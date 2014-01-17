@@ -25,7 +25,6 @@ class Mario(pg.sprite.Sprite):
         self.walking_timer = 0
         self.allow_jump = True
         self.dead = False
-        self.distance = 110
 
         self.load_from_sheet()
         self.image = self.right_frames[self.frame_index]
