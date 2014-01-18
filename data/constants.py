@@ -75,5 +75,9 @@ SLIDE = 'slide'
 
 SPIN = 'spin'
 
+#STAR STATES
+
+BOUNCE = 'bounce'
+
 
 

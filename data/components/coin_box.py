@@ -102,7 +102,7 @@ class Coin_box(pg.sprite.Sprite):
             self.rect.y = self.rest_height
             self.state = c.OPENED
             if self.contents == 'powerup':
-                self.group.add(powerups.Mushroom(self.rect.x, self.rect.y))
+                self.group.add(powerups.Mushroom(self.rect.centerx, self.rect.y))
 
 
         self.frame_index = 3

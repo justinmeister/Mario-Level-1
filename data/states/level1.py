@@ -12,7 +12,6 @@ from .. components import enemies
 from .. components import checkpoint
 
 
-
 class Level1(tools._State):
     def __init__(self):
         tools._State.__init__(self)
@@ -21,7 +20,9 @@ class Level1(tools._State):
     def startup(self, current_time, persistant):
         self.persistant = persistant
         self.camera_adjust = 0
+        self.coin_count = 0
 
+        self.setup_spritegroups()
         self.setup_background()
         self.setup_ground()
         self.setup_pipes()
@@ -38,6 +39,11 @@ class Level1(tools._State):
                                              )
 
         self.all_sprites = pg.sprite.Group(self.mario, self.enemies)
+
+
+    def setup_spritegroups(self):
+        self.powerups = pg.sprite.Group()
+        self.coins = pg.sprite.Group()
 
 
     def setup_background(self):
@@ -150,7 +156,7 @@ class Level1(tools._State):
         brick16 = break_brick.Brick(3987, 193)
         brick17 = break_brick.Brick(4030, 365)
         brick18 = break_brick.Brick(4287, 365)
-        brick19 = break_brick.Brick(4330, 365)
+        brick19 = break_brick.Brick(4330, 365, 'star', self.powerups)
         brick20 = break_brick.Brick(5058, 365)
         brick21 = break_brick.Brick(5187, 193)
         brick22 = break_brick.Brick(5230, 193)
@@ -185,9 +191,6 @@ class Level1(tools._State):
 
 
     def setup_coin_boxes(self):
-        self.powerups = pg.sprite.Group()
-        self.coins = pg.sprite.Group()
-        self.coin_count = 0
 
         coin_box1  = coin_box.Coin_box(685, 365, 'coin', self.coins)
         coin_box2  = coin_box.Coin_box(901, 365, 'powerup', self.powerups)
@@ -298,7 +301,7 @@ class Level1(tools._State):
         self.shell_group.update(current_time)
         self.brick_group.update()
         self.coin_box_group.update(current_time)
-        self.powerups.update()
+        self.powerups.update(current_time)
         self.coins.update(current_time)
         self.adjust_sprite_positions(current_time)
         self.adjust_camera()
@@ -531,27 +534,6 @@ class Level1(tools._State):
             self.check_enemy_y_collisions(enemy)
 
 
-    def adjust_shell_position(self):
-        for shell in self.shell_group:
-            shell.rect.x += shell.x_vel
-            self.check_shell_x_collisions(shell)
-            self.delete_if_off_screen(shell)
-
-            shell.rect.y += shell.y_vel
-            self.check_shell_y_collisions(shell)
-
-
-    def adjust_powerup_position(self):
-        for powerup in self.powerups:
-            if powerup.state != c.REVEAL:
-                powerup.rect.x += powerup.x_vel
-                self.check_mushroom_x_collisions(powerup)
-                self.delete_if_off_screen(powerup)
-
-                powerup.rect.y += powerup.y_vel
-                self.check_mushroom_y_collisions(powerup)
-
-
     def check_enemy_x_collisions(self, enemy):
 
         collider = pg.sprite.spritecollideany(enemy, self.collide_group)
@@ -638,6 +620,16 @@ class Level1(tools._State):
                     enemy.state = c.FALL
 
 
+    def adjust_shell_position(self):
+        for shell in self.shell_group:
+            shell.rect.x += shell.x_vel
+            self.check_shell_x_collisions(shell)
+            self.delete_if_off_screen(shell)
+
+            shell.rect.y += shell.y_vel
+            self.check_shell_y_collisions(shell)
+
+
     def check_shell_x_collisions(self, shell):
         collider = pg.sprite.spritecollideany(shell, self.collide_group)
         enemy = pg.sprite.spritecollideany(shell, self.enemies)
@@ -652,7 +644,6 @@ class Level1(tools._State):
 
         if enemy:
             enemy.kill()
-
 
 
     def check_shell_y_collisions(self, shell):
@@ -670,19 +661,37 @@ class Level1(tools._State):
                 shell.state = c.FALL
 
 
+    def adjust_powerup_position(self):
+        for powerup in self.powerups:
+            if powerup.name == 'mushroom':
+                self.adjust_mushroom_position(powerup)
+            elif powerup.name == 'star':
+                self.adjust_star_position(powerup)
+
+
+    def adjust_mushroom_position(self, mushroom):
+        if mushroom.state != c.REVEAL:
+            mushroom.rect.x += mushroom.x_vel
+            self.check_mushroom_x_collisions(mushroom)
+            self.delete_if_off_screen(mushroom)
+
+            mushroom.rect.y += mushroom.y_vel
+            self.check_mushroom_y_collisions(mushroom)
+
+
     def check_mushroom_x_collisions(self, mushroom):
         collider = pg.sprite.spritecollideany(mushroom, self.collide_group)
         brick = pg.sprite.spritecollideany(mushroom, self.brick_group)
         coin_box = pg.sprite.spritecollideany(mushroom, self.coin_box_group)
 
         if collider:
-            self.adjust_for_collision_x(mushroom, collider)
+            self.adjust_mushroom_for_collision_x(mushroom, collider)
 
         elif brick:
-            self.adjust_for_collision_x(mushroom, brick)
+            self.adjust_mushroom_for_collision_x(mushroom, brick)
 
         elif coin_box:
-            self.adjust_for_collision_x(mushroom, coin_box)
+            self.adjust_mushroom_for_collision_x(mushroom, coin_box)
 
 
     def check_mushroom_y_collisions(self, mushroom):
@@ -691,18 +700,18 @@ class Level1(tools._State):
         coin_box = pg.sprite.spritecollideany(mushroom, self.coin_box_group)
 
         if collider:
-            self.adjust_for_collision_y(mushroom, collider)
+            self.adjust_mushroom_for_collision_y(mushroom, collider)
         elif brick:
-            self.adjust_for_collision_y(mushroom, brick)
+            self.adjust_mushroom_for_collision_y(mushroom, brick)
         elif coin_box:
-            self.adjust_for_collision_y(mushroom, coin_box)
+            self.adjust_mushroom_for_collision_y(mushroom, coin_box)
         else:
             self.check_if_falling(mushroom, self.collide_group)
             self.check_if_falling(mushroom, self.brick_group)
             self.check_if_falling(mushroom, self.coin_box_group)
 
 
-    def adjust_for_collision_x(self, item, collider):
+    def adjust_mushroom_for_collision_x(self, item, collider):
         if item.rect.x < collider.rect.x:
             item.rect.right = collider.rect.x
             item.direction = c.LEFT
@@ -711,10 +720,44 @@ class Level1(tools._State):
             item.direction = c.RIGHT
 
 
-    def adjust_for_collision_y(self, item, collider):
+    def adjust_mushroom_for_collision_y(self, item, collider):
         item.rect.bottom = collider.rect.y
         item.state = c.SLIDE
         item.y_vel = 0
+
+
+    def adjust_star_position(self, star):
+        if star.state == c.BOUNCE:
+            star.rect.x += star.x_vel
+            self.check_mushroom_x_collisions(star)
+            star.rect.y += star.y_vel
+            self.check_star_y_collisions(star)
+            star.y_vel += star.gravity
+            self.delete_if_off_screen(star)
+
+
+    def check_star_y_collisions(self, star):
+        collider = pg.sprite.spritecollideany(star, self.collide_group)
+        brick = pg.sprite.spritecollideany(star, self.brick_group)
+        coin_box = pg.sprite.spritecollideany(star, self.coin_box_group)
+
+        if collider:
+            self.adjust_star_for_collision_y(star, collider)
+        elif brick:
+            self.adjust_star_for_collision_y(star, brick)
+        elif coin_box:
+            self.adjust_star_for_collision_y(star, coin_box)
+
+
+    def adjust_star_for_collision_y(self, star, collider):
+        if star.rect.y > collider.rect.y:
+            star.rect.y = collider.rect.bottom
+            star.y_vel = 0
+        else:
+            star.rect.bottom = collider.rect.top
+            star.start_bounce(-8)
+
+
 
 
     def check_if_falling(self, item, sprite_group):
