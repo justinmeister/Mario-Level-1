@@ -71,5 +71,9 @@ OPENED = 'opened'
 REVEAL = 'reveal'
 SLIDE = 'slide'
 
+#COIN STATES
+
+SPIN = 'spin'
+
 
 

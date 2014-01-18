@@ -4,13 +4,14 @@ import pygame as pg
 from .. import setup
 from .. import constants as c
 import powerups
+import coin
 
 
 
 class Coin_box(pg.sprite.Sprite):
     """Coin box sprite"""
 
-    def __init__(self, x, y, name='coin_box', powerup_group = None):
+    def __init__(self, x, y, contents='coin', group=None):
         pg.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['tile_set']
         self.frames = []
@@ -26,8 +27,9 @@ class Coin_box(pg.sprite.Sprite):
         self.rest_height = y
         self.gravity = 1.2
         self.y_vel = 0
-        self.name = name
-        self.powerup_group = powerup_group
+        self.contents = contents
+        self.group = group
+
 
 
     def get_image(self, x, y, width, height):
@@ -99,8 +101,8 @@ class Coin_box(pg.sprite.Sprite):
         if self.rect.y > self.rest_height + 5:
             self.rect.y = self.rest_height
             self.state = c.OPENED
-            if self.name == 'powerup':
-                self.powerup_group.add(powerups.Mushroom(self.rect.x, self.rect.y))
+            if self.contents == 'powerup':
+                self.group.add(powerups.Mushroom(self.rect.x, self.rect.y))
 
 
         self.frame_index = 3
@@ -109,6 +111,9 @@ class Coin_box(pg.sprite.Sprite):
 
     def start_bump(self):
         self.y_vel = -6
+
+        if self.contents == 'coin':
+            self.group.add(coin.Coin(self.rect.centerx, self.rect.y))
 
 
     def opened(self):

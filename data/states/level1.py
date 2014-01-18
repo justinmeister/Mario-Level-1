@@ -186,19 +186,21 @@ class Level1(tools._State):
 
     def setup_coin_boxes(self):
         self.powerups = pg.sprite.Group()
+        self.coins = pg.sprite.Group()
+        self.coin_count = 0
 
-        coin_box1  = coin_box.Coin_box(685, 365)
+        coin_box1  = coin_box.Coin_box(685, 365, 'coin', self.coins)
         coin_box2  = coin_box.Coin_box(901, 365, 'powerup', self.powerups)
-        coin_box3  = coin_box.Coin_box(987, 365)
-        coin_box4  = coin_box.Coin_box(943, 193)
+        coin_box3  = coin_box.Coin_box(987, 365, 'coin', self.coins)
+        coin_box4  = coin_box.Coin_box(943, 193, 'coin', self.coins)
         coin_box5  = coin_box.Coin_box(3342, 365, 'powerup', self.powerups)
-        coin_box6  = coin_box.Coin_box(4030, 193)
-        coin_box7  = coin_box.Coin_box(4544, 365)
-        coin_box8  = coin_box.Coin_box(4672, 365)
+        coin_box6  = coin_box.Coin_box(4030, 193, 'coin', self.coins)
+        coin_box7  = coin_box.Coin_box(4544, 365, 'coin', self.coins)
+        coin_box8  = coin_box.Coin_box(4672, 365, 'coin', self.coins)
         coin_box9  = coin_box.Coin_box(4672, 193, 'powerup', self.powerups)
-        coin_box10 = coin_box.Coin_box(4800, 365)
-        coin_box11 = coin_box.Coin_box(5531, 193)
-        coin_box12 = coin_box.Coin_box(7288, 365)
+        coin_box10 = coin_box.Coin_box(4800, 365, 'coin', self.coins)
+        coin_box11 = coin_box.Coin_box(5531, 193, 'coin', self.coins)
+        coin_box12 = coin_box.Coin_box(7288, 365, 'coin', self.coins)
 
         self.coin_box_group = pg.sprite.Group(coin_box1,  coin_box2,
                                               coin_box3,  coin_box4,
@@ -288,7 +290,6 @@ class Level1(tools._State):
         self.blit_everything(surface)
 
 
-
     def update_all_sprites(self, keys, current_time):
         self.mario.update(keys, current_time)
         self.check_points_check()
@@ -298,6 +299,7 @@ class Level1(tools._State):
         self.brick_group.update()
         self.coin_box_group.update(current_time)
         self.powerups.update()
+        self.coins.update(current_time)
         self.adjust_sprite_positions(current_time)
         self.adjust_camera()
         self.check_for_mario_death(keys)
@@ -439,6 +441,8 @@ class Level1(tools._State):
             if coin_box.state == c.RESTING:
                 coin_box.state = c.BUMPED
                 coin_box.start_bump()
+                if coin_box.contents == 'coin':
+                    self.coin_count += 1
 
             self.mario.y_vel = 7
             self.mario.rect.y = coin_box.rect.bottom
@@ -765,6 +769,9 @@ class Level1(tools._State):
         for powerup in self.powerups:
             powerup.rect.x -= self.camera_adjustment
 
+        for coin in self.coins:
+            coin.rect.x -= self.camera_adjustment
+
         for checkpoint in self.check_point_group:
             checkpoint.rect.x -= self.camera_adjustment
 
@@ -783,6 +790,7 @@ class Level1(tools._State):
         surface.blit(self.background, self.back_rect)
         self.all_sprites.draw(surface)
         self.powerups.draw(surface)
+        self.coins.draw(surface)
         self.brick_group.draw(surface)
         self.coin_box_group.draw(surface)
         self.death_group.draw(surface)
