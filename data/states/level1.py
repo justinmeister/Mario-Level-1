@@ -1,7 +1,6 @@
 __author__ = 'justinarmstrong'
 
 import pygame as pg
-import copy
 from .. import setup, tools
 from .. import constants as c
 from .. components import mario
@@ -481,16 +480,17 @@ class Level1(tools._State):
 
 
     def test_if_mario_is_falling(self):
-        test_sprite = copy.deepcopy(self.mario)
-        test_sprite.rect.y += 1
+        self.mario.rect.y += 1
         test_collide_group = pg.sprite.Group(self.collide_group,
                                                  self.brick_group,
                                                  self.coin_box_group)
 
 
-        if not pg.sprite.spritecollideany(test_sprite, test_collide_group):
+        if pg.sprite.spritecollideany(self.mario, test_collide_group) is None:
             if self.mario.state != c.JUMP:
                 self.mario.state = c.FALL
+
+        self.mario.rect.y -= 1
 
 
     def adjust_mario_for_y_enemy_collisions(self, enemy, current_time):
@@ -610,14 +610,15 @@ class Level1(tools._State):
 
 
         else:
-            test_sprite = copy.deepcopy(enemy)
-            test_sprite.rect.y += 1
+            enemy.rect.y += 1
             test_group = pg.sprite.Group(self.collide_group,
                                          self.coin_box_group,
                                          self.brick_group)
-            if pg.sprite.spritecollideany(test_sprite, test_group) is None:
+            if pg.sprite.spritecollideany(enemy, test_group) is None:
                 if enemy.state != c.JUMP:
                     enemy.state = c.FALL
+
+            enemy.rect.y -= 1
 
 
     def adjust_shell_position(self):
@@ -655,10 +656,10 @@ class Level1(tools._State):
             shell.state = c.SHELL_SLIDE
 
         else:
-            test_sprite = copy.deepcopy(shell)
-            test_sprite.rect.y += 1
-            if pg.sprite.spritecollideany(test_sprite, self.collide_group) is None:
+            shell.rect.y += 1
+            if pg.sprite.spritecollideany(shell, self.collide_group) is None:
                 shell.state = c.FALL
+            shell.rect.y -= 1
 
 
     def adjust_powerup_position(self):
@@ -760,12 +761,14 @@ class Level1(tools._State):
 
 
 
-    def check_if_falling(self, item, sprite_group):
-        test_sprite = copy.deepcopy(item)
-        test_sprite.rect.y += 1
+    def check_if_falling(self, sprite, sprite_group):
+        sprite.rect.y += 1
 
-        if pg.sprite.spritecollideany(item, sprite_group) is None:
-            item.state = c.FALL
+        if pg.sprite.spritecollideany(sprite, sprite_group) is None:
+            if sprite.state != c.JUMP:
+                sprite.state = c.FALL
+
+        sprite.rect.y -= 1
 
 
 
@@ -790,6 +793,7 @@ class Level1(tools._State):
             self.camera_adjustment = 0
 
         self.back_rect.x -= self.camera_adjustment
+
 
         for collider in self.collide_group:
             collider.rect.x -= self.camera_adjustment
