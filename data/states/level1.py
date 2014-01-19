@@ -785,6 +785,26 @@ class Level1(tools._State):
 
 
     def adjust_camera(self):
+        self.calculate_camera_adjustment()
+        adjusted_sprites = pg.sprite.Group(self.collide_group,
+                                           self.coin_box_group,
+                                           self.brick_group,
+                                           self.enemies,
+                                           self.death_group,
+                                           self.shell_group,
+                                           self.powerups,
+                                           self.coins,
+                                           self.check_point_group,
+                                           self.mario
+                                           )
+
+        for sprite in adjusted_sprites:
+            sprite.rect.x -= self.camera_adjustment
+
+        self.back_rect.x -= self.camera_adjustment
+
+
+    def calculate_camera_adjustment(self):
         if self.back_rect.right <= 800:
             self.camera_adjustment = 0
         elif self.mario.rect.right > c.SCREEN_WIDTH / 3:
@@ -792,37 +812,6 @@ class Level1(tools._State):
         else:
             self.camera_adjustment = 0
 
-        self.back_rect.x -= self.camera_adjustment
-
-
-        for collider in self.collide_group:
-            collider.rect.x -= self.camera_adjustment
-
-        for coin_box in self.coin_box_group:
-            coin_box.rect.x -= self.camera_adjustment
-
-        for brick in self.brick_group:
-            brick.rect.x -= self.camera_adjustment
-
-        for enemy in self.enemies:
-            enemy.rect.x -= self.camera_adjustment
-
-        for enemy in self.death_group:
-            enemy.rect.x -= self.camera_adjustment
-
-        for shell in self.shell_group:
-            shell.rect.x -= self.camera_adjustment
-
-        for powerup in self.powerups:
-            powerup.rect.x -= self.camera_adjustment
-
-        for coin in self.coins:
-            coin.rect.x -= self.camera_adjustment
-
-        for checkpoint in self.check_point_group:
-            checkpoint.rect.x -= self.camera_adjustment
-
-        self.mario.rect.x -= self.camera_adjustment
 
 
     def check_for_mario_death(self, keys):
