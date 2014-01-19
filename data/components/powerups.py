@@ -6,7 +6,7 @@ from .. import setup
 
 
 class Powerup(pg.sprite.Sprite):
-    """Base class for all powerups"""
+    """Base class for all powerup_group"""
     def __init__(self, x, y):
         super(Powerup, self).__init__()
 

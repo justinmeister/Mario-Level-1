@@ -9,6 +9,7 @@ from .. components import break_brick
 from .. components import coin_box
 from .. components import enemies
 from .. components import checkpoint
+from .. components import coin
 
 
 class Level1(tools._State):
@@ -37,12 +38,12 @@ class Level1(tools._State):
                                              self.step_group,
                                              )
 
-        self.all_sprites = pg.sprite.Group(self.mario, self.enemies)
+        self.all_sprites = pg.sprite.Group(self.mario, self.enemy_group)
 
 
     def setup_spritegroups(self):
-        self.powerups = pg.sprite.Group()
-        self.coins = pg.sprite.Group()
+        self.powerup_group = pg.sprite.Group()
+        self.coin_group = pg.sprite.Group()
 
 
     def setup_background(self):
@@ -137,7 +138,7 @@ class Level1(tools._State):
 
 
     def setup_bricks(self):
-        brick1  = break_brick.Brick(858,  365)
+        brick1  = break_brick.Brick(858,  365, '6coins', self.coin_group)
         brick2  = break_brick.Brick(944,  365)
         brick3  = break_brick.Brick(1030, 365)
         brick4  = break_brick.Brick(3299, 365)
@@ -153,9 +154,9 @@ class Level1(tools._State):
         brick14 = break_brick.Brick(3901, 193)
         brick15 = break_brick.Brick(3944, 193)
         brick16 = break_brick.Brick(3987, 193)
-        brick17 = break_brick.Brick(4030, 365)
+        brick17 = break_brick.Brick(4030, 365, '6coins', self.coin_group)
         brick18 = break_brick.Brick(4287, 365)
-        brick19 = break_brick.Brick(4330, 365, 'star', self.powerups)
+        brick19 = break_brick.Brick(4330, 365, 'star', self.powerup_group)
         brick20 = break_brick.Brick(5058, 365)
         brick21 = break_brick.Brick(5187, 193)
         brick22 = break_brick.Brick(5230, 193)
@@ -191,18 +192,18 @@ class Level1(tools._State):
 
     def setup_coin_boxes(self):
 
-        coin_box1  = coin_box.Coin_box(685, 365, 'coin', self.coins)
-        coin_box2  = coin_box.Coin_box(901, 365, 'powerup', self.powerups)
-        coin_box3  = coin_box.Coin_box(987, 365, 'coin', self.coins)
-        coin_box4  = coin_box.Coin_box(943, 193, 'coin', self.coins)
-        coin_box5  = coin_box.Coin_box(3342, 365, 'powerup', self.powerups)
-        coin_box6  = coin_box.Coin_box(4030, 193, 'coin', self.coins)
-        coin_box7  = coin_box.Coin_box(4544, 365, 'coin', self.coins)
-        coin_box8  = coin_box.Coin_box(4672, 365, 'coin', self.coins)
-        coin_box9  = coin_box.Coin_box(4672, 193, 'powerup', self.powerups)
-        coin_box10 = coin_box.Coin_box(4800, 365, 'coin', self.coins)
-        coin_box11 = coin_box.Coin_box(5531, 193, 'coin', self.coins)
-        coin_box12 = coin_box.Coin_box(7288, 365, 'coin', self.coins)
+        coin_box1  = coin_box.Coin_box(685, 365, 'coin', self.coin_group)
+        coin_box2  = coin_box.Coin_box(901, 365, 'powerup', self.powerup_group)
+        coin_box3  = coin_box.Coin_box(987, 365, 'coin', self.coin_group)
+        coin_box4  = coin_box.Coin_box(943, 193, 'coin', self.coin_group)
+        coin_box5  = coin_box.Coin_box(3342, 365, 'powerup', self.powerup_group)
+        coin_box6  = coin_box.Coin_box(4030, 193, 'coin', self.coin_group)
+        coin_box7  = coin_box.Coin_box(4544, 365, 'coin', self.coin_group)
+        coin_box8  = coin_box.Coin_box(4672, 365, 'coin', self.coin_group)
+        coin_box9  = coin_box.Coin_box(4672, 193, 'powerup', self.powerup_group)
+        coin_box10 = coin_box.Coin_box(4800, 365, 'coin', self.coin_group)
+        coin_box11 = coin_box.Coin_box(5531, 193, 'coin', self.coin_group)
+        coin_box12 = coin_box.Coin_box(7288, 365, 'coin', self.coin_group)
 
         self.coin_box_group = pg.sprite.Group(coin_box1,  coin_box2,
                                               coin_box3,  coin_box4,
@@ -214,7 +215,7 @@ class Level1(tools._State):
 
     def setup_enemies(self):
         """Creates a list of Goomba objects that will be added to the
-        self.enemies sprite group when Mario gets a certain distance"""
+        self.enemy_group sprite group when Mario gets a certain distance"""
 
         goomba0 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
         goomba1 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
@@ -254,7 +255,7 @@ class Level1(tools._State):
         self.enemy_group9 = pg.sprite.Group(goomba12, goomba13)
         self.enemy_group10 = pg.sprite.Group(goomba14, goomba15)
 
-        self.enemies = pg.sprite.Group()
+        self.enemy_group = pg.sprite.Group()
         self.death_group = pg.sprite.Group()
         self.shell_group = pg.sprite.Group()
 
@@ -292,16 +293,17 @@ class Level1(tools._State):
         self.blit_everything(surface)
 
 
+
     def update_all_sprites(self, keys, current_time):
         self.mario.update(keys, current_time)
         self.check_points_check()
-        self.enemies.update(current_time)
+        self.enemy_group.update(current_time)
         self.death_group.update(current_time)
         self.shell_group.update(current_time)
         self.brick_group.update()
         self.coin_box_group.update(current_time)
-        self.powerups.update(current_time)
-        self.coins.update(current_time)
+        self.powerup_group.update(current_time)
+        self.coin_group.update(current_time)
         self.adjust_sprite_positions(current_time)
         self.adjust_camera()
         self.check_for_mario_death(keys)
@@ -315,27 +317,27 @@ class Level1(tools._State):
             checkpoint.kill()
 
             if checkpoint.name == '1':
-                self.enemies.add(self.enemy_group1)
+                self.enemy_group.add(self.enemy_group1)
             elif checkpoint.name == '2':
-                self.enemies.add(self.enemy_group2)
+                self.enemy_group.add(self.enemy_group2)
             elif checkpoint.name == '3':
-                self.enemies.add(self.enemy_group3)
+                self.enemy_group.add(self.enemy_group3)
             elif checkpoint.name == '4':
-                self.enemies.add(self.enemy_group4)
+                self.enemy_group.add(self.enemy_group4)
             elif checkpoint.name == '5':
-                self.enemies.add(self.enemy_group5)
+                self.enemy_group.add(self.enemy_group5)
             elif checkpoint.name == '6':
-                self.enemies.add(self.enemy_group6)
+                self.enemy_group.add(self.enemy_group6)
             elif checkpoint.name == '7':
-                self.enemies.add(self.enemy_group7)
+                self.enemy_group.add(self.enemy_group7)
             elif checkpoint.name == '8':
-                self.enemies.add(self.enemy_group8)
+                self.enemy_group.add(self.enemy_group8)
             elif checkpoint.name == '9':
-                self.enemies.add(self.enemy_group9)
+                self.enemy_group.add(self.enemy_group9)
             elif checkpoint.name == '10':
-                self.enemies.add(self.enemy_group10)
+                self.enemy_group.add(self.enemy_group10)
 
-            self.all_sprites.add(self.enemies)
+            self.all_sprites.add(self.enemy_group)
 
 
     def adjust_sprite_positions(self, current_time):
@@ -360,7 +362,7 @@ class Level1(tools._State):
         collider = pg.sprite.spritecollideany(self.mario, self.collide_group)
         coin_box = pg.sprite.spritecollideany(self.mario, self.coin_box_group)
         brick = pg.sprite.spritecollideany(self.mario, self.brick_group)
-        enemy = pg.sprite.spritecollideany(self.mario, self.enemies)
+        enemy = pg.sprite.spritecollideany(self.mario, self.enemy_group)
         shell = pg.sprite.spritecollideany(self.mario, self.shell_group)
 
 
@@ -411,7 +413,7 @@ class Level1(tools._State):
 
     def check_mario_y_collisions(self, current_time):
         collider = pg.sprite.spritecollideany(self.mario, self.collide_group)
-        enemy = pg.sprite.spritecollideany(self.mario, self.enemies)
+        enemy = pg.sprite.spritecollideany(self.mario, self.enemy_group)
         shell = pg.sprite.spritecollideany(self.mario, self.shell_group)
         brick = pg.sprite.spritecollideany(self.mario, self.brick_group)
         coin_box = pg.sprite.spritecollideany(self.mario, self.coin_box_group)
@@ -441,7 +443,6 @@ class Level1(tools._State):
     def adjust_mario_for_y_coin_box_collisions(self, coin_box):
         if self.mario.rect.y > coin_box.rect.y:
             if coin_box.state == c.RESTING:
-                coin_box.state = c.BUMPED
                 coin_box.start_bump()
                 if coin_box.contents == 'coin':
                     self.coin_count += 1
@@ -457,11 +458,14 @@ class Level1(tools._State):
 
     def adjust_mario_for_y_brick_collisions(self, brick):
         if self.mario.rect.y > brick.rect.y:
-            brick.state = c.BUMPED
-            brick.start_bump()
+            if brick.state == c.RESTING:
+                brick.start_bump()
+                if brick.coin_total > 0:
+                    self.coin_count += 1
             self.mario.y_vel = 7
             self.mario.rect.y = brick.rect.bottom
             self.mario.state = c.FALL
+
         else:
             self.mario.y_vel = 0
             self.mario.rect.bottom = brick.rect.top
@@ -525,7 +529,7 @@ class Level1(tools._State):
 
 
     def adjust_enemy_position(self):
-        for enemy in self.enemies:
+        for enemy in self.enemy_group:
             enemy.rect.x += enemy.x_vel
             self.check_enemy_x_collisions(enemy)
             self.delete_if_off_screen(enemy)
@@ -539,7 +543,7 @@ class Level1(tools._State):
         collider = pg.sprite.spritecollideany(enemy, self.collide_group)
 
         enemy.kill()
-        enemy_collider = pg.sprite.spritecollideany(enemy, self.enemies)
+        enemy_collider = pg.sprite.spritecollideany(enemy, self.enemy_group)
 
         if collider:
             if enemy.direction == c.RIGHT:
@@ -566,8 +570,8 @@ class Level1(tools._State):
                 enemy.x_vel = 2
                 enemy_collider.x_vel = -2
 
-        self.enemies.add(enemy)
-        self.all_sprites.add(self.enemies)
+        self.enemy_group.add(enemy)
+        self.all_sprites.add(self.enemy_group)
 
 
     def check_enemy_y_collisions(self, enemy):
@@ -647,7 +651,7 @@ class Level1(tools._State):
 
     def check_shell_x_collisions(self, shell):
         collider = pg.sprite.spritecollideany(shell, self.collide_group)
-        enemy = pg.sprite.spritecollideany(shell, self.enemies)
+        enemy = pg.sprite.spritecollideany(shell, self.enemy_group)
 
         if collider:
             if shell.x_vel > 0:
@@ -679,7 +683,7 @@ class Level1(tools._State):
 
 
     def adjust_powerup_position(self):
-        for powerup in self.powerups:
+        for powerup in self.powerup_group:
             if powerup.name == 'mushroom':
                 self.adjust_mushroom_position(powerup)
             elif powerup.name == 'star':
@@ -805,11 +809,11 @@ class Level1(tools._State):
         adjusted_sprites = pg.sprite.Group(self.collide_group,
                                            self.coin_box_group,
                                            self.brick_group,
-                                           self.enemies,
+                                           self.enemy_group,
                                            self.death_group,
                                            self.shell_group,
-                                           self.powerups,
-                                           self.coins,
+                                           self.powerup_group,
+                                           self.coin_group,
                                            self.check_point_group,
                                            self.mario
                                            )
@@ -841,8 +845,8 @@ class Level1(tools._State):
     def blit_everything(self, surface):
         surface.blit(self.background, self.back_rect)
         self.all_sprites.draw(surface)
-        self.powerups.draw(surface)
-        self.coins.draw(surface)
+        self.powerup_group.draw(surface)
+        self.coin_group.draw(surface)
         self.brick_group.draw(surface)
         self.coin_box_group.draw(surface)
         self.death_group.draw(surface)

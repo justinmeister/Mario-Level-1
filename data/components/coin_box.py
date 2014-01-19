@@ -111,6 +111,7 @@ class Coin_box(pg.sprite.Sprite):
 
     def start_bump(self):
         self.y_vel = -6
+        self.state = c.BUMPED
 
         if self.contents == 'coin':
             self.group.add(coin.Coin(self.rect.centerx, self.rect.y))

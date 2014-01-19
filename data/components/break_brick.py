@@ -4,6 +4,8 @@ import pygame as pg
 from .. import setup
 from .. import constants as c
 import powerups
+import coin
+
 
 class Brick(pg.sprite.Sprite):
     """Bricks that can be destroyed"""
@@ -26,6 +28,7 @@ class Brick(pg.sprite.Sprite):
         self.gravity = 1.2
         self.name = name
         self.contents = contents
+        self.setup_contents()
         self.group = powerup_group
         self.powerup_in_box = True
 
@@ -48,17 +51,30 @@ class Brick(pg.sprite.Sprite):
         self.frames.append(self.get_image(432, 0, 16, 16))
 
 
+    def setup_contents(self):
+        if self.contents == '6coins':
+            self.coin_total = 6
+        else:
+            self.coin_total = 0
+
+
     def update(self):
         self.handle_states()
 
 
     def handle_states(self):
         if self.state == c.RESTING:
-            pass
+            self.resting()
         elif self.state == c.BUMPED:
             self.bumped()
         elif self.state == c.OPENED:
             self.opened()
+
+
+    def resting(self):
+        if self.contents == '6coins':
+            if self.coin_total == 0:
+                self.state == c.OPENED
 
 
     def bumped(self):
@@ -68,21 +84,40 @@ class Brick(pg.sprite.Sprite):
 
         if self.rect.y >= (self.rest_height + 5):
             self.rect.y = self.rest_height
-            if self.contents:
-                self.opened()
+            if self.contents == 'star':
+                self.state == c.OPENED
+            elif self.contents == '6coins':
+                if self.coin_total == 0:
+                    self.state = c.OPENED
+                else:
+                    self.state = c.RESTING
             else:
                 self.state = c.RESTING
 
-        if self.contents:
-            self.frame_index = 1
-            self.image = self.frames[self.frame_index]
+
 
 
     def start_bump(self):
         self.y_vel = -6
 
+        if self.contents == '6coins':
+            if self.coin_total > 0:
+                self.group.add(coin.Coin(self.rect.centerx, self.rect.y))
+                self.coin_total -= 1
+                if self.coin_total == 0:
+                    self.frame_index = 1
+                    self.image = self.frames[self.frame_index]
+
+        self.state = c.BUMPED
+
+
+
+
 
     def opened(self):
+        self.frame_index = 1
+        self.image = self.frames[self.frame_index]
+
         if self.contents == 'star' and self.powerup_in_box:
             self.group.add(powerups.Star(self.rect.centerx, self.rest_height))
             self.powerup_in_box = False
