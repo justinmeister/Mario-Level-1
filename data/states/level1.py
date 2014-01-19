@@ -660,7 +660,7 @@ class Level1(tools._State):
         if enemy:
             enemy.kill()
             self.death_group.add(enemy)
-            enemy.start_death_jump('right')
+            enemy.start_death_jump(shell.direction)
 
 
     def check_shell_y_collisions(self, shell):
