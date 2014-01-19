@@ -589,6 +589,12 @@ class Level1(tools._State):
         elif brick:
             if brick.state == c.BUMPED:
                 enemy.kill()
+                self.death_group.add(enemy)
+                if self.mario.rect.centerx > brick.rect.centerx:
+                    enemy.start_death_jump('right')
+                else:
+                    enemy.start_death_jump('left')
+
             elif enemy.rect.x > brick.rect.x:
                 enemy.y_vel = 7
                 enemy.rect.top = brick.rect.bottom
@@ -599,7 +605,15 @@ class Level1(tools._State):
                 enemy.state = c.WALK
 
         elif coin_box:
-            if enemy.rect.x > coin_box.rect.x:
+            if coin_box.state == c.BUMPED:
+                enemy.kill()
+                self.death_group.add(enemy)
+                if self.mario.rect.centerx > coin_box.rect.centerx:
+                    enemy.start_death_jump('right')
+                else:
+                    enemy.start_death_jump('left')
+
+            elif enemy.rect.x > coin_box.rect.x:
                 enemy.y_vel = 7
                 enemy.rect.top = coin_box.rect.bottom
                 enemy.state = c.FALL
@@ -645,6 +659,8 @@ class Level1(tools._State):
 
         if enemy:
             enemy.kill()
+            self.death_group.add(enemy)
+            enemy.start_death_jump('right')
 
 
     def check_shell_y_collisions(self, shell):

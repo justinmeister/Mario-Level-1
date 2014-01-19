@@ -67,6 +67,8 @@ class Enemy(pg.sprite.Sprite):
             self.jumped_on(current_time)
         elif self.state == c.SHELL_SLIDE:
             self.shell_sliding()
+        elif self.state == c.DEATH_JUMP:
+            self.death_jumping()
 
 
 
@@ -116,6 +118,7 @@ class Goomba(Enemy):
             self.get_image(30, 4, 16, 16))
         self.frames.append(
             self.get_image(61, 0, 16, 16))
+        self.frames.append(pg.transform.flip(self.frames[1], False, True))
 
 
     def jumped_on(self, current_time):
@@ -123,6 +126,27 @@ class Goomba(Enemy):
 
         if (current_time - self.death_timer) > 500:
             self.kill()
+
+
+    def death_jumping(self):
+        self.rect.y += self.y_vel
+        self.rect.x += self.x_vel
+        self.y_vel += self.gravity
+
+        if self.rect.y > 600:
+            self.kill()
+
+
+    def start_death_jump(self, direction):
+        self.y_vel = -8
+        if direction == 'right':
+            self.x_vel = 2
+        else:
+            self.x_vel = -2
+        self.gravity = .5
+        self.frame_index = 3
+        self.image = self.frames[self.frame_index]
+        self.state = c.DEATH_JUMP
 
 
 
