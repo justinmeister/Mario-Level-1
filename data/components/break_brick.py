@@ -85,7 +85,7 @@ class Brick(pg.sprite.Sprite):
         if self.rect.y >= (self.rest_height + 5):
             self.rect.y = self.rest_height
             if self.contents == 'star':
-                self.state == c.OPENED
+                self.state = c.OPENED
             elif self.contents == '6coins':
                 if self.coin_total == 0:
                     self.state = c.OPENED
@@ -107,6 +107,9 @@ class Brick(pg.sprite.Sprite):
                 if self.coin_total == 0:
                     self.frame_index = 1
                     self.image = self.frames[self.frame_index]
+        elif self.contents == 'star':
+            self.frame_index = 1
+            self.image = self.frames[self.frame_index]
 
         self.state = c.BUMPED
 
