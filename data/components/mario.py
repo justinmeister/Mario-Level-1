@@ -127,9 +127,9 @@ class Mario(pg.sprite.Sprite):
 
 
         if keys[pg.K_s]:
-            self.max_x_vel = 8
+            self.max_x_vel = 7
         else:
-            self.max_x_vel = 4
+            self.max_x_vel = 5
 
 
         if keys[pg.K_a]:

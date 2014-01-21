@@ -348,6 +348,7 @@ class Level1(tools._State):
 
 
     def adjust_mario_position(self, current_time):
+        self.last_x_position = self.mario.rect.right
         self.mario.rect.x += self.mario.x_vel
         self.check_mario_x_collisions()
 
@@ -814,9 +815,14 @@ class Level1(tools._State):
                                            self.shell_group,
                                            self.powerup_group,
                                            self.coin_group,
-                                           self.check_point_group,
-                                           self.mario
+                                           self.check_point_group
                                            )
+
+        if self.mario.rect.right > (c.SCREEN_WIDTH * .33) and self.mario.rect.x < ((c.SCREEN_WIDTH / 2) - 50):
+            self.mario.rect.x -= (self.camera_adjustment * .6)
+        else:
+            self.mario.rect.x -= self.camera_adjustment
+
 
         for sprite in adjusted_sprites:
             sprite.rect.x -= self.camera_adjustment
@@ -825,12 +831,23 @@ class Level1(tools._State):
 
 
     def calculate_camera_adjustment(self):
+
         if self.back_rect.right <= 800:
             self.camera_adjustment = 0
-        elif self.mario.rect.right > c.SCREEN_WIDTH / 3:
-            self.camera_adjustment = self.mario.rect.right - c.SCREEN_WIDTH / 3
+
+        elif self.mario.x_vel < 0:
+            self.camera_adjustment = 0
+
+        elif self.mario.rect.right > (c.SCREEN_WIDTH * .33):
+            if self.mario.rect.right < ((c.SCREEN_WIDTH / 2) - 50):
+                self.camera_adjustment = self.mario.rect.right - self.last_x_position
+            else:
+                self.camera_adjustment = self.mario.rect.right - self.last_x_position
+
         else:
             self.camera_adjustment = 0
+
+
 
 
 
