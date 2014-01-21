@@ -11,8 +11,6 @@ class Mario(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['mario_bros']
 
-        self.right_frames = []
-        self.left_frames = []
         self.frame_index = 0
         self.x_vel = 0
         self.y_vel = 0
@@ -25,6 +23,10 @@ class Mario(pg.sprite.Sprite):
         self.walking_timer = 0
         self.allow_jump = True
         self.dead = False
+        self.invincible = False
+        self.invincible_animation_timer = 0
+        self.invincible_start_timer = 0
+        self.invincible_index = 0
 
         self.load_from_sheet()
         self.image = self.right_frames[self.frame_index]
@@ -33,25 +35,114 @@ class Mario(pg.sprite.Sprite):
 
 
     def load_from_sheet(self):
-        self.right_frames.append(
+        self.right_frames = []
+        self.left_frames = []
+        self.right_small_normal_frames = []
+        self.left_small_normal_frames = []
+        self.right_small_green_frames = []
+        self.left_small_green_frames = []
+        self.right_small_red_frames = []
+        self.left_small_red_frames = []
+        self.right_small_black_frames = []
+        self.left_small_black_frames = []
+
+        self.right_small_normal_frames.append(
             self.get_image(178, 32, 12, 16))  #right
-        self.right_frames.append(
+        self.right_small_normal_frames.append(
             self.get_image(80,  32, 15, 16))  #right walking 1
-        self.right_frames.append(
+        self.right_small_normal_frames.append(
             self.get_image(99,  32, 15, 16))  #right walking 2
-        self.right_frames.append(
+        self.right_small_normal_frames.append(
             self.get_image(114,  32, 15, 16))  #right walking 3
-        self.right_frames.append(
+        self.right_small_normal_frames.append(
             self.get_image(144, 32, 16, 16))  #right jump
-        self.right_frames.append(
+        self.right_small_normal_frames.append(
             self.get_image(130, 32, 14, 16))  #right skid
+
+        self.right_small_green_frames.append(
+            self.get_image(178, 224, 12, 16))
+        self.right_small_green_frames.append(
+            self.get_image(80, 224, 15, 16))
+        self.right_small_green_frames.append(
+            self.get_image(99, 224, 15, 16))
+        self.right_small_green_frames.append(
+            self.get_image(114, 224, 15, 16))
+        self.right_small_green_frames.append(
+            self.get_image(144, 224, 16, 16))
+        self.right_small_green_frames.append(
+            self.get_image(130, 224, 14, 16))
+
+        self.right_small_red_frames.append(
+            self.get_image(178, 272, 12, 16))
+        self.right_small_red_frames.append(
+            self.get_image(80, 272, 15, 16))
+        self.right_small_red_frames.append(
+            self.get_image(99, 272, 15, 16))
+        self.right_small_red_frames.append(
+            self.get_image(114, 272, 15, 16))
+        self.right_small_red_frames.append(
+            self.get_image(144, 272, 16, 16))
+        self.right_small_red_frames.append(
+            self.get_image(130, 272, 14, 16))
+
+        self.right_small_black_frames.append(
+            self.get_image(178, 176, 12, 16))
+        self.right_small_black_frames.append(
+            self.get_image(80, 176, 15, 16))
+        self.right_small_black_frames.append(
+            self.get_image(99, 176, 15, 16))
+        self.right_small_black_frames.append(
+            self.get_image(114, 176, 15, 16))
+        self.right_small_black_frames.append(
+            self.get_image(144, 176, 16, 16))
+        self.right_small_black_frames.append(
+            self.get_image(130, 176, 14, 16))
+
+        right_frames = [self.right_small_normal_frames,
+                        self.right_small_green_frames,
+                        self.right_small_red_frames,
+                        self.right_small_black_frames]
 
         #The left image frames are numbered the same as the right
         #frames but are simply reversed.
 
-        for frame in self.right_frames:
+        for frame in self.right_small_normal_frames:
             new_image = pg.transform.flip(frame, True, False)
-            self.left_frames.append(new_image)
+            self.left_small_normal_frames.append(new_image)
+
+        for frame in self.right_small_green_frames:
+            new_image = pg.transform.flip(frame, True, False)
+            self.left_small_green_frames.append(new_image)
+
+        for frame in self.right_small_red_frames:
+            new_image = pg.transform.flip(frame, True, False)
+            self.left_small_red_frames.append(new_image)
+
+        for frame in self.right_small_black_frames:
+            new_image = pg.transform.flip(frame, True, False)
+            self.left_small_black_frames.append(new_image)
+
+
+        self.normal_frames = [self.right_small_normal_frames,
+                              self.left_small_normal_frames]
+
+        self.green_frames = [self.right_small_green_frames,
+                             self.left_small_green_frames]
+
+        self.red_frames = [self.right_small_red_frames,
+                           self.left_small_red_frames]
+
+        self.black_frames = [self.right_small_black_frames,
+                             self.left_small_black_frames]
+
+        self.invincible_frames_list = [self.normal_frames,
+                                          self.green_frames,
+                                          self.red_frames,
+                                          self.black_frames]
+
+
+        self.right_frames = self.normal_frames[0]
+        self.left_frames = self.normal_frames[1]
 
 
     def get_image(self, x, y, width, height):
@@ -80,6 +171,8 @@ class Mario(pg.sprite.Sprite):
             self.jumping(keys, current_time)
         elif self.state == c.FALL:
             self.falling(keys, current_time)
+
+        self.check_if_invincible(current_time)
 
 
     def standing(self, keys, current_time):
@@ -236,3 +329,30 @@ class Mario(pg.sprite.Sprite):
             self.image = self.right_frames[self.frame_index]
         else:
             self.image = self.left_frames[self.frame_index]
+
+
+    def check_if_invincible(self, current_time):
+        if self.invincible == True:
+            if ((current_time - self.invincible_start_timer) < 10000):
+                self.change_frame_list(current_time, 30)
+            elif ((current_time - self.invincible_start_timer) < 12000):
+                self.change_frame_list(current_time, 100)
+            else:
+                self.invincible = False
+        else:
+            self.right_frames = self.invincible_frames_list[0][0]
+            self.left_frames = self.invincible_frames_list[0][1]
+
+
+    def change_frame_list(self, current_time, frame_switch_speed):
+        if (current_time - self.invincible_animation_timer) > frame_switch_speed:
+            if self.invincible_index < (len(self.invincible_frames_list) - 1):
+                self.invincible_index += 1
+            else:
+                self.invincible_index = 0
+
+            frames = self.invincible_frames_list[self.invincible_index]
+            self.right_frames = frames[0]
+            self.left_frames = frames[1]
+
+            self.invincible_animation_timer = current_time

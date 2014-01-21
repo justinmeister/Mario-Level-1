@@ -350,7 +350,7 @@ class Level1(tools._State):
     def adjust_mario_position(self, current_time):
         self.last_x_position = self.mario.rect.right
         self.mario.rect.x += self.mario.x_vel
-        self.check_mario_x_collisions()
+        self.check_mario_x_collisions(current_time)
 
         self.mario.rect.y += self.mario.y_vel
         self.check_mario_y_collisions(current_time)
@@ -359,12 +359,13 @@ class Level1(tools._State):
             self.mario.rect.x = 5
 
 
-    def check_mario_x_collisions(self):
+    def check_mario_x_collisions(self, current_time):
         collider = pg.sprite.spritecollideany(self.mario, self.collide_group)
         coin_box = pg.sprite.spritecollideany(self.mario, self.coin_box_group)
         brick = pg.sprite.spritecollideany(self.mario, self.brick_group)
         enemy = pg.sprite.spritecollideany(self.mario, self.enemy_group)
         shell = pg.sprite.spritecollideany(self.mario, self.shell_group)
+        powerup = pg.sprite.spritecollideany(self.mario, self.powerup_group)
 
 
         if coin_box:
@@ -377,10 +378,21 @@ class Level1(tools._State):
             self.adjust_mario_for_x_collisions(collider)
 
         elif enemy:
-            self.mario.dead = True
+            if self.mario.invincible == True:
+                enemy.kill()
+                self.death_group.add(enemy)
+                enemy.start_death_jump('right')
+            else:
+                self.mario.dead = True
 
         elif shell:
             self.adjust_mario_for_x_shell_collisions(shell)
+
+        elif powerup:
+            if powerup.name == 'star':
+                powerup.kill()
+                self.mario.invincible = True
+                self.mario.invincible_start_timer = current_time
 
 
     def adjust_mario_for_x_collisions(self, collider):
@@ -418,6 +430,7 @@ class Level1(tools._State):
         shell = pg.sprite.spritecollideany(self.mario, self.shell_group)
         brick = pg.sprite.spritecollideany(self.mario, self.brick_group)
         coin_box = pg.sprite.spritecollideany(self.mario, self.coin_box_group)
+        powerup = pg.sprite.spritecollideany(self.mario, self.powerup_group)
 
 
         if coin_box:
@@ -429,16 +442,24 @@ class Level1(tools._State):
         elif collider:
             self.adjust_mario_for_y_ground_pipe_collisions(collider)
 
-        else:
-            self.test_if_mario_is_falling()
-
-
-        if enemy:
-            self.adjust_mario_for_y_enemy_collisions(enemy, current_time)
-
+        elif enemy:
+            if self.mario.invincible == True:
+                enemy.kill()
+                self.death_group.add(enemy)
+                enemy.start_death_jump('right')
+            else:
+                self.adjust_mario_for_y_enemy_collisions(enemy, current_time)
 
         elif shell:
             self.adjust_mario_for_y_shell_collisions(shell)
+
+        elif powerup:
+            if powerup.name == 'star':
+                powerup.kill()
+                self.mario.invincible = True
+                self.mario.invincible_start_timer = current_time
+
+        self.test_if_mario_is_falling()
 
 
     def adjust_mario_for_y_coin_box_collisions(self, coin_box):
@@ -807,7 +828,9 @@ class Level1(tools._State):
 
     def adjust_camera(self):
         self.calculate_camera_adjustment()
-        adjusted_sprites = pg.sprite.Group(self.collide_group,
+        adjusted_sprites = pg.sprite.Group(self.ground_group,
+                                           self.pipe_group,
+                                           self.step_group,
                                            self.coin_box_group,
                                            self.brick_group,
                                            self.enemy_group,
@@ -820,14 +843,15 @@ class Level1(tools._State):
 
         if self.mario.rect.right > (c.SCREEN_WIDTH * .33) and self.mario.rect.x < ((c.SCREEN_WIDTH / 2) - 50):
             self.mario.rect.x -= (self.camera_adjustment * .6)
+
         else:
             self.mario.rect.x -= self.camera_adjustment
 
-
         for sprite in adjusted_sprites:
             sprite.rect.x -= self.camera_adjustment
-
         self.back_rect.x -= self.camera_adjustment
+
+
 
 
     def calculate_camera_adjustment(self):
