@@ -393,6 +393,9 @@ class Level1(tools._State):
                 powerup.kill()
                 self.mario.invincible = True
                 self.mario.invincible_start_timer = current_time
+            elif powerup.name == 'mushroom':
+                powerup.kill()
+                self.mario.become_big()
 
 
     def adjust_mario_for_x_collisions(self, collider):
@@ -842,7 +845,7 @@ class Level1(tools._State):
                                            )
 
         if self.mario.rect.right > (c.SCREEN_WIDTH * .33) and self.mario.rect.x < ((c.SCREEN_WIDTH / 2) - 50):
-            self.mario.rect.x -= (self.camera_adjustment * .6)
+            self.mario.rect.x -= (self.camera_adjustment * .75)
 
         else:
             self.mario.rect.x -= self.camera_adjustment
