@@ -125,9 +125,9 @@ class Mario(pg.sprite.Sprite):
         self.right_big_normal_frames.append(
             self.get_image(176, 0, 16, 32))
         self.right_big_normal_frames.append(
-            self.get_image(80, 2, 16, 30))
+            self.get_image(80, 0, 16, 32))
         self.right_big_normal_frames.append(
-            self.get_image(97, 1, 15, 31))
+            self.get_image(97, 0, 15, 32))
         self.right_big_normal_frames.append(
             self.get_image(112, 0, 16, 32))
         self.right_big_normal_frames.append(
@@ -142,9 +142,9 @@ class Mario(pg.sprite.Sprite):
         self.right_big_green_frames.append(
             self.get_image(176, 192, 16, 32))
         self.right_big_green_frames.append(
-            self.get_image(80, 194, 16, 30))
+            self.get_image(80, 192, 16, 32))
         self.right_big_green_frames.append(
-            self.get_image(97, 193, 15, 31))
+            self.get_image(97, 192, 15, 32))
         self.right_big_green_frames.append(
             self.get_image(112, 192, 16, 32))
         self.right_big_green_frames.append(
@@ -159,9 +159,9 @@ class Mario(pg.sprite.Sprite):
         self.right_big_red_frames.append(
             self.get_image(176, 240, 16, 32))
         self.right_big_red_frames.append(
-            self.get_image(80, 242, 16, 30))
+            self.get_image(80, 240, 16, 32))
         self.right_big_red_frames.append(
-            self.get_image(97, 241, 15, 31))
+            self.get_image(97, 240, 15, 32))
         self.right_big_red_frames.append(
             self.get_image(112, 240, 16, 32))
         self.right_big_red_frames.append(
@@ -176,9 +176,9 @@ class Mario(pg.sprite.Sprite):
         self.right_big_black_frames.append(
             self.get_image(176, 144, 16, 32))
         self.right_big_black_frames.append(
-            self.get_image(80, 146, 16, 30))
+            self.get_image(80, 144, 16, 32))
         self.right_big_black_frames.append(
-            self.get_image(97, 145, 15, 31))
+            self.get_image(97, 144, 15, 32))
         self.right_big_black_frames.append(
             self.get_image(112, 144, 16, 32))
         self.right_big_black_frames.append(
@@ -450,6 +450,7 @@ class Mario(pg.sprite.Sprite):
             self.image = self.left_frames[self.frame_index]
 
 
+
     def check_if_invincible(self, current_time):
         if self.invincible == True:
             if ((current_time - self.invincible_start_timer) < 10000):
@@ -489,6 +490,17 @@ class Mario(pg.sprite.Sprite):
         self.big = True
         self.right_frames = self.right_big_normal_frames
         self.left_frames = self.left_big_normal_frames
+        bottom = self.rect.bottom
+        left = self.rect.x
+        image = self.right_frames[0]
+        self.rect = image.get_rect()
+        self.rect.bottom = bottom
+        self.rect.x = left
+
+    def become_small(self):
+        self.big = False
+        self.right_frames = self.right_small_normal_frames
+        self.left_frames = self.left_small_normal_frames
         bottom = self.rect.bottom
         left = self.rect.x
         image = self.right_frames[0]

@@ -378,10 +378,13 @@ class Level1(tools._State):
             self.adjust_mario_for_x_collisions(collider)
 
         elif enemy:
-            if self.mario.invincible == True:
+            if self.mario.invincible:
                 enemy.kill()
                 self.death_group.add(enemy)
                 enemy.start_death_jump('right')
+            elif self.mario.big:
+                self.mario.become_small()
+                enemy.kill()
             else:
                 self.mario.dead = True
 
@@ -446,7 +449,7 @@ class Level1(tools._State):
             self.adjust_mario_for_y_ground_pipe_collisions(collider)
 
         elif enemy:
-            if self.mario.invincible == True:
+            if self.mario.invincible:
                 enemy.kill()
                 self.death_group.add(enemy)
                 enemy.start_death_jump('right')
@@ -535,6 +538,7 @@ class Level1(tools._State):
             self.mario.rect.bottom = enemy.rect.top
             self.mario.state = c.JUMP
             self.mario.y_vel = -5
+        
 
 
     def adjust_mario_for_y_shell_collisions(self, shell):
