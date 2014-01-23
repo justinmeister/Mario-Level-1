@@ -138,7 +138,7 @@ class Level1(tools._State):
 
 
     def setup_bricks(self):
-        brick1  = break_brick.Brick(858,  365, '6coins', self.coin_group)
+        brick1  = break_brick.Brick(858,  365)
         brick2  = break_brick.Brick(944,  365)
         brick3  = break_brick.Brick(1030, 365)
         brick4  = break_brick.Brick(3299, 365)
@@ -188,6 +188,8 @@ class Level1(tools._State):
                                            brick27, brick28,
                                            brick29, brick30,
                                            brick31)
+
+        self.brick_pieces_group = pg.sprite.Group()
 
 
     def setup_coin_boxes(self):
@@ -304,6 +306,7 @@ class Level1(tools._State):
         self.coin_box_group.update(current_time)
         self.powerup_group.update(current_time)
         self.coin_group.update(current_time)
+        self.brick_pieces_group.update()
         self.adjust_sprite_positions(current_time)
         self.adjust_camera()
         self.check_for_mario_death(keys)
@@ -487,9 +490,26 @@ class Level1(tools._State):
     def adjust_mario_for_y_brick_collisions(self, brick):
         if self.mario.rect.y > brick.rect.y:
             if brick.state == c.RESTING:
-                brick.start_bump()
-                if brick.coin_total > 0:
-                    self.coin_count += 1
+                if self.mario.big and brick.contents is None:
+                    self.check_if_enemy_on_brick(brick)
+                    brick.kill()
+                    self.brick_pieces_group.add(
+                        break_brick.BrickPiece(brick.rect.x,
+                                               brick.rect.y - (brick.rect.height/2),
+                                               -2, -12),
+                        break_brick.BrickPiece(brick.rect.right,
+                                               brick.rect.y - (brick.rect.height/2),
+                                               2, -12),
+                        break_brick.BrickPiece(brick.rect.x,
+                                               brick.rect.y,
+                                               -2, -6),
+                        break_brick.BrickPiece(brick.rect.right,
+                                               brick.rect.y,
+                                               2, -6))
+                else:
+                    brick.start_bump()
+                    if brick.coin_total > 0:
+                        self.coin_count += 1
             self.mario.y_vel = 7
             self.mario.rect.y = brick.rect.bottom
             self.mario.state = c.FALL
@@ -498,6 +518,23 @@ class Level1(tools._State):
             self.mario.y_vel = 0
             self.mario.rect.bottom = brick.rect.top
             self.mario.state = c.WALK
+
+
+    def check_if_enemy_on_brick(self, brick):
+        brick.rect.y -= 2
+
+        enemy = pg.sprite.spritecollideany(brick, self.enemy_group)
+
+        if enemy:
+            enemy.kill()
+            self.death_group.add(enemy)
+            if self.mario.rect.centerx > brick.rect.centerx:
+                enemy.start_death_jump('right')
+            else:
+                enemy.start_death_jump('left')
+
+        brick.rect.y += 2
+
 
 
     def adjust_mario_for_y_ground_pipe_collisions(self, collider):
@@ -845,7 +882,8 @@ class Level1(tools._State):
                                            self.shell_group,
                                            self.powerup_group,
                                            self.coin_group,
-                                           self.check_point_group
+                                           self.check_point_group,
+                                           self.brick_pieces_group
                                            )
 
         if self.mario.rect.right > (c.SCREEN_WIDTH * .33) and self.mario.rect.x < ((c.SCREEN_WIDTH / 2) - 50):
@@ -899,4 +937,5 @@ class Level1(tools._State):
         self.coin_box_group.draw(surface)
         self.death_group.draw(surface)
         self.shell_group.draw(surface)
+        self.brick_pieces_group.draw(surface)
 

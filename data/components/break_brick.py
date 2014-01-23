@@ -126,6 +126,57 @@ class Brick(pg.sprite.Sprite):
             self.powerup_in_box = False
 
 
+class BrickPiece(pg.sprite.Sprite):
+    """Pieces that appear when bricks are broken"""
+    def __init__(self, x, y, xvel, yvel):
+        super(BrickPiece, self).__init__()
+        self.sprite_sheet = setup.GFX['item_objects']
+        self.setup_frames()
+        self.frame_index = 0
+        self.image = self.frames[self.frame_index]
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.x_vel = xvel
+        self.y_vel = yvel
+        self.gravity = .8
+
+
+    def setup_frames(self):
+        self.frames = []
+
+        image = self.get_image(68, 20, 8, 8)
+        reversed_image = pg.transform.flip(image, True, False)
+
+        self.frames.append(image)
+        self.frames.append(reversed_image)
+
+
+    def get_image(self, x, y, width, height):
+        image = pg.Surface([width, height]).convert()
+        rect = image.get_rect()
+
+        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
+        image.set_colorkey(c.BLACK)
+        image = pg.transform.scale(image,
+                                   (int(rect.width*c.BRICK_SIZE_MULTIPLIER),
+                                    int(rect.height*c.BRICK_SIZE_MULTIPLIER)))
+        return image
+
+
+    def update(self):
+        self.rect.x += self.x_vel
+        self.rect.y += self.y_vel
+        self.y_vel += self.gravity
+        self.check_if_off_screen()
+
+    def check_if_off_screen(self):
+        if self.rect.y > c.SCREEN_HEIGHT:
+            self.kill()
+
+
+
+
 
 
 
