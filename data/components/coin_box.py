@@ -101,8 +101,10 @@ class Coin_box(pg.sprite.Sprite):
         if self.rect.y > self.rest_height + 5:
             self.rect.y = self.rest_height
             self.state = c.OPENED
-            if self.contents == 'powerup':
+            if self.contents == 'mushroom':
                 self.group.add(powerups.Mushroom(self.rect.centerx, self.rect.y))
+            elif self.contents == 'fireflower':
+                self.group.add(powerups.FireFlower(self.rect.centerx, self.rect.y))
 
 
         self.frame_index = 3

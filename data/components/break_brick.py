@@ -114,9 +114,6 @@ class Brick(pg.sprite.Sprite):
         self.state = c.BUMPED
 
 
-
-
-
     def opened(self):
         self.frame_index = 1
         self.image = self.frames[self.frame_index]

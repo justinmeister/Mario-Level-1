@@ -154,9 +154,9 @@ class Level1(tools._State):
         brick14 = break_brick.Brick(3901, 193)
         brick15 = break_brick.Brick(3944, 193)
         brick16 = break_brick.Brick(3987, 193)
-        brick17 = break_brick.Brick(4030, 365, '6coins', self.coin_group)
+        brick17 = break_brick.Brick(4030, 365, c.SIXCOINS, self.coin_group)
         brick18 = break_brick.Brick(4287, 365)
-        brick19 = break_brick.Brick(4330, 365, 'star', self.powerup_group)
+        brick19 = break_brick.Brick(4330, 365, c.STAR, self.powerup_group)
         brick20 = break_brick.Brick(5058, 365)
         brick21 = break_brick.Brick(5187, 193)
         brick22 = break_brick.Brick(5230, 193)
@@ -194,18 +194,18 @@ class Level1(tools._State):
 
     def setup_coin_boxes(self):
 
-        coin_box1  = coin_box.Coin_box(685, 365, 'coin', self.coin_group)
-        coin_box2  = coin_box.Coin_box(901, 365, 'powerup', self.powerup_group)
-        coin_box3  = coin_box.Coin_box(987, 365, 'coin', self.coin_group)
-        coin_box4  = coin_box.Coin_box(943, 193, 'coin', self.coin_group)
-        coin_box5  = coin_box.Coin_box(3342, 365, 'powerup', self.powerup_group)
-        coin_box6  = coin_box.Coin_box(4030, 193, 'coin', self.coin_group)
-        coin_box7  = coin_box.Coin_box(4544, 365, 'coin', self.coin_group)
-        coin_box8  = coin_box.Coin_box(4672, 365, 'coin', self.coin_group)
-        coin_box9  = coin_box.Coin_box(4672, 193, 'powerup', self.powerup_group)
-        coin_box10 = coin_box.Coin_box(4800, 365, 'coin', self.coin_group)
-        coin_box11 = coin_box.Coin_box(5531, 193, 'coin', self.coin_group)
-        coin_box12 = coin_box.Coin_box(7288, 365, 'coin', self.coin_group)
+        coin_box1  = coin_box.Coin_box(685, 365, c.FIREFLOWER, self.coin_group)
+        coin_box2  = coin_box.Coin_box(901, 365, c.MUSHROOM, self.powerup_group)
+        coin_box3  = coin_box.Coin_box(987, 365, c.COIN, self.coin_group)
+        coin_box4  = coin_box.Coin_box(943, 193, c.COIN, self.coin_group)
+        coin_box5  = coin_box.Coin_box(3342, 365, c.MUSHROOM, self.powerup_group)
+        coin_box6  = coin_box.Coin_box(4030, 193, c.COIN, self.coin_group)
+        coin_box7  = coin_box.Coin_box(4544, 365, c.COIN, self.coin_group)
+        coin_box8  = coin_box.Coin_box(4672, 365, c.COIN, self.coin_group)
+        coin_box9  = coin_box.Coin_box(4672, 193, c.MUSHROOM, self.powerup_group)
+        coin_box10 = coin_box.Coin_box(4800, 365, c.COIN, self.coin_group)
+        coin_box11 = coin_box.Coin_box(5531, 193, c.COIN, self.coin_group)
+        coin_box12 = coin_box.Coin_box(7288, 365, c.COIN, self.coin_group)
 
         self.coin_box_group = pg.sprite.Group(coin_box1,  coin_box2,
                                               coin_box3,  coin_box4,
@@ -386,7 +386,9 @@ class Level1(tools._State):
                 self.death_group.add(enemy)
                 enemy.start_death_jump('right')
             elif self.mario.big:
+                self.mario.fire = False
                 self.mario.become_small()
+                self.convert_fireflowers_to_mushrooms()
                 enemy.kill()
             else:
                 self.mario.dead = True
@@ -395,13 +397,35 @@ class Level1(tools._State):
             self.adjust_mario_for_x_shell_collisions(shell)
 
         elif powerup:
-            if powerup.name == 'star':
+            if powerup.name == c.STAR:
                 powerup.kill()
                 self.mario.invincible = True
                 self.mario.invincible_start_timer = current_time
-            elif powerup.name == 'mushroom':
+            elif powerup.name == c.MUSHROOM:
                 powerup.kill()
                 self.mario.become_big()
+                self.convert_mushrooms_to_fireflowers()
+            elif powerup.name == c.FIREFLOWER:
+                powerup.kill()
+                self.mario.fire = True
+
+
+    def convert_mushrooms_to_fireflowers(self):
+        for brick in self.brick_group:
+            if brick.contents == c.MUSHROOM:
+                brick.contents = c.FIREFLOWER
+        for coin_box in self.coin_box_group:
+            if coin_box.contents == c.MUSHROOM:
+                coin_box.contents = c.FIREFLOWER
+
+
+    def convert_fireflowers_to_mushrooms(self):
+        for brick in self.brick_group:
+            if brick.contents == c.FIREFLOWER:
+                brick.contents = c.MUSHROOM
+        for coin_box in self.coin_box_group:
+            if coin_box.contents == c.FIREFLOWER:
+                coin_box.contents = c.MUSHROOM
 
 
     def adjust_mario_for_x_collisions(self, collider):
@@ -463,7 +487,7 @@ class Level1(tools._State):
             self.adjust_mario_for_y_shell_collisions(shell)
 
         elif powerup:
-            if powerup.name == 'star':
+            if powerup.name == c.STAR:
                 powerup.kill()
                 self.mario.invincible = True
                 self.mario.invincible_start_timer = current_time
@@ -475,7 +499,7 @@ class Level1(tools._State):
         if self.mario.rect.y > coin_box.rect.y:
             if coin_box.state == c.RESTING:
                 coin_box.start_bump()
-                if coin_box.contents == 'coin':
+                if coin_box.contents == c.COIN:
                     self.coin_count += 1
 
             self.mario.y_vel = 7
@@ -521,7 +545,7 @@ class Level1(tools._State):
 
 
     def check_if_enemy_on_brick(self, brick):
-        brick.rect.y -= 2
+        brick.rect.y -= 5
 
         enemy = pg.sprite.spritecollideany(brick, self.enemy_group)
 
@@ -533,7 +557,7 @@ class Level1(tools._State):
             else:
                 enemy.start_death_jump('left')
 
-        brick.rect.y += 2
+        brick.rect.y += 5
 
 
 

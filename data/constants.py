@@ -80,5 +80,13 @@ SPIN = 'spin'
 
 BOUNCE = 'bounce'
 
+#Brick and coin box contents
+
+MUSHROOM = 'mushroom'
+STAR = 'star'
+FIREFLOWER = 'fireflower'
+SIXCOINS = '6coins'
+COIN = 'coin'
+
 
 

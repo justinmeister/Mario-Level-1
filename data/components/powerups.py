@@ -29,6 +29,7 @@ class Powerup(pg.sprite.Sprite):
         self.box_height = y
         self.gravity = 1
         self.max_y_vel = 8
+        self.animate_timer = 0
         self.name = name
 
 
@@ -95,6 +96,60 @@ class Mushroom(Powerup):
             self.sliding()
         elif self.state == c.FALL:
             self.falling()
+
+
+class FireFlower(Powerup):
+    """Powerup that allows Mario to throw fire balls"""
+    def __init__(self, x, y, name='fireflower'):
+        super(FireFlower, self).__init__(x, y)
+        self.setup_powerup(x, y, name, self.setup_frames)
+
+
+    def setup_frames(self):
+        self.frames.append(
+            self.get_image(0, 32, 16, 16))
+        self.frames.append(
+            self.get_image(16, 32, 16, 16))
+        self.frames.append(
+            self.get_image(32, 32, 16, 16))
+        self.frames.append(
+            self.get_image(48, 32, 16, 16))
+
+
+    def handle_state(self, current_time):
+        if self.state == c.REVEAL:
+            self.revealing(current_time)
+        elif self.state == c.RESTING:
+            self.resting(current_time)
+
+
+    def revealing(self,current_time):
+        """Animation of flower coming out of box"""
+        self.rect.y += self.y_vel
+
+        if self.rect.bottom <= self.box_height:
+            self.rect.bottom = self.box_height
+            self.state = c.RESTING
+
+        self.animation(current_time)
+
+
+    def resting(self, current_time):
+        """Fire Flower staying still on opened box"""
+        self.animation(current_time)
+
+
+    def animation(self, current_time):
+        """Method to make the Fire Flower blink"""
+        if (current_time - self.animate_timer) > 30:
+            if self.frame_index < 3:
+                self.frame_index += 1
+            else:
+                self.frame_index = 0
+
+            self.image = self.frames[self.frame_index]
+            self.animate_timer = current_time
+
 
 
 

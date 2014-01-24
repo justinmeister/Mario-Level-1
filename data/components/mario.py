@@ -28,6 +28,7 @@ class Mario(pg.sprite.Sprite):
         self.invincible_start_timer = 0
         self.invincible_index = 0
         self.big = False
+        self.fire = False
 
         self.load_from_sheet()
         self.image = self.right_frames[self.frame_index]
@@ -56,6 +57,9 @@ class Mario(pg.sprite.Sprite):
         self.left_big_red_frames = []
         self.right_big_black_frames = []
         self.left_big_black_frames = []
+
+        self.right_fire_frames = []
+        self.left_fire_frames = []
 
 
         #Images for normal small mario#
@@ -189,6 +193,24 @@ class Mario(pg.sprite.Sprite):
             self.get_image(160, 154, 16, 22))
 
 
+        #Images for Fire Mario#
+
+        self.right_fire_frames.append(
+            self.get_image(176, 48, 16, 32))
+        self.right_fire_frames.append(
+            self.get_image(80, 48, 16, 32))
+        self.right_fire_frames.append(
+            self.get_image(97, 48, 15, 32))
+        self.right_fire_frames.append(
+            self.get_image(112, 48, 16, 32))
+        self.right_fire_frames.append(
+            self.get_image(144, 48, 16, 32))
+        self.right_fire_frames.append(
+            self.get_image(128, 48, 16, 32))
+        self.right_fire_frames.append(
+            self.get_image(160, 58, 16, 22))
+
+
         #The left image frames are numbered the same as the right
         #frames but are simply reversed.
 
@@ -224,6 +246,10 @@ class Mario(pg.sprite.Sprite):
             new_image = pg.transform.flip(frame, True, False)
             self.left_big_black_frames.append(new_image)
 
+        for frame in self.right_fire_frames:
+            new_image = pg.transform.flip(frame, True, False)
+            self.left_fire_frames.append(new_image)
+
 
         self.normal_small_frames = [self.right_small_normal_frames,
                               self.left_small_normal_frames]
@@ -253,6 +279,9 @@ class Mario(pg.sprite.Sprite):
 
         self.black_big_frames = [self.right_big_black_frames,
                                  self.left_big_black_frames]
+
+        self.fire_frames = [self.right_fire_frames,
+                            self.left_fire_frames]
 
         self.invincible_big_frames_list = [self.normal_big_frames,
                                            self.green_big_frames,
@@ -292,6 +321,7 @@ class Mario(pg.sprite.Sprite):
             self.falling(keys, current_time)
 
         self.check_if_invincible(current_time)
+        self.check_if_fire()
 
 
     def standing(self, keys, current_time):
@@ -452,7 +482,7 @@ class Mario(pg.sprite.Sprite):
 
 
     def check_if_invincible(self, current_time):
-        if self.invincible == True:
+        if self.invincible:
             if ((current_time - self.invincible_start_timer) < 10000):
                 self.change_frame_list(current_time, 30)
             elif ((current_time - self.invincible_start_timer) < 12000):
@@ -497,6 +527,7 @@ class Mario(pg.sprite.Sprite):
         self.rect.bottom = bottom
         self.rect.x = left
 
+
     def become_small(self):
         self.big = False
         self.right_frames = self.right_small_normal_frames
@@ -507,3 +538,9 @@ class Mario(pg.sprite.Sprite):
         self.rect = image.get_rect()
         self.rect.bottom = bottom
         self.rect.x = left
+
+
+    def check_if_fire(self):
+        if self.fire and self.invincible == False:
+            self.right_frames = self.fire_frames[0]
+            self.left_frames = self.fire_frames[1]
