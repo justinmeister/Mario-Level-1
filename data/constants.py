@@ -80,6 +80,11 @@ SPIN = 'spin'
 
 BOUNCE = 'bounce'
 
+#FIRE STATES
+
+FLYING = 'flying'
+EXPLODING = 'exploding'
+
 #Brick and coin box contents
 
 MUSHROOM = 'mushroom'
@@ -87,6 +92,8 @@ STAR = 'star'
 FIREFLOWER = 'fireflower'
 SIXCOINS = '6coins'
 COIN = 'coin'
+
+FIREBALL = 'fireball'
 
 
 

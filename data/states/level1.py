@@ -194,7 +194,7 @@ class Level1(tools._State):
 
     def setup_coin_boxes(self):
 
-        coin_box1  = coin_box.Coin_box(685, 365, c.FIREFLOWER, self.coin_group)
+        coin_box1  = coin_box.Coin_box(685, 365, c.COIN, self.coin_group)
         coin_box2  = coin_box.Coin_box(901, 365, c.MUSHROOM, self.powerup_group)
         coin_box3  = coin_box.Coin_box(987, 365, c.COIN, self.coin_group)
         coin_box4  = coin_box.Coin_box(943, 193, c.COIN, self.coin_group)
@@ -297,7 +297,7 @@ class Level1(tools._State):
 
 
     def update_all_sprites(self, keys, current_time):
-        self.mario.update(keys, current_time)
+        self.mario.update(keys, current_time, self.powerup_group)
         self.check_points_check()
         self.enemy_group.update(current_time)
         self.death_group.update(current_time)
@@ -778,6 +778,8 @@ class Level1(tools._State):
                 self.adjust_mushroom_position(powerup)
             elif powerup.name == 'star':
                 self.adjust_star_position(powerup)
+            elif powerup.name == c.FIREBALL:
+                self.adjust_fireball_position(powerup)
 
 
     def adjust_mushroom_position(self, mushroom):
@@ -867,6 +869,11 @@ class Level1(tools._State):
         else:
             star.rect.bottom = collider.rect.top
             star.start_bounce(-8)
+
+
+    def adjust_fireball_position(self, fireball):
+        fireball.rect.x += fireball.x_vel
+        fireball.rect.y += fireball.y_vel
 
 
 

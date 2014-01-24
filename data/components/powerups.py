@@ -100,7 +100,7 @@ class Mushroom(Powerup):
 
 class FireFlower(Powerup):
     """Powerup that allows Mario to throw fire balls"""
-    def __init__(self, x, y, name='fireflower'):
+    def __init__(self, x, y, name=c.FIREFLOWER):
         super(FireFlower, self).__init__(x, y)
         self.setup_powerup(x, y, name, self.setup_frames)
 
@@ -149,9 +149,6 @@ class FireFlower(Powerup):
 
             self.image = self.frames[self.frame_index]
             self.animate_timer = current_time
-
-
-
 
 
 class Star(Powerup):
@@ -212,6 +209,113 @@ class Star(Powerup):
             self.x_vel = -5
         else:
             self.x_vel = 5
+
+
+
+class FireBall(pg.sprite.Sprite):
+    def __init__(self, x, y, facing_right, name=c.FIREBALL):
+        super(FireBall, self).__init__()
+        self.sprite_sheet = setup.GFX['item_objects']
+        self.setup_frames()
+        if facing_right:
+            self.x_vel = 12
+        else:
+            self.x_vel = -12
+        self.y_vel = 10
+        self.gravity = .15
+        self.frame_index = 0
+        self.animation_timer = 0
+        self.state = c.FLYING
+        self.image = self.frames[self.frame_index]
+        self.rect = self.image.get_rect()
+        self.rect.right = x
+        self.rect.y = y
+        self.name = name
+
+
+    def setup_frames(self):
+        self.frames = []
+
+        self.frames.append(
+            self.get_image(96, 144, 8, 8))
+        self.frames.append(
+            self.get_image(104, 144, 8, 8))
+        self.frames.append(
+            self.get_image(96, 152, 8, 8))
+        self.frames.append(
+            self.get_image(104, 152, 8, 8))
+        self.frames.append(
+            self.get_image(116, 148, 8, 8))
+        self.frames.append(
+            self.get_image(114, 161, 12, 14))
+        self.frames.append(
+            self.get_image(112, 176, 16, 16))
+
+
+    def get_image(self, x, y, width, height):
+        """Get the image frames from the sprite sheet"""
+
+        image = pg.Surface([width, height]).convert()
+        rect = image.get_rect()
+
+        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
+        image.set_colorkey(c.BLACK)
+
+
+        image = pg.transform.scale(image,
+                                   (int(rect.width*c.SIZE_MULTIPLIER),
+                                    int(rect.height*c.SIZE_MULTIPLIER)))
+        return image
+
+
+    def update(self, current_time):
+        self.handle_state(current_time)
+        self.check_if_off_screen()
+
+
+    def handle_state(self, current_time):
+
+        if self.state == c.FLYING:
+            self.flying(current_time)
+        elif self.state == c.EXPLODING:
+            self.exploding(current_time)
+
+
+    def flying(self, current_time):
+        self.animation(current_time)
+
+
+    def exploding(self, current_time):
+        self.animation(current_time)
+
+
+    def animation(self, current_time):
+        if self.state == c.FLYING:
+            if (current_time - self.animation_timer) > 200:
+                if self.frame_index < 3:
+                    self.frame_index += 1
+                else:
+                    self.frame_index = 0
+                self.animation_timer = current_time
+                self.image = self.frames[self.frame_index]
+
+
+        elif self.state == c.EXPLODING:
+            if self.animation_timer == 0:
+                self.animation_timer = current_time
+                self.frame_index = 4
+            elif (current_time - self.animation_timer) > 500:
+                if self.frame_index < 6:
+                    self.frame_index += 1
+                else:
+                    self.kill()
+
+
+    def check_if_off_screen(self):
+        if (self.rect.x > c.SCREEN_WIDTH) or (self.rect.y > c.SCREEN_HEIGHT):
+            self.kill()
+
+
 
 
 

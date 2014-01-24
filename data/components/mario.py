@@ -3,7 +3,7 @@ __author__ = 'justinarmstrong'
 import pygame as pg
 from .. import setup, tools
 from .. import constants as c
-import copy
+import powerups
 
 
 class Mario(pg.sprite.Sprite):
@@ -29,6 +29,7 @@ class Mario(pg.sprite.Sprite):
         self.invincible_index = 0
         self.big = False
         self.fire = False
+        self.last_fireball_time = 0
 
         self.load_from_sheet()
         self.image = self.right_frames[self.frame_index]
@@ -209,6 +210,8 @@ class Mario(pg.sprite.Sprite):
             self.get_image(128, 48, 16, 32))
         self.right_fire_frames.append(
             self.get_image(160, 58, 16, 22))
+        self.right_fire_frames.append(           #When standing, shooting fire
+            self.get_image(336, 48, 16, 32))
 
 
         #The left image frames are numbered the same as the right
@@ -305,26 +308,26 @@ class Mario(pg.sprite.Sprite):
         return image
 
 
-    def update(self, keys, current_time):
-        self.handle_state(keys, current_time)
+    def update(self, keys, current_time, fire_group):
+        self.handle_state(keys, current_time, fire_group)
         self.animation()
 
 
-    def handle_state(self, keys, current_time):
+    def handle_state(self, keys, current_time, fire_group):
         if self.state == c.STAND:
-            self.standing(keys, current_time)
+            self.standing(keys, current_time, fire_group)
         elif self.state == c.WALK:
-            self.walking(keys, current_time)
+            self.walking(keys, current_time, fire_group)
         elif self.state == c.JUMP:
-            self.jumping(keys, current_time)
+            self.jumping(keys, current_time, fire_group)
         elif self.state == c.FALL:
-            self.falling(keys, current_time)
+            self.falling(keys, current_time, fire_group)
 
         self.check_if_invincible(current_time)
         self.check_if_fire()
 
 
-    def standing(self, keys, current_time):
+    def standing(self, keys, current_time, fire_group):
         """This function is called if Mario is standing still"""
         self.check_to_allow_jump(keys)
         
@@ -343,11 +346,15 @@ class Mario(pg.sprite.Sprite):
             if self.allow_jump:
                 self.state = c.JUMP
                 self.y_vel = self.jump_vel
+        elif keys[pg.K_s]:
+            if self.fire:
+                self.shoot_fireball(fire_group, current_time)
+
         else:
             self.state = c.STAND
 
 
-    def walking(self, keys, current_time):
+    def walking(self, keys, current_time, fire_group):
         """This function is called when Mario is in a walking state
         It changes the frame, checks for holding down the run button,
         checks for a jump, then adjusts the state if necessary"""
@@ -370,6 +377,8 @@ class Mario(pg.sprite.Sprite):
 
         if keys[pg.K_s]:
             self.max_x_vel = 7
+            if self.fire:
+                self.shoot_fireball(fire_group, current_time)
         else:
             self.max_x_vel = 5
 
@@ -422,7 +431,7 @@ class Mario(pg.sprite.Sprite):
                     self.state = c.STAND
 
 
-    def jumping(self, keys, current_time):
+    def jumping(self, keys, current_time, fire_group):
         self.allow_jump = False
         self.frame_index = 4
         self.gravity = c.JUMP_GRAVITY
@@ -444,8 +453,12 @@ class Mario(pg.sprite.Sprite):
             self.gravity = c.GRAVITY
             self.state = c.FALL
 
+        if keys[pg.K_s]:
+            if self.fire:
+                self.shoot_fireball(fire_group, current_time)
 
-    def falling(self, keys, current_time):
+
+    def falling(self, keys, current_time, fire_group):
         self.y_vel += self.gravity
 
         if keys[pg.K_LEFT]:
@@ -455,6 +468,10 @@ class Mario(pg.sprite.Sprite):
         elif keys[pg.K_RIGHT]:
             if self.x_vel < self.max_x_vel:
                 self.x_vel += self.x_accel
+
+        if keys[pg.K_s]:
+            if self.fire:
+                self.shoot_fireball(fire_group, current_time)
 
 
     def check_to_allow_jump(self, keys):
@@ -544,3 +561,17 @@ class Mario(pg.sprite.Sprite):
         if self.fire and self.invincible == False:
             self.right_frames = self.fire_frames[0]
             self.left_frames = self.fire_frames[1]
+
+
+    def shoot_fireball(self, fire_group, current_time):
+        if (current_time - self.last_fireball_time) > 500:
+            if len(fire_group) < 3:
+                fire_group.add(
+                    powerups.FireBall(self.rect.right, self.rect.y, self.facing_right))
+                self.last_fireball_time = current_time
+
+            self.frame_index = 7
+            if self.facing_right:
+                self.image = self.right_frames[self.frame_index]
+            else:
+                self.image = self.left_frames[self.frame_index]
