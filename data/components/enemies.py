@@ -91,6 +91,27 @@ class Enemy(pg.sprite.Sprite):
         pass
 
 
+    def death_jumping(self):
+        self.rect.y += self.y_vel
+        self.rect.x += self.x_vel
+        self.y_vel += self.gravity
+
+        if self.rect.y > 600:
+            self.kill()
+
+
+    def start_death_jump(self, direction):
+        self.y_vel = -8
+        if direction == c.RIGHT:
+            self.x_vel = 2
+        else:
+            self.x_vel = -2
+        self.gravity = .5
+        self.frame_index = 3
+        self.image = self.frames[self.frame_index]
+        self.state = c.DEATH_JUMP
+
+
     def animation(self):
         self.image = self.frames[self.frame_index]
 
@@ -128,28 +149,6 @@ class Goomba(Enemy):
             self.kill()
 
 
-    def death_jumping(self):
-        self.rect.y += self.y_vel
-        self.rect.x += self.x_vel
-        self.y_vel += self.gravity
-
-        if self.rect.y > 600:
-            self.kill()
-
-
-    def start_death_jump(self, direction):
-        self.y_vel = -8
-        if direction == 'right':
-            self.x_vel = 2
-        else:
-            self.x_vel = -2
-        self.gravity = .5
-        self.frame_index = 3
-        self.image = self.frames[self.frame_index]
-        self.state = c.DEATH_JUMP
-
-
-
 
 class Koopa(Enemy):
 
@@ -166,6 +165,7 @@ class Koopa(Enemy):
             self.get_image(180, 0, 16, 24))
         self.frames.append(
             self.get_image(360, 5, 16, 15))
+        self.frames.append(pg.transform.flip(self.frames[2], False, True))
 
 
     def jumped_on(self, current_time):

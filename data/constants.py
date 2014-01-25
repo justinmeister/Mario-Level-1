@@ -83,6 +83,7 @@ BOUNCE = 'bounce'
 #FIRE STATES
 
 FLYING = 'flying'
+BOUNCING = 'bouncing'
 EXPLODING = 'exploding'
 
 #Brick and coin box contents

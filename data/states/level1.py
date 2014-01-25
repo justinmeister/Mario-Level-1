@@ -295,7 +295,6 @@ class Level1(tools._State):
         self.blit_everything(surface)
 
 
-
     def update_all_sprites(self, keys, current_time):
         self.mario.update(keys, current_time, self.powerup_group)
         self.check_points_check()
@@ -407,7 +406,11 @@ class Level1(tools._State):
                 self.convert_mushrooms_to_fireflowers()
             elif powerup.name == c.FIREFLOWER:
                 powerup.kill()
-                self.mario.fire = True
+                if self.mario.big:
+                    self.mario.fire = True
+                else:
+                    self.mario.become_big()
+                    self.convert_mushrooms_to_fireflowers()
 
 
     def convert_mushrooms_to_fireflowers(self):
@@ -479,7 +482,7 @@ class Level1(tools._State):
             if self.mario.invincible:
                 enemy.kill()
                 self.death_group.add(enemy)
-                enemy.start_death_jump('right')
+                enemy.start_death_jump(c.RIGHT)
             else:
                 self.adjust_mario_for_y_enemy_collisions(enemy, current_time)
 
@@ -872,8 +875,68 @@ class Level1(tools._State):
 
 
     def adjust_fireball_position(self, fireball):
-        fireball.rect.x += fireball.x_vel
-        fireball.rect.y += fireball.y_vel
+        if fireball.state == c.FLYING:
+            fireball.rect.x += fireball.x_vel
+            self.check_fireball_x_collisions(fireball)
+            fireball.rect.y += fireball.y_vel
+            self.check_fireball_y_collisions(fireball)
+        elif fireball.state == c.BOUNCING:
+            fireball.rect.x += fireball.x_vel
+            self.check_fireball_x_collisions(fireball)
+            fireball.rect.y += fireball.y_vel
+            self.check_fireball_y_collisions(fireball)
+            fireball.y_vel += fireball.gravity
+
+
+    def bounce_fireball(self, fireball):
+        fireball.y_vel = -8
+        if fireball.direction == c.RIGHT:
+            fireball.x_vel = 15
+        else:
+            fireball.x_vel = -15
+
+        if fireball in self.powerup_group:
+            fireball.state = c.BOUNCING
+
+
+    def check_fireball_x_collisions(self, fireball):
+        collide_group = pg.sprite.Group(self.ground_group,
+                                        self.pipe_group,
+                                        self.step_group,
+                                        self.coin_box_group,
+                                        self.brick_group)
+
+        collider = pg.sprite.spritecollideany(fireball, collide_group)
+
+        if collider:
+            fireball.kill()
+            self.death_group.add(fireball)
+            fireball.explode_transition()
+
+
+
+    def check_fireball_y_collisions(self, fireball):
+        collide_group = pg.sprite.Group(self.ground_group,
+                                        self.pipe_group,
+                                        self.step_group,
+                                        self.coin_box_group,
+                                        self.brick_group)
+
+        collider = pg.sprite.spritecollideany(fireball, collide_group)
+        enemy = pg.sprite.spritecollideany(fireball, self.enemy_group)
+
+        if collider and (fireball in self.powerup_group):
+            fireball.rect.bottom = collider.rect.y
+            self.bounce_fireball(fireball)
+
+        elif enemy:
+            fireball.kill()
+            enemy.kill()
+            self.death_group.add(enemy, fireball)
+            enemy.start_death_jump(fireball.direction)
+            fireball.explode_transition()
+
+
 
 
 

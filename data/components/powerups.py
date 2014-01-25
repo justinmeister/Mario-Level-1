@@ -218,11 +218,13 @@ class FireBall(pg.sprite.Sprite):
         self.sprite_sheet = setup.GFX['item_objects']
         self.setup_frames()
         if facing_right:
+            self.direction = c.RIGHT
             self.x_vel = 12
         else:
+            self.direction = c.LEFT
             self.x_vel = -12
         self.y_vel = 10
-        self.gravity = .15
+        self.gravity = .9
         self.frame_index = 0
         self.animation_timer = 0
         self.state = c.FLYING
@@ -237,19 +239,19 @@ class FireBall(pg.sprite.Sprite):
         self.frames = []
 
         self.frames.append(
-            self.get_image(96, 144, 8, 8))
+            self.get_image(96, 144, 8, 8)) #Frame 1 of flying
         self.frames.append(
-            self.get_image(104, 144, 8, 8))
+            self.get_image(104, 144, 8, 8))  #Frame 2 of Flying
         self.frames.append(
-            self.get_image(96, 152, 8, 8))
+            self.get_image(96, 152, 8, 8))   #Frame 3 of Flying
         self.frames.append(
-            self.get_image(104, 152, 8, 8))
+            self.get_image(104, 152, 8, 8))  #Frame 4 of flying
         self.frames.append(
-            self.get_image(116, 148, 8, 8))
+            self.get_image(112, 144, 16, 16))   #frame 1 of exploding
         self.frames.append(
-            self.get_image(114, 161, 12, 14))
+            self.get_image(112, 160, 16, 16))  #frame 2 of exploding
         self.frames.append(
-            self.get_image(112, 176, 16, 16))
+            self.get_image(112, 176, 16, 16))  #frame 3 of exploding
 
 
     def get_image(self, x, y, width, height):
@@ -276,21 +278,15 @@ class FireBall(pg.sprite.Sprite):
     def handle_state(self, current_time):
 
         if self.state == c.FLYING:
-            self.flying(current_time)
+            self.animation(current_time)
+        elif self.state == c.BOUNCING:
+            self.animation(current_time)
         elif self.state == c.EXPLODING:
-            self.exploding(current_time)
-
-
-    def flying(self, current_time):
-        self.animation(current_time)
-
-
-    def exploding(self, current_time):
-        self.animation(current_time)
+            self.animation(current_time)
 
 
     def animation(self, current_time):
-        if self.state == c.FLYING:
+        if self.state == c.FLYING or self.state == c.BOUNCING:
             if (current_time - self.animation_timer) > 200:
                 if self.frame_index < 3:
                     self.frame_index += 1
@@ -301,18 +297,26 @@ class FireBall(pg.sprite.Sprite):
 
 
         elif self.state == c.EXPLODING:
-            if self.animation_timer == 0:
-                self.animation_timer = current_time
-                self.frame_index = 4
-            elif (current_time - self.animation_timer) > 500:
+            if (current_time - self.animation_timer) > 50:
                 if self.frame_index < 6:
                     self.frame_index += 1
+                    self.image = self.frames[self.frame_index]
+                    self.animation_timer = current_time
                 else:
                     self.kill()
 
 
+    def explode_transition(self):
+        self.frame_index = 4
+        centerx = self.rect.centerx
+        self.image = self.frames[self.frame_index]
+        self.rect.centerx = centerx
+        self.state = c.EXPLODING
+
+
     def check_if_off_screen(self):
-        if (self.rect.x > c.SCREEN_WIDTH) or (self.rect.y > c.SCREEN_HEIGHT):
+        if (self.rect.x > c.SCREEN_WIDTH) or (self.rect.y > c.SCREEN_HEIGHT) \
+            or (self.rect.right < 0):
             self.kill()
 
 

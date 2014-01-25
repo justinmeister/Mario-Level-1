@@ -30,6 +30,8 @@ class Mario(pg.sprite.Sprite):
         self.big = False
         self.fire = False
         self.last_fireball_time = 0
+        self.fireball_count = 0
+        self.allow_fireball = True
 
         self.load_from_sheet()
         self.image = self.right_frames[self.frame_index]
@@ -70,7 +72,7 @@ class Mario(pg.sprite.Sprite):
         self.right_small_normal_frames.append(
             self.get_image(80,  32, 15, 16))  #right walking 1
         self.right_small_normal_frames.append(
-            self.get_image(99,  32, 15, 16))  #right walking 2
+            self.get_image(98,  32, 16, 16))  #right walking 2
         self.right_small_normal_frames.append(
             self.get_image(114,  32, 15, 16))  #right walking 3
         self.right_small_normal_frames.append(
@@ -86,7 +88,7 @@ class Mario(pg.sprite.Sprite):
         self.right_small_green_frames.append(
             self.get_image(80, 224, 15, 16))
         self.right_small_green_frames.append(
-            self.get_image(99, 224, 15, 16))
+            self.get_image(98, 224, 16, 16))
         self.right_small_green_frames.append(
             self.get_image(114, 224, 15, 16))
         self.right_small_green_frames.append(
@@ -101,7 +103,7 @@ class Mario(pg.sprite.Sprite):
         self.right_small_red_frames.append(
             self.get_image(80, 272, 15, 16))
         self.right_small_red_frames.append(
-            self.get_image(99, 272, 15, 16))
+            self.get_image(98, 272, 16, 16))
         self.right_small_red_frames.append(
             self.get_image(114, 272, 15, 16))
         self.right_small_red_frames.append(
@@ -116,7 +118,7 @@ class Mario(pg.sprite.Sprite):
         self.right_small_black_frames.append(
             self.get_image(80, 176, 15, 16))
         self.right_small_black_frames.append(
-            self.get_image(99, 176, 15, 16))
+            self.get_image(98, 176, 16, 16))
         self.right_small_black_frames.append(
             self.get_image(114, 176, 15, 16))
         self.right_small_black_frames.append(
@@ -330,11 +332,16 @@ class Mario(pg.sprite.Sprite):
     def standing(self, keys, current_time, fire_group):
         """This function is called if Mario is standing still"""
         self.check_to_allow_jump(keys)
+        self.check_to_allow_fireball(keys)
         
         self.frame_index = 0
         self.x_vel = 0
         self.y_vel = 0
         self.gravity = c.GRAVITY
+
+        if keys[pg.K_s]:
+            if self.fire and self.allow_fireball:
+                self.shoot_fireball(fire_group, current_time)
 
         if keys[pg.K_LEFT]:
             self.facing_right = False
@@ -346,9 +353,6 @@ class Mario(pg.sprite.Sprite):
             if self.allow_jump:
                 self.state = c.JUMP
                 self.y_vel = self.jump_vel
-        elif keys[pg.K_s]:
-            if self.fire:
-                self.shoot_fireball(fire_group, current_time)
 
         else:
             self.state = c.STAND
@@ -360,6 +364,7 @@ class Mario(pg.sprite.Sprite):
         checks for a jump, then adjusts the state if necessary"""
 
         self.check_to_allow_jump(keys)
+        self.check_to_allow_fireball(keys)
 
         if self.frame_index == 0:
             self.frame_index += 1
@@ -377,7 +382,7 @@ class Mario(pg.sprite.Sprite):
 
         if keys[pg.K_s]:
             self.max_x_vel = 7
-            if self.fire:
+            if self.fire and self.allow_fireball:
                 self.shoot_fireball(fire_group, current_time)
         else:
             self.max_x_vel = 5
@@ -436,6 +441,8 @@ class Mario(pg.sprite.Sprite):
         self.frame_index = 4
         self.gravity = c.JUMP_GRAVITY
         self.y_vel += self.gravity
+        self.check_to_allow_fireball(keys)
+
         if self.y_vel >= 0:
             self.gravity += .4
             self.state = c.FALL
@@ -454,11 +461,13 @@ class Mario(pg.sprite.Sprite):
             self.state = c.FALL
 
         if keys[pg.K_s]:
-            if self.fire:
+            if self.fire and self.allow_fireball:
                 self.shoot_fireball(fire_group, current_time)
 
 
+
     def falling(self, keys, current_time, fire_group):
+        self.check_to_allow_fireball(keys)
         self.y_vel += self.gravity
 
         if keys[pg.K_LEFT]:
@@ -470,13 +479,18 @@ class Mario(pg.sprite.Sprite):
                 self.x_vel += self.x_accel
 
         if keys[pg.K_s]:
-            if self.fire:
+            if self.fire and self.allow_fireball:
                 self.shoot_fireball(fire_group, current_time)
 
 
     def check_to_allow_jump(self, keys):
         if not keys[pg.K_a]:
             self.allow_jump = True
+
+
+    def check_to_allow_fireball(self, keys):
+        if not keys[pg.K_s]:
+            self.allow_fireball = True
 
 
     def calculate_animation_speed(self):
@@ -563,15 +577,32 @@ class Mario(pg.sprite.Sprite):
             self.left_frames = self.fire_frames[1]
 
 
-    def shoot_fireball(self, fire_group, current_time):
-        if (current_time - self.last_fireball_time) > 500:
-            if len(fire_group) < 3:
-                fire_group.add(
+    def shoot_fireball(self, powerup_group, current_time):
+        self.fireball_count = self.count_number_of_fireballs(powerup_group)
+
+        if (current_time - self.last_fireball_time) > 200:
+            if self.fireball_count < 2:
+                self.allow_fireball = False
+                powerup_group.add(
                     powerups.FireBall(self.rect.right, self.rect.y, self.facing_right))
                 self.last_fireball_time = current_time
 
-            self.frame_index = 7
-            if self.facing_right:
-                self.image = self.right_frames[self.frame_index]
-            else:
-                self.image = self.left_frames[self.frame_index]
+                self.frame_index = 7
+                if self.facing_right:
+                    self.image = self.right_frames[self.frame_index]
+                else:
+                    self.image = self.left_frames[self.frame_index]
+
+
+    def count_number_of_fireballs(self, powerup_group):
+
+        fireball_list = []
+
+        for powerup in powerup_group:
+            if powerup.name == c.FIREBALL:
+                fireball_list.append(powerup)
+
+        return len(fireball_list)
+
+
+
