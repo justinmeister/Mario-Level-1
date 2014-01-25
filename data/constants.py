@@ -96,5 +96,10 @@ COIN = 'coin'
 
 FIREBALL = 'fireball'
 
+#LIST of ENEMIES
+
+GOOMBA = 'goomba'
+KOOPA = 'koopa'
+
 
 

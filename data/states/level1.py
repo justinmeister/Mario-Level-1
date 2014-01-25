@@ -18,11 +18,11 @@ class Level1(tools._State):
 
 
     def startup(self, current_time, persistant):
+        """Called when the State object is created"""
         self.persistant = persistant
         self.camera_adjust = 0
         self.coin_count = 0
 
-        self.setup_spritegroups()
         self.setup_background()
         self.setup_ground()
         self.setup_pipes()
@@ -32,21 +32,26 @@ class Level1(tools._State):
         self.setup_enemies()
         self.setup_mario()
         self.setup_checkpoints()
-
-        self.collide_group = pg.sprite.Group(self.ground_group,
-                                             self.pipe_group,
-                                             self.step_group,
-                                             )
-
-        self.all_sprites = pg.sprite.Group(self.mario, self.enemy_group)
+        self.setup_spritegroups()
 
 
     def setup_spritegroups(self):
-        self.powerup_group = pg.sprite.Group()
-        self.coin_group = pg.sprite.Group()
+        """Sprite groups created for convenience"""
+        self.sprites_about_to_die_group = pg.sprite.Group()
+        self.shell_group = pg.sprite.Group()
+        self.enemy_group = pg.sprite.Group()
+
+        self.ground_step_pipe_group = pg.sprite.Group(self.ground_group,
+                                                      self.pipe_group,
+                                                      self.step_group)
+
+        self.mario_and_enemy_group = pg.sprite.Group(self.mario,
+                                                     self.enemy_group)
 
 
     def setup_background(self):
+        """Sets the background image, rect and scales it to the correct
+        proportions"""
         self.background = setup.GFX['level_1']
         self.back_rect = self.background.get_rect()
         self.background = pg.transform.scale(self.background,
@@ -56,6 +61,8 @@ class Level1(tools._State):
 
 
     def setup_ground(self):
+        """Creates collideable, invisible rectangles over top of the ground for
+        sprites to walk on"""
         ground_rect1 = collider.Collider(0, c.GROUND_HEIGHT,    2953, 60)
         ground_rect2 = collider.Collider(3048, c.GROUND_HEIGHT,  635, 60)
         ground_rect3 = collider.Collider(3819, c.GROUND_HEIGHT, 2735, 60)
@@ -84,7 +91,6 @@ class Level1(tools._State):
 
     def setup_steps(self):
         """Create collideable rects for all the steps"""
-
         step1 = collider.Collider(5745, 495, 40, 44)
         step2 = collider.Collider(5788, 452, 40, 44)
         step3 = collider.Collider(5831, 409, 40, 44)
@@ -119,8 +125,6 @@ class Level1(tools._State):
 
         step27 = collider.Collider(8488, 495, 40, 40)
 
-
-
         self.step_group = pg.sprite.Group(step1,  step2,
                                           step3,  step4,
                                           step5,  step6,
@@ -138,6 +142,12 @@ class Level1(tools._State):
 
 
     def setup_bricks(self):
+        """Creates all the breakable bricks for the level.  Coin and
+        powerup groups are created so they can be passed to bricks."""
+        self.coin_group = pg.sprite.Group()
+        self.powerup_group = pg.sprite.Group()
+        self.brick_pieces_group = pg.sprite.Group()
+
         brick1  = break_brick.Brick(858,  365)
         brick2  = break_brick.Brick(944,  365)
         brick3  = break_brick.Brick(1030, 365)
@@ -170,8 +180,6 @@ class Level1(tools._State):
         brick30 = break_brick.Brick(7245, 365)
         brick31 = break_brick.Brick(7331, 365)
 
-
-
         self.brick_group = pg.sprite.Group(brick1,  brick2,
                                            brick3,  brick4,
                                            brick5,  brick6,
@@ -189,11 +197,9 @@ class Level1(tools._State):
                                            brick29, brick30,
                                            brick31)
 
-        self.brick_pieces_group = pg.sprite.Group()
-
 
     def setup_coin_boxes(self):
-
+        """Creates all the coin boxes and puts them in a sprite group"""
         coin_box1  = coin_box.Coin_box(685, 365, c.COIN, self.coin_group)
         coin_box2  = coin_box.Coin_box(901, 365, c.MUSHROOM, self.powerup_group)
         coin_box3  = coin_box.Coin_box(987, 365, c.COIN, self.coin_group)
@@ -216,9 +222,7 @@ class Level1(tools._State):
 
 
     def setup_enemies(self):
-        """Creates a list of Goomba objects that will be added to the
-        self.enemy_group sprite group when Mario gets a certain distance"""
-
+        """Creates all the enemies and stores them in a list of lists."""
         goomba0 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
         goomba1 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
         goomba2 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
@@ -268,20 +272,17 @@ class Level1(tools._State):
                                  enemy_group9,
                                  enemy_group10]
 
-        self.enemy_group = pg.sprite.Group()
-        self.death_group = pg.sprite.Group()
-        self.shell_group = pg.sprite.Group()
-
 
     def setup_mario(self):
         """Places Mario at the beginning of the level"""
-
         self.mario = mario.Mario()
         self.mario.rect.x = 110
         self.mario.rect.bottom = c.GROUND_HEIGHT
 
 
     def setup_checkpoints(self):
+        """Creates invisible checkpoints that when collided will trigger
+        the creation of enemies from the self.enemy_group_list"""
         check1 = checkpoint.Checkpoint(530, "1")
         check2 = checkpoint.Checkpoint(1350, '2')
         check3 = checkpoint.Checkpoint(1650, '3')
@@ -300,17 +301,17 @@ class Level1(tools._State):
 
 
     def update(self, surface, keys, current_time):
-        """Updates Entire level"""
-
+        """Updates Entire level.  Called by the control object"""
         self.update_all_sprites(keys, current_time)
         self.blit_everything(surface)
 
 
     def update_all_sprites(self, keys, current_time):
+        """Updates the location of all sprites on the screen"""
         self.mario.update(keys, current_time, self.powerup_group)
         self.check_points_check()
         self.enemy_group.update(current_time)
-        self.death_group.update(current_time)
+        self.sprites_about_to_die_group.update(current_time)
         self.shell_group.update(current_time)
         self.brick_group.update()
         self.coin_box_group.update(current_time)
@@ -327,7 +328,6 @@ class Level1(tools._State):
         add enemies to self.enemy_group"""
         checkpoint = pg.sprite.spritecollideany(self.mario,
                                                  self.check_point_group)
-
         if checkpoint:
             checkpoint.kill()
 
@@ -335,10 +335,11 @@ class Level1(tools._State):
                 if checkpoint.name == str(i):
                     self.enemy_group.add(self.enemy_group_list[i-1])
 
-            self.all_sprites.add(self.enemy_group)
+            self.mario_and_enemy_group.add(self.enemy_group)
 
 
     def adjust_sprite_positions(self, current_time):
+        """Adjusts sprites by their x and y velocities and collisions"""
         self.adjust_mario_position(current_time)
         self.adjust_enemy_position()
         self.adjust_shell_position()
@@ -346,6 +347,8 @@ class Level1(tools._State):
 
 
     def adjust_mario_position(self, current_time):
+        """Adjusts Mario's position based on his x, y velocities and
+        potential collisions"""
         self.last_x_position = self.mario.rect.right
         self.mario.rect.x += self.mario.x_vel
         self.check_mario_x_collisions(current_time)
@@ -358,13 +361,13 @@ class Level1(tools._State):
 
 
     def check_mario_x_collisions(self, current_time):
-        collider = pg.sprite.spritecollideany(self.mario, self.collide_group)
+        """Check for collisions after Mario is moved on the x axis"""
+        collider = pg.sprite.spritecollideany(self.mario, self.ground_step_pipe_group)
         coin_box = pg.sprite.spritecollideany(self.mario, self.coin_box_group)
         brick = pg.sprite.spritecollideany(self.mario, self.brick_group)
         enemy = pg.sprite.spritecollideany(self.mario, self.enemy_group)
         shell = pg.sprite.spritecollideany(self.mario, self.shell_group)
         powerup = pg.sprite.spritecollideany(self.mario, self.powerup_group)
-
 
         if coin_box:
             self.adjust_mario_for_x_collisions(coin_box)
@@ -378,8 +381,8 @@ class Level1(tools._State):
         elif enemy:
             if self.mario.invincible:
                 enemy.kill()
-                self.death_group.add(enemy)
-                enemy.start_death_jump('right')
+                enemy.start_death_jump(c.RIGHT)
+                self.sprites_about_to_die_group.add(enemy)
             elif self.mario.big:
                 self.mario.fire = False
                 self.mario.become_small()
@@ -392,16 +395,15 @@ class Level1(tools._State):
             self.adjust_mario_for_x_shell_collisions(shell)
 
         elif powerup:
+            powerup.kill()
+
             if powerup.name == c.STAR:
-                powerup.kill()
                 self.mario.invincible = True
                 self.mario.invincible_start_timer = current_time
             elif powerup.name == c.MUSHROOM:
-                powerup.kill()
                 self.mario.become_big()
                 self.convert_mushrooms_to_fireflowers()
             elif powerup.name == c.FIREFLOWER:
-                powerup.kill()
                 if self.mario.big:
                     self.mario.fire = True
                 else:
@@ -410,6 +412,8 @@ class Level1(tools._State):
 
 
     def convert_mushrooms_to_fireflowers(self):
+        """When Mario becomees big, converts all fireflower powerups to
+        mushroom powerups"""
         for brick in self.brick_group:
             if brick.contents == c.MUSHROOM:
                 brick.contents = c.FIREFLOWER
@@ -419,6 +423,8 @@ class Level1(tools._State):
 
 
     def convert_fireflowers_to_mushrooms(self):
+        """When Mario becomes small, converts all mushroom powerups to
+        fireflower powerups"""
         for brick in self.brick_group:
             if brick.contents == c.FIREFLOWER:
                 brick.contents = c.MUSHROOM
@@ -428,6 +434,7 @@ class Level1(tools._State):
 
 
     def adjust_mario_for_x_collisions(self, collider):
+        """Puts Mario flush next to the collider after moving on the x axis"""
         if self.mario.rect.x < collider.rect.x:
             self.mario.rect.right = collider.rect.left
         else:
@@ -437,6 +444,7 @@ class Level1(tools._State):
 
 
     def adjust_mario_for_x_shell_collisions(self, shell):
+        """Deals with Mario if he hits a shell moving on the x axis"""
         if shell.state == c.JUMPED_ON:
             if self.mario.rect.x < shell.rect.x:
                 self.mario.rect.right = shell.rect.left
@@ -457,7 +465,8 @@ class Level1(tools._State):
 
 
     def check_mario_y_collisions(self, current_time):
-        collider = pg.sprite.spritecollideany(self.mario, self.collide_group)
+        """Checks for collisions when Mario moves along the y-axis"""
+        ground_step_or_pipe = pg.sprite.spritecollideany(self.mario, self.ground_step_pipe_group)
         enemy = pg.sprite.spritecollideany(self.mario, self.enemy_group)
         shell = pg.sprite.spritecollideany(self.mario, self.shell_group)
         brick = pg.sprite.spritecollideany(self.mario, self.brick_group)
@@ -471,13 +480,13 @@ class Level1(tools._State):
         elif brick:
             self.adjust_mario_for_y_brick_collisions(brick)
 
-        elif collider:
-            self.adjust_mario_for_y_ground_pipe_collisions(collider)
+        elif ground_step_or_pipe:
+            self.adjust_mario_for_y_ground_pipe_collisions(ground_step_or_pipe)
 
         elif enemy:
             if self.mario.invincible:
                 enemy.kill()
-                self.death_group.add(enemy)
+                self.sprites_about_to_die_group.add(enemy)
                 enemy.start_death_jump(c.RIGHT)
             else:
                 self.adjust_mario_for_y_enemy_collisions(enemy, current_time)
@@ -495,6 +504,7 @@ class Level1(tools._State):
 
 
     def adjust_mario_for_y_coin_box_collisions(self, coin_box):
+        """Mario collisions with coin boxes on the y-axis"""
         if self.mario.rect.y > coin_box.rect.y:
             if coin_box.state == c.RESTING:
                 coin_box.start_bump()
@@ -511,6 +521,7 @@ class Level1(tools._State):
 
 
     def adjust_mario_for_y_brick_collisions(self, brick):
+        """Mario collisions with bricks on the y-axis"""
         if self.mario.rect.y > brick.rect.y:
             if brick.state == c.RESTING:
                 if self.mario.big and brick.contents is None:
@@ -544,13 +555,14 @@ class Level1(tools._State):
 
 
     def check_if_enemy_on_brick(self, brick):
+        """Kills enemy if on a bumped or broken brick"""
         brick.rect.y -= 5
 
         enemy = pg.sprite.spritecollideany(brick, self.enemy_group)
 
         if enemy:
             enemy.kill()
-            self.death_group.add(enemy)
+            self.sprites_about_to_die_group.add(enemy)
             if self.mario.rect.centerx > brick.rect.centerx:
                 enemy.start_death_jump('right')
             else:
@@ -561,6 +573,7 @@ class Level1(tools._State):
 
 
     def adjust_mario_for_y_ground_pipe_collisions(self, collider):
+        """Mario collisions with pipes on the y-axis"""
         if collider.rect.bottom > self.mario.rect.bottom:
             self.mario.y_vel = 0
             self.mario.rect.bottom = collider.rect.top
@@ -572,8 +585,10 @@ class Level1(tools._State):
 
 
     def test_if_mario_is_falling(self):
+        """Changes Mario to a FALL state if more than a pixel above a pipe,
+        ground, step or box"""
         self.mario.rect.y += 1
-        test_collide_group = pg.sprite.Group(self.collide_group,
+        test_collide_group = pg.sprite.Group(self.ground_step_pipe_group,
                                                  self.brick_group,
                                                  self.coin_box_group)
 
@@ -586,13 +601,14 @@ class Level1(tools._State):
 
 
     def adjust_mario_for_y_enemy_collisions(self, enemy, current_time):
+        """Mario collisions with all enemies on the y-axis"""
         if self.mario.y_vel > 0:
             enemy.state = c.JUMPED_ON
             enemy.kill()
-            if enemy.name == 'goomba':
+            if enemy.name == c.GOOMBA:
                 enemy.death_timer = current_time
-                self.death_group.add(enemy)
-            elif enemy.name == 'koopa':
+                self.sprites_about_to_die_group.add(enemy)
+            elif enemy.name == c.KOOPA:
                 self.shell_group.add(enemy)
 
             self.mario.rect.bottom = enemy.rect.top
@@ -602,6 +618,7 @@ class Level1(tools._State):
 
 
     def adjust_mario_for_y_shell_collisions(self, shell):
+        """Mario collisions with Koopas in their shells on the y axis"""
         if self.mario.y_vel > 0:
             if shell.state == c.JUMPED_ON:
                 shell.state = c.SHELL_SLIDE
@@ -618,6 +635,7 @@ class Level1(tools._State):
 
 
     def adjust_enemy_position(self):
+        """Moves all enemies along the x, y axes and check for collisions"""
         for enemy in self.enemy_group:
             enemy.rect.x += enemy.x_vel
             self.check_enemy_x_collisions(enemy)
@@ -628,10 +646,11 @@ class Level1(tools._State):
 
 
     def check_enemy_x_collisions(self, enemy):
-
-        collider = pg.sprite.spritecollideany(enemy, self.collide_group)
-
+        """Enemy collisions along the x axis.  Removes enemy from enemy group
+        in order to check against all other enemies then adds it back."""
         enemy.kill()
+
+        collider = pg.sprite.spritecollideany(enemy, self.ground_step_pipe_group)
         enemy_collider = pg.sprite.spritecollideany(enemy, self.enemy_group)
 
         if collider:
@@ -660,11 +679,12 @@ class Level1(tools._State):
                 enemy_collider.x_vel = -2
 
         self.enemy_group.add(enemy)
-        self.all_sprites.add(self.enemy_group)
+        self.mario_and_enemy_group.add(self.enemy_group)
 
 
     def check_enemy_y_collisions(self, enemy):
-        collider = pg.sprite.spritecollideany(enemy, self.collide_group)
+        """Enemy collisions on the y axis"""
+        collider = pg.sprite.spritecollideany(enemy, self.ground_step_pipe_group)
         brick = pg.sprite.spritecollideany(enemy, self.brick_group)
         coin_box = pg.sprite.spritecollideany(enemy, self.coin_box_group)
 
@@ -682,7 +702,7 @@ class Level1(tools._State):
         elif brick:
             if brick.state == c.BUMPED:
                 enemy.kill()
-                self.death_group.add(enemy)
+                self.sprites_about_to_die_group.add(enemy)
                 if self.mario.rect.centerx > brick.rect.centerx:
                     enemy.start_death_jump('right')
                 else:
@@ -700,7 +720,7 @@ class Level1(tools._State):
         elif coin_box:
             if coin_box.state == c.BUMPED:
                 enemy.kill()
-                self.death_group.add(enemy)
+                self.sprites_about_to_die_group.add(enemy)
                 if self.mario.rect.centerx > coin_box.rect.centerx:
                     enemy.start_death_jump('right')
                 else:
@@ -718,7 +738,7 @@ class Level1(tools._State):
 
         else:
             enemy.rect.y += 1
-            test_group = pg.sprite.Group(self.collide_group,
+            test_group = pg.sprite.Group(self.ground_step_pipe_group,
                                          self.coin_box_group,
                                          self.brick_group)
             if pg.sprite.spritecollideany(enemy, test_group) is None:
@@ -729,6 +749,8 @@ class Level1(tools._State):
 
 
     def adjust_shell_position(self):
+        """Moves any koopa in a shell along the x, y axes and checks for
+        collisions"""
         for shell in self.shell_group:
             shell.rect.x += shell.x_vel
             self.check_shell_x_collisions(shell)
@@ -739,7 +761,8 @@ class Level1(tools._State):
 
 
     def check_shell_x_collisions(self, shell):
-        collider = pg.sprite.spritecollideany(shell, self.collide_group)
+        """Shell collisions along the x axis"""
+        collider = pg.sprite.spritecollideany(shell, self.ground_step_pipe_group)
         enemy = pg.sprite.spritecollideany(shell, self.enemy_group)
 
         if collider:
@@ -752,12 +775,13 @@ class Level1(tools._State):
 
         if enemy:
             enemy.kill()
-            self.death_group.add(enemy)
+            self.sprites_about_to_die_group.add(enemy)
             enemy.start_death_jump(shell.direction)
 
 
     def check_shell_y_collisions(self, shell):
-        collider = pg.sprite.spritecollideany(shell, self.collide_group)
+        """Shell collisions along the y axis"""
+        collider = pg.sprite.spritecollideany(shell, self.ground_step_pipe_group)
 
         if collider:
             shell.y_vel = 0
@@ -766,22 +790,24 @@ class Level1(tools._State):
 
         else:
             shell.rect.y += 1
-            if pg.sprite.spritecollideany(shell, self.collide_group) is None:
+            if pg.sprite.spritecollideany(shell, self.ground_step_pipe_group) is None:
                 shell.state = c.FALL
             shell.rect.y -= 1
 
 
     def adjust_powerup_position(self):
+        """Moves mushrooms, stars and fireballs along the x, y axes"""
         for powerup in self.powerup_group:
-            if powerup.name == 'mushroom':
+            if powerup.name == c.MUSHROOM:
                 self.adjust_mushroom_position(powerup)
-            elif powerup.name == 'star':
+            elif powerup.name == c.STAR:
                 self.adjust_star_position(powerup)
             elif powerup.name == c.FIREBALL:
                 self.adjust_fireball_position(powerup)
 
 
     def adjust_mushroom_position(self, mushroom):
+        """Moves mushroom along the x, y axes."""
         if mushroom.state != c.REVEAL:
             mushroom.rect.x += mushroom.x_vel
             self.check_mushroom_x_collisions(mushroom)
@@ -792,7 +818,8 @@ class Level1(tools._State):
 
 
     def check_mushroom_x_collisions(self, mushroom):
-        collider = pg.sprite.spritecollideany(mushroom, self.collide_group)
+        """Mushroom collisions along the x axis"""
+        collider = pg.sprite.spritecollideany(mushroom, self.ground_step_pipe_group)
         brick = pg.sprite.spritecollideany(mushroom, self.brick_group)
         coin_box = pg.sprite.spritecollideany(mushroom, self.coin_box_group)
 
@@ -807,7 +834,8 @@ class Level1(tools._State):
 
 
     def check_mushroom_y_collisions(self, mushroom):
-        collider = pg.sprite.spritecollideany(mushroom, self.collide_group)
+        """Mushroom collisions along the y axis"""
+        collider = pg.sprite.spritecollideany(mushroom, self.ground_step_pipe_group)
         brick = pg.sprite.spritecollideany(mushroom, self.brick_group)
         coin_box = pg.sprite.spritecollideany(mushroom, self.coin_box_group)
 
@@ -818,12 +846,13 @@ class Level1(tools._State):
         elif coin_box:
             self.adjust_mushroom_for_collision_y(mushroom, coin_box)
         else:
-            self.check_if_falling(mushroom, self.collide_group)
+            self.check_if_falling(mushroom, self.ground_step_pipe_group)
             self.check_if_falling(mushroom, self.brick_group)
             self.check_if_falling(mushroom, self.coin_box_group)
 
 
     def adjust_mushroom_for_collision_x(self, item, collider):
+        """Changes mushroom direction if collision along x axis"""
         if item.rect.x < collider.rect.x:
             item.rect.right = collider.rect.x
             item.direction = c.LEFT
@@ -833,12 +862,14 @@ class Level1(tools._State):
 
 
     def adjust_mushroom_for_collision_y(self, item, collider):
+        """Changes mushroom state to SLIDE after hitting ground from fall"""
         item.rect.bottom = collider.rect.y
         item.state = c.SLIDE
         item.y_vel = 0
 
 
     def adjust_star_position(self, star):
+        """Moves invincible star along x, y axes and checks for collisions"""
         if star.state == c.BOUNCE:
             star.rect.x += star.x_vel
             self.check_mushroom_x_collisions(star)
@@ -849,7 +880,8 @@ class Level1(tools._State):
 
 
     def check_star_y_collisions(self, star):
-        collider = pg.sprite.spritecollideany(star, self.collide_group)
+        """Invincible star collisions along y axis"""
+        collider = pg.sprite.spritecollideany(star, self.ground_step_pipe_group)
         brick = pg.sprite.spritecollideany(star, self.brick_group)
         coin_box = pg.sprite.spritecollideany(star, self.coin_box_group)
 
@@ -862,6 +894,8 @@ class Level1(tools._State):
 
 
     def adjust_star_for_collision_y(self, star, collider):
+        """Allows for a star bounce off the ground and on the bottom of a
+        box"""
         if star.rect.y > collider.rect.y:
             star.rect.y = collider.rect.bottom
             star.y_vel = 0
@@ -871,6 +905,7 @@ class Level1(tools._State):
 
 
     def adjust_fireball_position(self, fireball):
+        """Moves fireball along the x, y axes and checks for collisions"""
         if fireball.state == c.FLYING:
             fireball.rect.x += fireball.x_vel
             self.check_fireball_x_collisions(fireball)
@@ -885,6 +920,7 @@ class Level1(tools._State):
 
 
     def bounce_fireball(self, fireball):
+        """Simulates fireball bounce off ground"""
         fireball.y_vel = -8
         if fireball.direction == c.RIGHT:
             fireball.x_vel = 15
@@ -896,6 +932,7 @@ class Level1(tools._State):
 
 
     def check_fireball_x_collisions(self, fireball):
+        """Fireball collisions along x axis"""
         collide_group = pg.sprite.Group(self.ground_group,
                                         self.pipe_group,
                                         self.step_group,
@@ -906,12 +943,13 @@ class Level1(tools._State):
 
         if collider:
             fireball.kill()
-            self.death_group.add(fireball)
+            self.sprites_about_to_die_group.add(fireball)
             fireball.explode_transition()
 
 
 
     def check_fireball_y_collisions(self, fireball):
+        """Fireball collisions along y axis"""
         collide_group = pg.sprite.Group(self.ground_group,
                                         self.pipe_group,
                                         self.step_group,
@@ -928,16 +966,13 @@ class Level1(tools._State):
         elif enemy:
             fireball.kill()
             enemy.kill()
-            self.death_group.add(enemy, fireball)
+            self.sprites_about_to_die_group.add(enemy, fireball)
             enemy.start_death_jump(fireball.direction)
             fireball.explode_transition()
 
 
-
-
-
-
     def check_if_falling(self, sprite, sprite_group):
+        """Checks if sprite should enter a falling state"""
         sprite.rect.y += 1
 
         if pg.sprite.spritecollideany(sprite, sprite_group) is None:
@@ -947,8 +982,9 @@ class Level1(tools._State):
         sprite.rect.y -= 1
 
 
-
     def delete_if_off_screen(self, enemy):
+        """Removes enemy from sprite groups if 500 pixels left off the screen,
+         underneath the bottom of the screen, or right of the screen if shell"""
         if enemy.rect.x < -500:
             enemy.kill()
 
@@ -961,6 +997,7 @@ class Level1(tools._State):
 
 
     def adjust_camera(self):
+        """Makes a camera adjustment for all sprites"""
         self.calculate_camera_adjustment()
         adjusted_sprites = pg.sprite.Group(self.ground_group,
                                            self.pipe_group,
@@ -968,7 +1005,7 @@ class Level1(tools._State):
                                            self.coin_box_group,
                                            self.brick_group,
                                            self.enemy_group,
-                                           self.death_group,
+                                           self.sprites_about_to_die_group,
                                            self.shell_group,
                                            self.powerup_group,
                                            self.coin_group,
@@ -976,7 +1013,9 @@ class Level1(tools._State):
                                            self.brick_pieces_group
                                            )
 
-        if self.mario.rect.right > (c.SCREEN_WIDTH * .33) and self.mario.rect.x < ((c.SCREEN_WIDTH / 2) - 50):
+        if (self.mario.rect.right > (c.SCREEN_WIDTH * .33))\
+            and self.mario.rect.x < ((c.SCREEN_WIDTH / 2) - 50):
+
             self.mario.rect.x -= (self.camera_adjustment * .75)
 
         else:
@@ -990,7 +1029,7 @@ class Level1(tools._State):
 
 
     def calculate_camera_adjustment(self):
-
+        """determines the total camera adjustment"""
         if self.back_rect.right <= 800:
             self.camera_adjustment = 0
 
@@ -1007,10 +1046,8 @@ class Level1(tools._State):
             self.camera_adjustment = 0
 
 
-
-
-
     def check_for_mario_death(self, keys):
+        """Restarts the level if Mario is dead"""
         if self.mario.rect.y > c.SCREEN_HEIGHT:
             self.mario.dead = True
 
@@ -1019,13 +1056,14 @@ class Level1(tools._State):
 
 
     def blit_everything(self, surface):
+        """Blit all sprites to the main surface"""
         surface.blit(self.background, self.back_rect)
-        self.all_sprites.draw(surface)
+        self.mario_and_enemy_group.draw(surface)
         self.powerup_group.draw(surface)
         self.coin_group.draw(surface)
         self.brick_group.draw(surface)
         self.coin_box_group.draw(surface)
-        self.death_group.draw(surface)
+        self.sprites_about_to_die_group.draw(surface)
         self.shell_group.draw(surface)
         self.brick_pieces_group.draw(surface)
 
