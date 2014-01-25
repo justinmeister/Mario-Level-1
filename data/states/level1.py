@@ -246,16 +246,27 @@ class Level1(tools._State):
 
         self.koopas = [koopa0]
 
-        self.enemy_group1 = pg.sprite.Group(goomba0)
-        self.enemy_group2 = pg.sprite.Group(goomba1)
-        self.enemy_group3 = pg.sprite.Group(goomba2, goomba3)
-        self.enemy_group4 = pg.sprite.Group(goomba4, goomba5)
-        self.enemy_group5 = pg.sprite.Group(goomba6, goomba7)
-        self.enemy_group6 = pg.sprite.Group(koopa0)
-        self.enemy_group7 = pg.sprite.Group(goomba8, goomba9)
-        self.enemy_group8 = pg.sprite.Group(goomba10, goomba11)
-        self.enemy_group9 = pg.sprite.Group(goomba12, goomba13)
-        self.enemy_group10 = pg.sprite.Group(goomba14, goomba15)
+        enemy_group1 = pg.sprite.Group(goomba0)
+        enemy_group2 = pg.sprite.Group(goomba1)
+        enemy_group3 = pg.sprite.Group(goomba2, goomba3)
+        enemy_group4 = pg.sprite.Group(goomba4, goomba5)
+        enemy_group5 = pg.sprite.Group(goomba6, goomba7)
+        enemy_group6 = pg.sprite.Group(koopa0)
+        enemy_group7 = pg.sprite.Group(goomba8, goomba9)
+        enemy_group8 = pg.sprite.Group(goomba10, goomba11)
+        enemy_group9 = pg.sprite.Group(goomba12, goomba13)
+        enemy_group10 = pg.sprite.Group(goomba14, goomba15)
+
+        self.enemy_group_list = [enemy_group1,
+                                 enemy_group2,
+                                 enemy_group3,
+                                 enemy_group4,
+                                 enemy_group5,
+                                 enemy_group6,
+                                 enemy_group7,
+                                 enemy_group8,
+                                 enemy_group9,
+                                 enemy_group10]
 
         self.enemy_group = pg.sprite.Group()
         self.death_group = pg.sprite.Group()
@@ -312,32 +323,17 @@ class Level1(tools._State):
 
 
     def check_points_check(self):
+        """Detect if checkpoint collision occurs, delete checkpoint,
+        add enemies to self.enemy_group"""
         checkpoint = pg.sprite.spritecollideany(self.mario,
                                                  self.check_point_group)
 
         if checkpoint:
             checkpoint.kill()
 
-            if checkpoint.name == '1':
-                self.enemy_group.add(self.enemy_group1)
-            elif checkpoint.name == '2':
-                self.enemy_group.add(self.enemy_group2)
-            elif checkpoint.name == '3':
-                self.enemy_group.add(self.enemy_group3)
-            elif checkpoint.name == '4':
-                self.enemy_group.add(self.enemy_group4)
-            elif checkpoint.name == '5':
-                self.enemy_group.add(self.enemy_group5)
-            elif checkpoint.name == '6':
-                self.enemy_group.add(self.enemy_group6)
-            elif checkpoint.name == '7':
-                self.enemy_group.add(self.enemy_group7)
-            elif checkpoint.name == '8':
-                self.enemy_group.add(self.enemy_group8)
-            elif checkpoint.name == '9':
-                self.enemy_group.add(self.enemy_group9)
-            elif checkpoint.name == '10':
-                self.enemy_group.add(self.enemy_group10)
+            for i in range(1,11):
+                if checkpoint.name == str(i):
+                    self.enemy_group.add(self.enemy_group_list[i-1])
 
             self.all_sprites.add(self.enemy_group)
 
