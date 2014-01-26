@@ -20,8 +20,10 @@ class Level1(tools._State):
     def startup(self, current_time, persistant):
         """Called when the State object is created"""
         self.persistant = persistant
+        self.state = c.NOT_FROZEN
         self.camera_adjust = 0
         self.coin_count = 0
+        self.all_sprites_frozen = False
 
         self.setup_background()
         self.setup_ground()
@@ -301,13 +303,41 @@ class Level1(tools._State):
 
 
     def update(self, surface, keys, current_time):
-        """Updates Entire level.  Called by the control object"""
-        self.update_all_sprites(keys, current_time)
+        """Updates Entire level using states.  Called by the control object"""
+        self.handle_states(keys, current_time)
         self.blit_everything(surface)
 
 
+    def handle_states(self, keys, current_time):
+        """If the level is in a FROZEN state, only mario will update"""
+        if self.state == c.FROZEN:
+            self.update_only_mario(keys, current_time)
+        elif self.state == c.NOT_FROZEN:
+            self.update_all_sprites(keys, current_time)
+
+
+    def update_only_mario(self, keys, current_time):
+        """Updates mario in a transition state (like becoming big, small,
+         or dies). Checks if he leaves the transition state or dies to
+         change the level state back"""
+        self.mario.update(keys, current_time, self.powerup_group)
+        self.check_if_mario_in_transition_state()
+        self.check_for_mario_death(keys)
+
+
+    def check_if_mario_in_transition_state(self):
+        """If mario is in a transition state, the level will be in a FREEZE
+        state"""
+        if self.mario.in_transition_state:
+            self.state == c.FROZEN
+        else:
+            self.state == c.NOT_FROZEN
+
+
+
+
     def update_all_sprites(self, keys, current_time):
-        """Updates the location of all sprites on the screen"""
+        """Updates the location of all sprites on the screen."""
         self.mario.update(keys, current_time, self.powerup_group)
         self.check_points_check()
         self.enemy_group.update(current_time)
@@ -389,21 +419,23 @@ class Level1(tools._State):
                 self.convert_fireflowers_to_mushrooms()
                 enemy.kill()
             else:
-                self.mario.dead = True
+                self.mario.start_death_jump()
+                self.state = c.FROZEN
 
         elif shell:
             self.adjust_mario_for_x_shell_collisions(shell)
 
         elif powerup:
-            powerup.kill()
-
             if powerup.name == c.STAR:
+                powerup.kill()
                 self.mario.invincible = True
                 self.mario.invincible_start_timer = current_time
             elif powerup.name == c.MUSHROOM:
+                powerup.kill()
                 self.mario.become_big()
                 self.convert_mushrooms_to_fireflowers()
             elif powerup.name == c.FIREFLOWER:
+                powerup.kill()
                 if self.mario.big:
                     self.mario.fire = True
                 else:
@@ -503,6 +535,7 @@ class Level1(tools._State):
         self.test_if_mario_is_falling()
 
 
+
     def adjust_mario_for_y_coin_box_collisions(self, coin_box):
         """Mario collisions with coin boxes on the y-axis"""
         if self.mario.rect.y > coin_box.rect.y:
@@ -594,7 +627,7 @@ class Level1(tools._State):
 
 
         if pg.sprite.spritecollideany(self.mario, test_collide_group) is None:
-            if self.mario.state != c.JUMP:
+            if self.mario.state != c.JUMP and self.mario.state != c.DEATH_JUMP:
                 self.mario.state = c.FALL
 
         self.mario.rect.y -= 1
@@ -1058,7 +1091,6 @@ class Level1(tools._State):
     def blit_everything(self, surface):
         """Blit all sprites to the main surface"""
         surface.blit(self.background, self.back_rect)
-        self.mario_and_enemy_group.draw(surface)
         self.powerup_group.draw(surface)
         self.coin_group.draw(surface)
         self.brick_group.draw(surface)
@@ -1066,4 +1098,5 @@ class Level1(tools._State):
         self.sprites_about_to_die_group.draw(surface)
         self.shell_group.draw(surface)
         self.brick_pieces_group.draw(surface)
+        self.mario_and_enemy_group.draw(surface)
 

@@ -27,11 +27,13 @@ class Mario(pg.sprite.Sprite):
         self.invincible_animation_timer = 0
         self.invincible_start_timer = 0
         self.invincible_index = 0
+        self.death_timer = 0
         self.big = False
         self.fire = False
         self.last_fireball_time = 0
         self.fireball_count = 0
         self.allow_fireball = True
+        self.in_transition_state = True
 
         self.load_from_sheet()
         self.image = self.right_frames[self.frame_index]
@@ -79,6 +81,8 @@ class Mario(pg.sprite.Sprite):
             self.get_image(144, 32, 16, 16))  #right jump
         self.right_small_normal_frames.append(
             self.get_image(130, 32, 14, 16))  #right skid
+        self.right_small_normal_frames.append(
+            self.get_image(160, 32, 15, 16))       #death frame
 
 
         #Images for small green mario (for invincible animation)#
@@ -324,6 +328,8 @@ class Mario(pg.sprite.Sprite):
             self.jumping(keys, current_time, fire_group)
         elif self.state == c.FALL:
             self.falling(keys, current_time, fire_group)
+        elif self.state == c.DEATH_JUMP:
+            self.jumping_to_death(current_time)
 
         self.check_if_invincible(current_time)
         self.check_if_fire()
@@ -493,6 +499,23 @@ class Mario(pg.sprite.Sprite):
             self.allow_fireball = True
 
 
+    def jumping_to_death(self, current_time):
+        if self.death_timer == 0:
+            self.death_timer = current_time
+        elif (current_time - self.death_timer) > 500:
+            self.rect.y += self.y_vel
+            self.y_vel += self.gravity
+
+
+    def start_death_jump(self):
+        self.y_vel = -11
+        self.gravity = .5
+        self.frame_index = 6
+        self.image = self.right_frames[self.frame_index]
+        self.state = c.DEATH_JUMP
+        self.in_transition_state = True
+
+
     def calculate_animation_speed(self):
         if self.x_vel == 0:
             animation_speed = 130
@@ -505,7 +528,9 @@ class Mario(pg.sprite.Sprite):
 
 
     def animation(self):
-        if self.facing_right:
+        if self.state == c.DEATH_JUMP:
+            pass
+        elif self.facing_right:
             self.image = self.right_frames[self.frame_index]
         else:
             self.image = self.left_frames[self.frame_index]

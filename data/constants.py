@@ -101,5 +101,10 @@ FIREBALL = 'fireball'
 GOOMBA = 'goomba'
 KOOPA = 'koopa'
 
+#LEVEL STATES
+
+FROZEN = 'frozen'
+NOT_FROZEN = 'not frozen'
+
 
 
