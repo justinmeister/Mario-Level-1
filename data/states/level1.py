@@ -329,11 +329,9 @@ class Level1(tools._State):
         """If mario is in a transition state, the level will be in a FREEZE
         state"""
         if self.mario.in_transition_state:
-            self.state == c.FROZEN
-        else:
-            self.state == c.NOT_FROZEN
-
-
+            self.state = c.FROZEN
+        elif self.mario.in_transition_state == False:
+            self.state = c.NOT_FROZEN
 
 
     def update_all_sprites(self, keys, current_time):
@@ -350,6 +348,7 @@ class Level1(tools._State):
         self.brick_pieces_group.update()
         self.adjust_sprite_positions(current_time)
         self.adjust_camera()
+        self.check_if_mario_in_transition_state()
         self.check_for_mario_death(keys)
 
 
@@ -432,14 +431,14 @@ class Level1(tools._State):
                 self.mario.invincible_start_timer = current_time
             elif powerup.name == c.MUSHROOM:
                 powerup.kill()
-                self.mario.become_big()
+                self.mario.state = c.SMALLTOBIG
                 self.convert_mushrooms_to_fireflowers()
             elif powerup.name == c.FIREFLOWER:
                 powerup.kill()
                 if self.mario.big:
                     self.mario.fire = True
                 else:
-                    self.mario.become_big()
+                    self.mario.state = c.SMALLTOBIG
                     self.convert_mushrooms_to_fireflowers()
 
 
@@ -627,7 +626,9 @@ class Level1(tools._State):
 
 
         if pg.sprite.spritecollideany(self.mario, test_collide_group) is None:
-            if self.mario.state != c.JUMP and self.mario.state != c.DEATH_JUMP:
+            if self.mario.state != c.JUMP \
+                and self.mario.state != c.DEATH_JUMP \
+                and self.mario.state != c.SMALLTOBIG:
                 self.mario.state = c.FALL
 
         self.mario.rect.y -= 1

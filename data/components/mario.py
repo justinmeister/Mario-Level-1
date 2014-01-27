@@ -28,12 +28,13 @@ class Mario(pg.sprite.Sprite):
         self.invincible_start_timer = 0
         self.invincible_index = 0
         self.death_timer = 0
+        self.transition_timer = 0
         self.big = False
         self.fire = False
         self.last_fireball_time = 0
         self.fireball_count = 0
         self.allow_fireball = True
-        self.in_transition_state = True
+        self.in_transition_state = False
 
         self.load_from_sheet()
         self.image = self.right_frames[self.frame_index]
@@ -82,7 +83,9 @@ class Mario(pg.sprite.Sprite):
         self.right_small_normal_frames.append(
             self.get_image(130, 32, 14, 16))  #right skid
         self.right_small_normal_frames.append(
-            self.get_image(160, 32, 15, 16))       #death frame
+            self.get_image(160, 32, 15, 16))  #death frame
+        self.right_small_normal_frames.append(
+            self.get_image(320, 8, 16, 24))  #Transition between big and small
 
 
         #Images for small green mario (for invincible animation)#
@@ -330,6 +333,8 @@ class Mario(pg.sprite.Sprite):
             self.falling(keys, current_time, fire_group)
         elif self.state == c.DEATH_JUMP:
             self.jumping_to_death(current_time)
+        elif self.state == c.SMALLTOBIG:
+            self.changing_to_big(current_time)
 
         self.check_if_invincible(current_time)
         self.check_if_fire()
@@ -516,6 +521,91 @@ class Mario(pg.sprite.Sprite):
         self.in_transition_state = True
 
 
+    def changing_to_big(self, current_time):
+        """Changes Mario's image attribute based on time"""
+        self.in_transition_state = True
+
+        if self.transition_timer == 0:
+            self.transition_timer = current_time
+        elif self.timer_between_these_two_times(current_time, 135, 200):
+            self.set_mario_to_middle_image()
+        elif self.timer_between_these_two_times(current_time, 200, 365):
+            self.set_mario_to_small_image()
+        elif self.timer_between_these_two_times(current_time, 365, 430):
+            self.set_mario_to_middle_image()
+        elif self.timer_between_these_two_times(current_time, 430, 495):
+            self.set_mario_to_small_image()
+        elif self.timer_between_these_two_times(current_time, 495, 560):
+            self.set_mario_to_middle_image()
+        elif self.timer_between_these_two_times(current_time, 560, 625):
+            self.set_mario_to_big_image()
+        elif self.timer_between_these_two_times(current_time, 625, 690):
+            self.set_mario_to_small_image()
+        elif self.timer_between_these_two_times(current_time, 690, 755):
+            self.set_mario_to_middle_image()
+        elif self.timer_between_these_two_times(current_time, 755, 820):
+            self.set_mario_to_big_image()
+        elif self.timer_between_these_two_times(current_time, 820, 885):
+            self.set_mario_to_small_image()
+        elif self.timer_between_these_two_times(current_time, 885, 950):
+            self.set_mario_to_big_image()
+            self.state = c.WALK
+            self.in_transition_state = False
+            self.transition_timer = 0
+            self.become_big()
+
+
+    def timer_between_these_two_times(self, current_time, start_time, end_time):
+        """Checks if the timer is at the right time for the action. Reduces
+        the ugly code."""
+        if (current_time - self.transition_timer) >= start_time\
+            and (current_time - self.transition_timer) < end_time:
+            return True
+
+
+
+    def set_mario_to_middle_image(self):
+        """During a change from small to big, sets mario's image to the
+        transition/middle size"""
+        if self.facing_right:
+            self.image = self.normal_small_frames[0][7]
+        else:
+            self.image = self.normal_small_frames[1][7]
+        bottom = self.rect.bottom
+        centerx = self.rect.centerx
+        self.rect = self.image.get_rect()
+        self.rect.bottom = bottom
+        self.rect.centerx = centerx
+
+
+
+    def set_mario_to_small_image(self):
+        """During a change from small to big, sets mario's image to small"""
+        if self.facing_right:
+            self.image = self.normal_small_frames[0][0]
+        else:
+            self.image = self.normal_small_frames[1][0]
+        bottom = self.rect.bottom
+        centerx = self.rect.centerx
+        self.rect = self.image.get_rect()
+        self.rect.bottom = bottom
+        self.rect.centerx = centerx
+
+
+    def set_mario_to_big_image(self):
+        """During a change from small to big, sets mario's image to big"""
+        if self.facing_right:
+            self.image = self.normal_big_frames[0][0]
+        else:
+            self.image = self.normal_big_frames[1][0]
+        bottom = self.rect.bottom
+        centerx = self.rect.centerx
+        self.rect = self.image.get_rect()
+        self.rect.bottom = bottom
+        self.rect.centerx = centerx
+
+
+
     def calculate_animation_speed(self):
         if self.x_vel == 0:
             animation_speed = 130
@@ -528,7 +618,7 @@ class Mario(pg.sprite.Sprite):
 
 
     def animation(self):
-        if self.state == c.DEATH_JUMP:
+        if self.state == c.DEATH_JUMP or self.state == c.SMALLTOBIG:
             pass
         elif self.facing_right:
             self.image = self.right_frames[self.frame_index]

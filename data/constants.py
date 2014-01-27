@@ -42,6 +42,7 @@ STAND = 'standing'
 WALK = 'walk'
 JUMP = 'jump'
 FALL = 'fall'
+SMALLTOBIG = 'small to big'
 
 SMALL_ACCEL = .2
 SMALL_TURNAROUND = .35
