@@ -27,6 +27,8 @@ class Mario(pg.sprite.Sprite):
         self.invincible_animation_timer = 0
         self.invincible_start_timer = 0
         self.invincible_index = 0
+        self.fire_transition_index = 0
+        self.fire_transition_timer = 0
         self.death_timer = 0
         self.transition_timer = 0
         self.big = False
@@ -150,6 +152,8 @@ class Mario(pg.sprite.Sprite):
             self.get_image(128, 0, 16, 32))
         self.right_big_normal_frames.append(
             self.get_image(160, 10, 16, 22))
+        self.right_big_normal_frames.append(
+            self.get_image(336, 0, 16, 32))
 
         #Images for green big Mario#
 
@@ -167,6 +171,8 @@ class Mario(pg.sprite.Sprite):
             self.get_image(128, 192, 16, 32))
         self.right_big_green_frames.append(
             self.get_image(160, 202, 16, 22))
+        self.right_big_green_frames.append(
+            self.get_image(336, 192, 16, 32))
 
         #Images for red big Mario#
 
@@ -184,6 +190,8 @@ class Mario(pg.sprite.Sprite):
             self.get_image(128, 240, 16, 32))
         self.right_big_red_frames.append(
             self.get_image(160, 250, 16, 22))
+        self.right_big_red_frames.append(
+            self.get_image(336, 240, 16, 32))
 
         #Images for black big Mario#
 
@@ -201,6 +209,8 @@ class Mario(pg.sprite.Sprite):
             self.get_image(128, 144, 16, 32))
         self.right_big_black_frames.append(
             self.get_image(160, 154, 16, 22))
+        self.right_big_black_frames.append(
+            self.get_image(336, 144, 16, 32))
 
 
         #Images for Fire Mario#
@@ -335,6 +345,8 @@ class Mario(pg.sprite.Sprite):
             self.jumping_to_death(current_time)
         elif self.state == c.SMALLTOBIG:
             self.changing_to_big(current_time)
+        elif self.state == c.BIGTOFIRE:
+            self.changing_to_fire(current_time)
 
         self.check_if_invincible(current_time)
         self.check_if_fire()
@@ -605,6 +617,64 @@ class Mario(pg.sprite.Sprite):
         self.rect.centerx = centerx
 
 
+    def changing_to_fire(self, current_time):
+        self.in_transition_state = True
+
+        if self.facing_right:
+            frames = [self.right_fire_frames[3],
+                      self.right_big_green_frames[3],
+                      self.right_big_red_frames[3],
+                      self.right_big_black_frames[3]]
+        else:
+            frames = [self.left_fire_frames[3],
+                      self.left_big_green_frames[3],
+                      self.left_big_red_frames[3],
+                      self.left_big_black_frames[3]]
+
+        if self.fire_transition_timer == 0:
+            self.fire_transition_timer = current_time
+        elif (current_time - self.fire_transition_timer) > 65 and (current_time - self.fire_transition_timer) < 130:
+            self.image = frames[0]
+        elif (current_time - self.fire_transition_timer) < 195:
+            self.image = frames[1]
+        elif (current_time - self.fire_transition_timer) < 260:
+            self.image = frames[2]
+        elif (current_time - self.fire_transition_timer) < 325:
+            self.image = frames[3]
+        elif (current_time - self.fire_transition_timer) < 390:
+            self.image = frames[0]
+        elif (current_time - self.fire_transition_timer) < 455:
+            self.image = frames[1]
+        elif (current_time - self.fire_transition_timer) < 520:
+            self.image = frames[2]
+        elif (current_time - self.fire_transition_timer) < 585:
+            self.image = frames[3]
+        elif (current_time - self.fire_transition_timer) < 650:
+            self.image = frames[0]
+        elif (current_time - self.fire_transition_timer) < 715:
+            self.image = frames[1]
+        elif (current_time - self.fire_transition_timer) < 780:
+            self.image = frames[2]
+        elif (current_time - self.fire_transition_timer) < 845:
+            self.image = frames[3]
+        elif (current_time - self.fire_transition_timer) < 910:
+            self.image = frames[0]
+        elif (current_time - self.fire_transition_timer) < 975:
+            self.image = frames[1]
+        elif (current_time - self.fire_transition_timer) < 1040:
+            self.image = frames[2]
+            self.fire = True
+            self.in_transition_state = False
+            self.state = c.WALK
+
+
+
+
+
+
+
+
+
 
     def calculate_animation_speed(self):
         if self.x_vel == 0:
@@ -618,7 +688,9 @@ class Mario(pg.sprite.Sprite):
 
 
     def animation(self):
-        if self.state == c.DEATH_JUMP or self.state == c.SMALLTOBIG:
+        if self.state == c.DEATH_JUMP \
+            or self.state == c.SMALLTOBIG \
+            or self.state == c.BIGTOFIRE:
             pass
         elif self.facing_right:
             self.image = self.right_frames[self.frame_index]

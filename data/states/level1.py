@@ -321,6 +321,7 @@ class Level1(tools._State):
          or dies). Checks if he leaves the transition state or dies to
          change the level state back"""
         self.mario.update(keys, current_time, self.powerup_group)
+        self.coin_box_group.update(current_time)
         self.check_if_mario_in_transition_state()
         self.check_for_mario_death(keys)
 
@@ -435,9 +436,9 @@ class Level1(tools._State):
                 self.convert_mushrooms_to_fireflowers()
             elif powerup.name == c.FIREFLOWER:
                 powerup.kill()
-                if self.mario.big:
-                    self.mario.fire = True
-                else:
+                if self.mario.big and self.mario.fire == False:
+                    self.mario.state = c.BIGTOFIRE
+                elif self.mario.big == False:
                     self.mario.state = c.SMALLTOBIG
                     self.convert_mushrooms_to_fireflowers()
 
@@ -628,7 +629,8 @@ class Level1(tools._State):
         if pg.sprite.spritecollideany(self.mario, test_collide_group) is None:
             if self.mario.state != c.JUMP \
                 and self.mario.state != c.DEATH_JUMP \
-                and self.mario.state != c.SMALLTOBIG:
+                and self.mario.state != c.SMALLTOBIG \
+                and self.mario.state != c.BIGTOFIRE:
                 self.mario.state = c.FALL
 
         self.mario.rect.y -= 1

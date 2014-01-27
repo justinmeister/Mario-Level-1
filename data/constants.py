@@ -43,6 +43,7 @@ WALK = 'walk'
 JUMP = 'jump'
 FALL = 'fall'
 SMALLTOBIG = 'small to big'
+BIGTOFIRE = 'big to fire'
 
 SMALL_ACCEL = .2
 SMALL_TURNAROUND = .35
