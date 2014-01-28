@@ -41,7 +41,7 @@ class Mario(pg.sprite.Sprite):
         self.load_from_sheet()
         self.image = self.right_frames[self.frame_index]
         self.rect = self.image.get_rect()
-
+        self.mask = pg.mask.from_surface(self.image)
 
 
     def load_from_sheet(self):
@@ -316,7 +316,7 @@ class Mario(pg.sprite.Sprite):
 
 
     def get_image(self, x, y, width, height):
-        image = pg.Surface([width, height]).convert()
+        image = pg.Surface([width, height])
         rect = image.get_rect()
 
         image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))

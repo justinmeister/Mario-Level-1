@@ -24,6 +24,7 @@ class Level1(tools._State):
         self.camera_adjust = 0
         self.coin_count = 0
         self.all_sprites_frozen = False
+        self.check_bit_masks = pg.sprite.collide_mask
 
         self.setup_background()
         self.setup_ground()
@@ -467,6 +468,11 @@ class Level1(tools._State):
 
     def adjust_mario_for_x_collisions(self, collider):
         """Puts Mario flush next to the collider after moving on the x axis"""
+        obstacles = pg.sprite.Group(collider)
+
+        pixel_collision = pg.sprite.spritecollideany(self.mario, obstacles, self.check_bit_masks)
+
+        #if pixel_collision:
         if self.mario.rect.x < collider.rect.x:
             self.mario.rect.right = collider.rect.left
         else:
@@ -505,6 +511,7 @@ class Level1(tools._State):
         coin_box = pg.sprite.spritecollideany(self.mario, self.coin_box_group)
         powerup = pg.sprite.spritecollideany(self.mario, self.powerup_group)
 
+        brick, coin_box = self.prevent_collision_conflict(brick, coin_box)
 
         if coin_box:
             self.adjust_mario_for_y_coin_box_collisions(coin_box)
@@ -534,6 +541,23 @@ class Level1(tools._State):
 
         self.test_if_mario_is_falling()
 
+
+    def prevent_collision_conflict(self, brick, coin_box):
+        """Allows collisions only for the item closest to marios centerx"""
+        if brick and coin_box:
+            brick_distance = self.mario.rect.centerx - brick.rect.centerx
+            if brick_distance < 0:
+                brick_distance = brick_distance * -1
+            coin_box_distance = self.mario.rect.centerx - coin_box.rect.centerx
+            if coin_box_distance < 0:
+                coin_box_distance = coin_box_distance * -1
+
+            if brick_distance < coin_box_distance:
+                coin_box = False
+            else:
+                brick = False
+
+        return brick, coin_box
 
 
     def adjust_mario_for_y_coin_box_collisions(self, coin_box):

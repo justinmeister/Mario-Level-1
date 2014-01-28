@@ -21,6 +21,7 @@ class Brick(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.mask = pg.mask.from_surface(self.image)
         self.bumped_up = False
         self.rest_height = y
         self.state = c.RESTING
@@ -39,7 +40,7 @@ class Brick(pg.sprite.Sprite):
         rect = image.get_rect()
 
         image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
-        #image.set_colorkey(c.BLACK)
+        image.set_colorkey(c.BLACK)
         image = pg.transform.scale(image,
                                    (int(rect.width*c.BRICK_SIZE_MULTIPLIER),
                                     int(rect.height*c.BRICK_SIZE_MULTIPLIER)))

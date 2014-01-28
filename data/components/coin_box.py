@@ -21,6 +21,7 @@ class Coin_box(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.mask = pg.mask.from_surface(self.image)
         self.animation_timer = 0
         self.first_half = True   # First half of animation cycle
         self.state = c.RESTING
@@ -37,6 +38,7 @@ class Coin_box(pg.sprite.Sprite):
         rect = image.get_rect()
 
         image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
+        image.set_colorkey(c.BLACK)
 
         image = pg.transform.scale(image,
                                    (int(rect.width*c.BRICK_SIZE_MULTIPLIER),
