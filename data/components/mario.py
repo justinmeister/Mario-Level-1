@@ -37,6 +37,9 @@ class Mario(pg.sprite.Sprite):
         self.fireball_count = 0
         self.allow_fireball = True
         self.in_transition_state = False
+        self.hurt_invisible = False
+        self.hurt_invisible_timer = 0
+        self.hurt_invisible_timer2 = 0
 
         self.load_from_sheet()
         self.image = self.right_frames[self.frame_index]
@@ -87,7 +90,9 @@ class Mario(pg.sprite.Sprite):
         self.right_small_normal_frames.append(
             self.get_image(160, 32, 15, 16))  #death frame
         self.right_small_normal_frames.append(
-            self.get_image(320, 8, 16, 24))  #Transition between big and small
+            self.get_image(320, 8, 16, 24))  #Transition between small to big
+        self.right_small_normal_frames.append(
+            self.get_image(241, 33, 16, 16))  #Transition between big to small
 
 
         #Images for small green mario (for invincible animation)#
@@ -154,6 +159,8 @@ class Mario(pg.sprite.Sprite):
             self.get_image(160, 10, 16, 22))
         self.right_big_normal_frames.append(
             self.get_image(336, 0, 16, 32))
+        self.right_big_normal_frames.append(  #Transition from big to small
+            self.get_image(272, 2, 16, 29))
 
         #Images for green big Mario#
 
@@ -310,6 +317,23 @@ class Mario(pg.sprite.Sprite):
                                            self.red_big_frames,
                                            self.black_big_frames]
 
+        self.all_images = [self.right_big_normal_frames,
+                           self.right_big_black_frames,
+                           self.right_big_red_frames,
+                           self.right_big_green_frames,
+                           self.right_small_normal_frames,
+                           self.right_small_green_frames,
+                           self.right_small_red_frames,
+                           self.right_small_black_frames,
+                           self.left_big_normal_frames,
+                           self.left_big_black_frames,
+                           self.left_big_red_frames,
+                           self.left_big_green_frames,
+                           self.left_small_normal_frames,
+                           self.left_small_red_frames,
+                           self.left_small_green_frames,
+                           self.left_small_black_frames]
+
 
         self.right_frames = self.normal_small_frames[0]
         self.left_frames = self.normal_small_frames[1]
@@ -347,9 +371,12 @@ class Mario(pg.sprite.Sprite):
             self.changing_to_big(current_time)
         elif self.state == c.BIGTOFIRE:
             self.changing_to_fire(current_time)
+        elif self.state == c.BIGTOSMALL:
+            self.changing_to_small(current_time)
 
         self.check_if_invincible(current_time)
         self.check_if_fire()
+        self.check_if_hurt_invincible(current_time)
 
 
     def standing(self, keys, current_time, fire_group):
@@ -666,6 +693,121 @@ class Mario(pg.sprite.Sprite):
             self.fire = True
             self.in_transition_state = False
             self.state = c.WALK
+            self.transition_timer = 0
+
+
+    def changing_to_small(self, current_time):
+        """Mario's state and animation when he shrinks from big to small
+        after colliding with an enemy"""
+        self.in_transition_state = True
+        self.hurt_invisible = True
+        self.state = c.BIGTOSMALL
+
+        if self.facing_right:
+            frames = [self.right_big_normal_frames[4],
+                      self.right_big_normal_frames[8],
+                      self.right_small_normal_frames[8]
+                      ]
+        else:
+            frames = [self.left_big_normal_frames[4],
+                      self.left_big_normal_frames[8],
+                      self.left_small_normal_frames[8]
+                     ]
+
+        if self.transition_timer == 0:
+            self.transition_timer = current_time
+        elif (current_time - self.transition_timer) < 265:
+            self.image = frames[0]
+            self.invincible_invisible_check(current_time)
+            self.adjust_rect()
+        elif (current_time - self.transition_timer) < 330:
+            self.image = frames[1]
+            self.invincible_invisible_check(current_time)
+            self.adjust_rect()
+        elif (current_time - self.transition_timer) < 395:
+            self.image = frames[2]
+            self.invincible_invisible_check(current_time)
+            self.adjust_rect()
+        elif (current_time - self.transition_timer) < 460:
+            self.image = frames[1]
+            self.invincible_invisible_check(current_time)
+            self.adjust_rect()
+        elif (current_time - self.transition_timer) < 525:
+            self.image = frames[2]
+            self.invincible_invisible_check(current_time)
+            self.adjust_rect()
+        elif (current_time - self.transition_timer) < 590:
+            self.image = frames[1]
+            self.invincible_invisible_check(current_time)
+            self.adjust_rect()
+        elif (current_time - self.transition_timer) < 655:
+            self.image = frames[2]
+            self.invincible_invisible_check(current_time)
+            self.adjust_rect()
+        elif (current_time - self.transition_timer) < 720:
+            self.image = frames[1]
+            self.invincible_invisible_check(current_time)
+            self.adjust_rect()
+        elif (current_time - self.transition_timer) < 785:
+            self.image = frames[2]
+            self.invincible_invisible_check(current_time)
+            self.adjust_rect()
+        elif (current_time - self.transition_timer) < 850:
+            self.image = frames[1]
+            self.invincible_invisible_check(current_time)
+            self.adjust_rect()
+        elif (current_time - self.transition_timer) < 915:
+            self.image = frames[2]
+            self.adjust_rect()
+            self.in_transition_state = False
+            self.state = c.WALK
+            self.big = False
+            self.transition_timer = 0
+            self.hurt_invisible_timer = 0
+            self.become_small()
+
+
+
+    def adjust_rect(self):
+        x = self.rect.x
+        bottom = self.rect.bottom
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.bottom = bottom
+
+
+    def invincible_invisible_check(self, current_time):
+        """Makes Mario invisible on a fixed interval"""
+        if self.hurt_invisible_timer == 0:
+            self.hurt_invisible_timer = current_time
+        elif (current_time - self.hurt_invisible_timer) < 35:
+            self.image.set_alpha(0)
+        elif (current_time - self.hurt_invisible_timer) < 70:
+            self.image.set_alpha(255)
+            self.hurt_invisible_timer = current_time
+
+
+    def check_if_hurt_invincible(self, current_time):
+        """Check if Mario is still temporarily invincible after getting hurt"""
+        if self.hurt_invisible and self.state != c.BIGTOSMALL:
+            if self.hurt_invisible_timer2 == 0:
+                self.hurt_invisible_timer2 = current_time
+            elif (current_time - self.hurt_invisible_timer2) < 2000:
+                self.invincible_invisible_check(current_time)
+            else:
+                self.hurt_invisible = False
+                self.hurt_invisible_timer = 0
+                self.hurt_invisible_timer2 = 0
+                for frames in self.all_images:
+                    for image in frames:
+                        image.set_alpha(255)
+
+
+
+
+
+
+
 
 
 
@@ -690,7 +832,8 @@ class Mario(pg.sprite.Sprite):
     def animation(self):
         if self.state == c.DEATH_JUMP \
             or self.state == c.SMALLTOBIG \
-            or self.state == c.BIGTOFIRE:
+            or self.state == c.BIGTOFIRE \
+            or self.state == c.BIGTOSMALL:
             pass
         elif self.facing_right:
             self.image = self.right_frames[self.frame_index]

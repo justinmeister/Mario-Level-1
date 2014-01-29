@@ -416,9 +416,10 @@ class Level1(tools._State):
                 self.sprites_about_to_die_group.add(enemy)
             elif self.mario.big:
                 self.mario.fire = False
-                self.mario.become_small()
+                self.mario.state = c.BIGTOSMALL
                 self.convert_fireflowers_to_mushrooms()
-                enemy.kill()
+            elif self.mario.hurt_invisible:
+                pass
             else:
                 self.mario.start_death_jump()
                 self.state = c.FROZEN
@@ -468,11 +469,6 @@ class Level1(tools._State):
 
     def adjust_mario_for_x_collisions(self, collider):
         """Puts Mario flush next to the collider after moving on the x axis"""
-        obstacles = pg.sprite.Group(collider)
-
-        pixel_collision = pg.sprite.spritecollideany(self.mario, obstacles, self.check_bit_masks)
-
-        #if pixel_collision:
         if self.mario.rect.x < collider.rect.x:
             self.mario.rect.right = collider.rect.left
         else:
@@ -527,6 +523,8 @@ class Level1(tools._State):
                 enemy.kill()
                 self.sprites_about_to_die_group.add(enemy)
                 enemy.start_death_jump(c.RIGHT)
+            elif self.mario.hurt_invisible:
+                pass
             else:
                 self.adjust_mario_for_y_enemy_collisions(enemy, current_time)
 
@@ -542,22 +540,22 @@ class Level1(tools._State):
         self.test_if_mario_is_falling()
 
 
-    def prevent_collision_conflict(self, brick, coin_box):
+    def prevent_collision_conflict(self, obstacle1, obstacle2):
         """Allows collisions only for the item closest to marios centerx"""
-        if brick and coin_box:
-            brick_distance = self.mario.rect.centerx - brick.rect.centerx
-            if brick_distance < 0:
-                brick_distance = brick_distance * -1
-            coin_box_distance = self.mario.rect.centerx - coin_box.rect.centerx
-            if coin_box_distance < 0:
-                coin_box_distance = coin_box_distance * -1
+        if obstacle1 and obstacle2:
+            obstacle1_distance = self.mario.rect.centerx - obstacle1.rect.centerx
+            if obstacle1_distance < 0:
+                obstacle1_distance *= -1
+            obstacle2_distance = self.mario.rect.centerx - obstacle2.rect.centerx
+            if obstacle2_distance < 0:
+                obstacle2_distance *= -1
 
-            if brick_distance < coin_box_distance:
-                coin_box = False
+            if obstacle1_distance < obstacle2_distance:
+                obstacle2 = False
             else:
-                brick = False
+                obstacle1 = False
 
-        return brick, coin_box
+        return obstacle1, obstacle2
 
 
     def adjust_mario_for_y_coin_box_collisions(self, coin_box):
@@ -654,7 +652,8 @@ class Level1(tools._State):
             if self.mario.state != c.JUMP \
                 and self.mario.state != c.DEATH_JUMP \
                 and self.mario.state != c.SMALLTOBIG \
-                and self.mario.state != c.BIGTOFIRE:
+                and self.mario.state != c.BIGTOFIRE \
+                and self.mario.state != c.BIGTOSMALL:
                 self.mario.state = c.FALL
 
         self.mario.rect.y -= 1
