@@ -40,6 +40,8 @@ class Mario(pg.sprite.Sprite):
         self.hurt_invisible = False
         self.hurt_invisible_timer = 0
         self.hurt_invisible_timer2 = 0
+        self.flag_pole_timer = 0
+        self.flag_pole_right = 0
 
         self.load_from_sheet()
         self.image = self.right_frames[self.frame_index]
@@ -93,6 +95,10 @@ class Mario(pg.sprite.Sprite):
             self.get_image(320, 8, 16, 24))  #Transition between small to big
         self.right_small_normal_frames.append(
             self.get_image(241, 33, 16, 16))  #Transition between big to small
+        self.right_small_normal_frames.append(
+            self.get_image(194, 32, 12, 16))  #Frame 1 of Flag Pole Slide
+        self.right_small_normal_frames.append(
+            self.get_image(210, 33, 12, 16))  #Frame 2 of flag pole slide
 
 
         #Images for small green mario (for invincible animation)#
@@ -373,6 +379,8 @@ class Mario(pg.sprite.Sprite):
             self.changing_to_fire(current_time)
         elif self.state == c.BIGTOSMALL:
             self.changing_to_small(current_time)
+        elif self.state == c.FLAGPOLE:
+            self.flag_pole_sliding(current_time)
 
         self.check_if_invincible(current_time)
         self.check_if_fire()
@@ -806,12 +814,34 @@ class Mario(pg.sprite.Sprite):
 
 
 
+    def flag_pole_sliding(self, current_time):
+        """State where Mario is sliding down the flag pole"""
+        self.state = c.FLAGPOLE
+        self.x_vel = 0
+        self.y_vel = 0
 
+        if self.flag_pole_timer == 0:
+            self.flag_pole_timer = current_time
+        elif self.rect.bottom < 495:
+            if (current_time - self.flag_pole_timer) < 260:
+                self.image = self.right_frames[9]
+            elif (current_time - self.flag_pole_timer) < 520:
+                self.image = self.right_frames[10]
+            elif (current_time - self.flag_pole_timer) >= 520:
+                self.flag_pole_timer = current_time
+            self.rect.right = self.flag_pole_right - 5
+            self.y_vel = 4
+            #self.rect.y += self.y_vel
+            print self.rect.bottom
+            if self.rect.bottom >= 492:
+                self.flag_pole_timer = current_time
 
-
-
-
-
+        elif (current_time - self.flag_pole_timer) < 5000:
+            self.image = self.left_frames[10]
+            self.rect.left = (self.flag_pole_right - 13)
+            self.y_vel = 0
+        else:
+            self.state = c.WALK
 
 
 
@@ -833,7 +863,8 @@ class Mario(pg.sprite.Sprite):
         if self.state == c.DEATH_JUMP \
             or self.state == c.SMALLTOBIG \
             or self.state == c.BIGTOFIRE \
-            or self.state == c.BIGTOSMALL:
+            or self.state == c.BIGTOSMALL \
+            or self.state == c.FLAGPOLE:
             pass
         elif self.facing_right:
             self.image = self.right_frames[self.frame_index]

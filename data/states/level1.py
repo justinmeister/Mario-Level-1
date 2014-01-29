@@ -296,11 +296,12 @@ class Level1(tools._State):
         check8 = checkpoint.Checkpoint(4950, '8')
         check9 = checkpoint.Checkpoint(5100, '9')
         check10 = checkpoint.Checkpoint(6800, '10')
+        check11 = checkpoint.Checkpoint(8506, '11', 6)
 
         self.check_point_group = pg.sprite.Group(check1, check2, check3,
                                                  check4, check5, check6,
                                                  check7, check8, check9,
-                                                 check10)
+                                                 check10, check11)
 
 
     def update(self, surface, keys, current_time):
@@ -365,6 +366,10 @@ class Level1(tools._State):
             for i in range(1,11):
                 if checkpoint.name == str(i):
                     self.enemy_group.add(self.enemy_group_list[i-1])
+
+            if checkpoint.name == '11':
+                self.mario.state = c.FLAGPOLE
+                self.mario.flag_pole_right = checkpoint.rect.right
 
             self.mario_and_enemy_group.add(self.enemy_group)
 
@@ -653,7 +658,8 @@ class Level1(tools._State):
                 and self.mario.state != c.DEATH_JUMP \
                 and self.mario.state != c.SMALLTOBIG \
                 and self.mario.state != c.BIGTOFIRE \
-                and self.mario.state != c.BIGTOSMALL:
+                and self.mario.state != c.BIGTOSMALL \
+                and self.mario.state != c.FLAGPOLE:
                 self.mario.state = c.FALL
 
         self.mario.rect.y -= 1
