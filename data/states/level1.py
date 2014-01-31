@@ -330,11 +330,12 @@ class Level1(tools._State):
         check9 = checkpoint.Checkpoint(5100, '9')
         check10 = checkpoint.Checkpoint(6800, '10')
         check11 = checkpoint.Checkpoint(8506, '11', 6)
+        check12 = checkpoint.Checkpoint(8775, '12')
 
         self.check_point_group = pg.sprite.Group(check1, check2, check3,
                                                  check4, check5, check6,
                                                  check7, check8, check9,
-                                                 check10, check11)
+                                                 check10, check11, check12)
 
 
     def update(self, surface, keys, current_time):
@@ -376,7 +377,7 @@ class Level1(tools._State):
         """Updates the location of all sprites on the screen."""
         self.mario.update(keys, current_time, self.powerup_group)
         self.flag_pole_group.update(current_time)
-        self.check_points_check()
+        self.check_points_check(current_time)
         self.enemy_group.update(current_time)
         self.sprites_about_to_die_group.update(current_time)
         self.shell_group.update(current_time)
@@ -391,7 +392,7 @@ class Level1(tools._State):
         self.check_for_mario_death(keys)
 
 
-    def check_points_check(self):
+    def check_points_check(self, current_time):
         """Detect if checkpoint collision occurs, delete checkpoint,
         add enemies to self.enemy_group"""
         checkpoint = pg.sprite.spritecollideany(self.mario,
@@ -407,6 +408,8 @@ class Level1(tools._State):
                 self.mario.state = c.FLAGPOLE
                 self.mario.flag_pole_right = checkpoint.rect.right
                 self.flag.state = c.SLIDE_DOWN
+            elif checkpoint.name == '12':
+                self.startup(current_time, self.persistant)
 
             self.mario_and_enemy_group.add(self.enemy_group)
 
@@ -674,7 +677,10 @@ class Level1(tools._State):
         if collider.rect.bottom > self.mario.rect.bottom:
             self.mario.y_vel = 0
             self.mario.rect.bottom = collider.rect.top
-            self.mario.state = c.WALK
+            if self.mario.state == c.END_OF_LEVEL_FALL:
+                self.mario.state = c.WALKING_TO_CASTLE
+            else:
+                self.mario.state = c.WALK
         elif collider.rect.top < self.mario.rect.top:
             self.mario.y_vel = 7
             self.mario.rect.top = collider.rect.bottom
@@ -696,8 +702,13 @@ class Level1(tools._State):
                 and self.mario.state != c.SMALL_TO_BIG \
                 and self.mario.state != c.BIG_TO_FIRE \
                 and self.mario.state != c.BIG_TO_SMALL \
-                and self.mario.state != c.FLAGPOLE:
+                and self.mario.state != c.FLAGPOLE \
+                and self.mario.state != c.WALKING_TO_CASTLE \
+                and self.mario.state != c.END_OF_LEVEL_FALL:
                 self.mario.state = c.FALL
+            elif self.mario.state == c.WALKING_TO_CASTLE or \
+                self.mario.state == c.END_OF_LEVEL_FALL:
+                self.mario.state = c.END_OF_LEVEL_FALL
 
         self.mario.rect.y -= 1
 

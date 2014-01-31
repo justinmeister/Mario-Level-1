@@ -46,6 +46,8 @@ SMALL_TO_BIG = 'small to big'
 BIG_TO_FIRE = 'big to fire'
 BIG_TO_SMALL = 'big to small'
 FLAGPOLE = 'flag pole'
+WALKING_TO_CASTLE = 'walking to castle'
+END_OF_LEVEL_FALL = 'end of level fall'
 
 SMALL_ACCEL = .2
 SMALL_TURNAROUND = .35

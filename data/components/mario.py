@@ -17,7 +17,7 @@ class Mario(pg.sprite.Sprite):
         self.setup_counters()
         self.load_images_from_sheet()
 
-        self.state = c.STAND
+        self.state = c.WALK
         self.image = self.right_frames[self.frame_index]
         self.rect = self.image.get_rect()
         self.mask = pg.mask.from_surface(self.image)
@@ -184,9 +184,9 @@ class Mario(pg.sprite.Sprite):
         self.right_big_normal_frames.append(
             self.get_image(128, 0, 16, 32))  # Right skid [5]
         self.right_big_normal_frames.append(
-            self.get_image(160, 10, 16, 22))  # Right crouching [6]
+            self.get_image(336, 0, 16, 32))  # Right throwing [6]
         self.right_big_normal_frames.append(
-            self.get_image(336, 0, 16, 32))  # Right throwing [7]
+            self.get_image(160, 10, 16, 22))  # Right crouching [7]
         self.right_big_normal_frames.append(
             self.get_image(272, 2, 16, 29))  # Transition big to small [8]
         self.right_big_normal_frames.append(
@@ -419,6 +419,10 @@ class Mario(pg.sprite.Sprite):
             self.flag_pole_sliding(current_time)
         elif self.state == c.BOTTOM_OF_POLE:
             self.sitting_at_bottom_of_pole(current_time)
+        elif self.state == c.WALKING_TO_CASTLE:
+            self.walking_to_castle(current_time)
+        elif self.state == c.END_OF_LEVEL_FALL:
+            self.falling_at_end_of_level(current_time)
 
 
     def standing(self, keys, current_time, fire_group):
@@ -900,7 +904,10 @@ class Mario(pg.sprite.Sprite):
                 self.image = self.right_frames[10]
             elif (current_time - self.flag_pole_timer) >= 130:
                 self.flag_pole_timer = current_time
-            self.rect.right = self.flag_pole_right - 10
+            if self.big:
+                self.rect.right = self.flag_pole_right - 5
+            else:
+                self.rect.right = self.flag_pole_right - 10
             self.y_vel = 5
             self.rect.y += self.y_vel
 
@@ -909,6 +916,7 @@ class Mario(pg.sprite.Sprite):
 
         elif self.rect.bottom >= 493:
             self.image = self.right_frames[10]
+
 
     def sitting_at_bottom_of_pole(self, current_time):
         """State when mario is at the bottom of the flag pole"""
@@ -919,8 +927,7 @@ class Mario(pg.sprite.Sprite):
             self.image = self.left_frames[10]
         else:
             self.in_transition_state = False
-            self.state = c.WALK
-
+            self.state = c.WALKING_TO_CASTLE
 
 
     def set_state_to_bottom_of_pole(self):
@@ -929,8 +936,35 @@ class Mario(pg.sprite.Sprite):
         right = self.rect.right
         self.rect.bottom = 493
         self.rect.x = right
+        if self.big:
+            self.rect.x -= 10
         self.flag_pole_timer = 0
         self.state = c.BOTTOM_OF_POLE
+
+
+    def walking_to_castle(self, current_time):
+        """State when Mario walks to the castle to end the level"""
+        self.max_x_vel = 5
+        self.x_accel = c.SMALL_ACCEL
+
+        if self.x_vel < self.max_x_vel:
+            self.x_vel += self.x_accel
+
+        if (self.walking_timer == 0 or (current_time - self.walking_timer) > 200):
+            self.walking_timer = current_time
+
+        elif (current_time - self.walking_timer) > \
+                self.calculate_animation_speed():
+            if self.frame_index < 3:
+                self.frame_index += 1
+            else:
+                self.frame_index = 1
+            self.walking_timer = current_time
+
+
+    def falling_at_end_of_level(self, *args):
+        """State when Mario is falling from the flag pole base"""
+        self.y_vel += c.GRAVITY
 
 
 
