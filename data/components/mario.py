@@ -38,7 +38,7 @@ class Mario(pg.sprite.Sprite):
 
 
     def setup_state_booleans(self):
-        """Sets up flags that affect Mario's behavior"""
+        """Sets up booleans that affect Mario's behavior"""
         self.facing_right = True
         self.allow_jump = True
         self.dead = False
@@ -189,6 +189,10 @@ class Mario(pg.sprite.Sprite):
             self.get_image(336, 0, 16, 32))  # Right throwing [7]
         self.right_big_normal_frames.append(
             self.get_image(272, 2, 16, 29))  # Transition big to small [8]
+        self.right_big_normal_frames.append(
+            self.get_image(193, 2, 16, 30))  # Frame 1 of flag pole slide [9]
+        self.right_big_normal_frames.append(
+            self.get_image(209, 2, 16, 29))  # Frame 2 of flag pole slide [10]
 
         #Images for green big Mario#
 
@@ -266,6 +270,12 @@ class Mario(pg.sprite.Sprite):
             self.get_image(336, 48, 16, 32))  # Right throwing [6]
         self.right_fire_frames.append(
             self.get_image(160, 58, 16, 22))  # Right crouching [7]
+        self.right_fire_frames.append(
+            self.get_image(0, 0, 0, 0))  # Place holder [8]
+        self.right_fire_frames.append(
+            self.get_image(193, 50, 16, 29))  # Frame 1 of flag pole slide [9]
+        self.right_fire_frames.append(
+            self.get_image(209, 50, 16, 29))  # Frame 2 of flag pole slide [10]
 
 
         #The left image frames are numbered the same as the right
@@ -884,11 +894,11 @@ class Mario(pg.sprite.Sprite):
         if self.flag_pole_timer == 0:
             self.flag_pole_timer = current_time
         elif self.rect.bottom < 493:
-            if (current_time - self.flag_pole_timer) < 260:
+            if (current_time - self.flag_pole_timer) < 65:
                 self.image = self.right_frames[9]
-            elif (current_time - self.flag_pole_timer) < 520:
+            elif (current_time - self.flag_pole_timer) < 130:
                 self.image = self.right_frames[10]
-            elif (current_time - self.flag_pole_timer) >= 520:
+            elif (current_time - self.flag_pole_timer) >= 130:
                 self.flag_pole_timer = current_time
             self.rect.right = self.flag_pole_right - 10
             self.y_vel = 5
@@ -904,6 +914,7 @@ class Mario(pg.sprite.Sprite):
         """State when mario is at the bottom of the flag pole"""
         if self.flag_pole_timer == 0:
             self.flag_pole_timer = current_time
+            self.image = self.left_frames[10]
         elif (current_time - self.flag_pole_timer) < 210:
             self.image = self.left_frames[10]
         else:
