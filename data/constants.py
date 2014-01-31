@@ -42,9 +42,9 @@ STAND = 'standing'
 WALK = 'walk'
 JUMP = 'jump'
 FALL = 'fall'
-SMALLTOBIG = 'small to big'
-BIGTOFIRE = 'big to fire'
-BIGTOSMALL = 'big to small'
+SMALL_TO_BIG = 'small to big'
+BIG_TO_FIRE = 'big to fire'
+BIG_TO_SMALL = 'big to small'
 FLAGPOLE = 'flag pole'
 
 SMALL_ACCEL = .2
@@ -109,6 +109,11 @@ KOOPA = 'koopa'
 
 FROZEN = 'frozen'
 NOT_FROZEN = 'not frozen'
+
+#FLAG STATE
+TOP_OF_POLE = 'top of pole'
+SLIDE_DOWN = 'slide down'
+BOTTOM_OF_POLE = 'bottom of pole'
 
 
 

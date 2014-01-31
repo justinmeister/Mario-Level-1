@@ -9,6 +9,7 @@ from .. components import break_brick
 from .. components import coin_box
 from .. components import enemies
 from .. components import checkpoint
+from .. components import flagpole
 from .. components import coin
 
 
@@ -32,6 +33,7 @@ class Level1(tools._State):
         self.setup_steps()
         self.setup_bricks()
         self.setup_coin_boxes()
+        self.setup_flag_pole()
         self.setup_enemies()
         self.setup_mario()
         self.setup_checkpoints()
@@ -224,6 +226,37 @@ class Level1(tools._State):
                                               coin_box11, coin_box12)
 
 
+    def setup_flag_pole(self):
+        """Creates the flag pole at the end of the level"""
+        self.flag = flagpole.Flag(8505, 100)
+
+        pole0 = flagpole.Pole(8505, 97)
+        pole1 = flagpole.Pole(8505, 137)
+        pole2 = flagpole.Pole(8505, 177)
+        pole3 = flagpole.Pole(8505, 217)
+        pole4 = flagpole.Pole(8505, 257)
+        pole5 = flagpole.Pole(8505, 297)
+        pole6 = flagpole.Pole(8505, 337)
+        pole7 = flagpole.Pole(8505, 377)
+        pole8 = flagpole.Pole(8505, 417)
+        pole9 = flagpole.Pole(8505, 450)
+
+        finial = flagpole.Finial(8507, 97)
+
+        self.flag_pole_group = pg.sprite.Group(self.flag,
+                                               finial,
+                                               pole0,
+                                               pole1,
+                                               pole2,
+                                               pole3,
+                                               pole4,
+                                               pole5,
+                                               pole6,
+                                               pole7,
+                                               pole8,
+                                               pole9)
+
+
     def setup_enemies(self):
         """Creates all the enemies and stores them in a list of lists."""
         goomba0 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
@@ -313,18 +346,20 @@ class Level1(tools._State):
     def handle_states(self, keys, current_time):
         """If the level is in a FROZEN state, only mario will update"""
         if self.state == c.FROZEN:
-            self.update_only_mario(keys, current_time)
+            self.update_during_transition_state(keys, current_time)
         elif self.state == c.NOT_FROZEN:
             self.update_all_sprites(keys, current_time)
 
 
-    def update_only_mario(self, keys, current_time):
+    def update_during_transition_state(self, keys, current_time):
         """Updates mario in a transition state (like becoming big, small,
          or dies). Checks if he leaves the transition state or dies to
          change the level state back"""
         self.mario.update(keys, current_time, self.powerup_group)
         self.coin_box_group.update(current_time)
+        self.flag_pole_group.update(current_time)
         self.check_if_mario_in_transition_state()
+        self.check_flag()
         self.check_for_mario_death(keys)
 
 
@@ -340,6 +375,7 @@ class Level1(tools._State):
     def update_all_sprites(self, keys, current_time):
         """Updates the location of all sprites on the screen."""
         self.mario.update(keys, current_time, self.powerup_group)
+        self.flag_pole_group.update(current_time)
         self.check_points_check()
         self.enemy_group.update(current_time)
         self.sprites_about_to_die_group.update(current_time)
@@ -370,6 +406,7 @@ class Level1(tools._State):
             if checkpoint.name == '11':
                 self.mario.state = c.FLAGPOLE
                 self.mario.flag_pole_right = checkpoint.rect.right
+                self.flag.state = c.SLIDE_DOWN
 
             self.mario_and_enemy_group.add(self.enemy_group)
 
@@ -421,7 +458,7 @@ class Level1(tools._State):
                 self.sprites_about_to_die_group.add(enemy)
             elif self.mario.big:
                 self.mario.fire = False
-                self.mario.state = c.BIGTOSMALL
+                self.mario.state = c.BIG_TO_SMALL
                 self.convert_fireflowers_to_mushrooms()
             elif self.mario.hurt_invisible:
                 pass
@@ -439,14 +476,14 @@ class Level1(tools._State):
                 self.mario.invincible_start_timer = current_time
             elif powerup.name == c.MUSHROOM:
                 powerup.kill()
-                self.mario.state = c.SMALLTOBIG
+                self.mario.state = c.SMALL_TO_BIG
                 self.convert_mushrooms_to_fireflowers()
             elif powerup.name == c.FIREFLOWER:
                 powerup.kill()
                 if self.mario.big and self.mario.fire == False:
-                    self.mario.state = c.BIGTOFIRE
+                    self.mario.state = c.BIG_TO_FIRE
                 elif self.mario.big == False:
-                    self.mario.state = c.SMALLTOBIG
+                    self.mario.state = c.SMALL_TO_BIG
                     self.convert_mushrooms_to_fireflowers()
 
 
@@ -656,9 +693,9 @@ class Level1(tools._State):
         if pg.sprite.spritecollideany(self.mario, test_collide_group) is None:
             if self.mario.state != c.JUMP \
                 and self.mario.state != c.DEATH_JUMP \
-                and self.mario.state != c.SMALLTOBIG \
-                and self.mario.state != c.BIGTOFIRE \
-                and self.mario.state != c.BIGTOSMALL \
+                and self.mario.state != c.SMALL_TO_BIG \
+                and self.mario.state != c.BIG_TO_FIRE \
+                and self.mario.state != c.BIG_TO_SMALL \
                 and self.mario.state != c.FLAGPOLE:
                 self.mario.state = c.FALL
 
@@ -1075,7 +1112,8 @@ class Level1(tools._State):
                                            self.powerup_group,
                                            self.coin_group,
                                            self.check_point_group,
-                                           self.brick_pieces_group
+                                           self.brick_pieces_group,
+                                           self.flag_pole_group
                                            )
 
         if (self.mario.rect.right > (c.SCREEN_WIDTH * .33))\
@@ -1111,6 +1149,12 @@ class Level1(tools._State):
             self.camera_adjustment = 0
 
 
+    def check_flag(self):
+        if (self.flag.state == c.BOTTOM_OF_POLE
+            and self.mario.state == c.FLAGPOLE):
+            self.mario.set_state_to_bottom_of_pole()
+
+
     def check_for_mario_death(self, keys):
         """Restarts the level if Mario is dead"""
         if self.mario.rect.y > c.SCREEN_HEIGHT:
@@ -1130,5 +1174,6 @@ class Level1(tools._State):
         self.sprites_about_to_die_group.draw(surface)
         self.shell_group.draw(surface)
         self.brick_pieces_group.draw(surface)
+        self.flag_pole_group.draw(surface)
         self.mario_and_enemy_group.draw(surface)
 
