@@ -25,6 +25,7 @@ class OverheadInfo(object):
         self.create_image_dict()
         self.create_score_group()
         self.create_info_labels()
+        self.create_countdown_clock()
 
 
     def create_image_dict(self):
@@ -116,11 +117,22 @@ class OverheadInfo(object):
                            self.stage_label]
 
 
+    def create_countdown_clock(self):
+        """Creates the count down clock for the level"""
+        self.count_down_images = []
+        self.create_label(self.count_down_images, str(self.time), 645, 50)
+
+
     def create_label(self, label_list, string, x, y):
         """Creates a label (WORLD, TIME, MARIO)"""
         for letter in string:
             label_list.append(Character(self.image_dict[letter]))
 
+        self.set_label_rects(label_list, x, y)
+
+
+    def set_label_rects(self, label_list, x, y):
+        """Set the location of each individual character"""
         for i, letter in enumerate(label_list):
             letter.rect.x = x + ((letter.rect.width + 3) * i)
             letter.rect.y = y
@@ -133,9 +145,9 @@ class OverheadInfo(object):
         """Updates all overhead info"""
         self.score = level_info['score']
         self.coin_total = level_info['coin_total']
-        self.current_time = level_info['current_time']
 
         self.update_score_images()
+        self.update_count_down_clock(level_info)
 
 
     def update_score_images(self):
@@ -149,14 +161,30 @@ class OverheadInfo(object):
             index -= 1
 
 
-    def update_time(self):
+    def update_count_down_clock(self, level_info):
         """Updates current time"""
+        if (level_info['current_time'] - self.current_time) > 400:
+            self.current_time = level_info['current_time']
+            self.time -= 1
+            self.count_down_images = []
+            self.create_label(self.count_down_images, str(self.time), 645, 50)
+            if len(self.count_down_images) < 2:
+                for i in range(2):
+                    self.count_down_images.insert(0, Character(self.image_dict['0']))
+                self.set_label_rects(self.count_down_images, 645, 50)
+            elif len(self.count_down_images) < 3:
+                self.count_down_images.insert(0, Character(self.image_dict['0']))
+                self.set_label_rects(self.count_down_images, 645, 50)
+
 
 
     def draw(self, surface):
         """Blits all overhead info onto the screen"""
         for info in self.score_images:
             surface.blit(info.image, info.rect)
+
+        for digit in self.count_down_images:
+            surface.blit(digit.image, digit.rect)
 
         for label in self.label_list:
             for letter in label:
