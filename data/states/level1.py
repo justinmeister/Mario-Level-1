@@ -11,6 +11,7 @@ from .. components import enemies
 from .. components import checkpoint
 from .. components import flagpole
 from .. components import coin
+from .. components import info
 
 
 class Level1(tools._State):
@@ -26,6 +27,9 @@ class Level1(tools._State):
         self.coin_count = 0
         self.all_sprites_frozen = False
         self.check_bit_masks = pg.sprite.collide_mask
+        self.score = 0
+        self.level_info = {}
+        self.overhead_info_display = info.OverheadInfo()
 
         self.setup_background()
         self.setup_ground()
@@ -340,8 +344,19 @@ class Level1(tools._State):
 
     def update(self, surface, keys, current_time):
         """Updates Entire level using states.  Called by the control object"""
+        self.update_level_info(current_time)
         self.handle_states(keys, current_time)
         self.blit_everything(surface)
+
+
+    def update_level_info(self, current_time):
+        """Updates level information, such as score, time and
+        total coins"""
+        self.level_info['score'] = self.score
+        self.level_info['coin_total'] = self.coin_count
+        self.level_info['current_time'] = current_time
+
+        self.overhead_info_display.update(self.level_info)
 
 
     def handle_states(self, keys, current_time):
@@ -478,6 +493,7 @@ class Level1(tools._State):
                 self.mario.invincible = True
                 self.mario.invincible_start_timer = current_time
             elif powerup.name == c.MUSHROOM:
+                self.score += 100
                 powerup.kill()
                 self.mario.state = c.SMALL_TO_BIG
                 self.convert_mushrooms_to_fireflowers()
@@ -1187,4 +1203,5 @@ class Level1(tools._State):
         self.brick_pieces_group.draw(surface)
         self.flag_pole_group.draw(surface)
         self.mario_and_enemy_group.draw(surface)
+        self.overhead_info_display.draw(surface)
 
