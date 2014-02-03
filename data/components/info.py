@@ -3,6 +3,7 @@ __author__ = 'justinarmstrong'
 import pygame as pg
 from .. import setup
 from .. import constants as c
+import flashing_coin
 
 
 class Character(pg.sprite.Sprite):
@@ -26,6 +27,8 @@ class OverheadInfo(object):
         self.create_score_group()
         self.create_info_labels()
         self.create_countdown_clock()
+        self.create_coin_counter()
+        self.create_flashing_coin()
 
 
     def create_image_dict(self):
@@ -72,7 +75,8 @@ class OverheadInfo(object):
         image_list.append(self.get_image(27, 246, 7, 7))
 
         image_list.append(self.get_image(68, 249, 6, 2))
-        image_list.append(self.get_image(76, 248, 5, 5))
+        image_list.append(self.get_image(75, 247, 6, 6))
+
 
         character_string = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-*'
 
@@ -141,6 +145,17 @@ class OverheadInfo(object):
                 letter.rect.x += 2
 
 
+    def create_coin_counter(self):
+        """Creates the info that tracks the number of coins Mario collects"""
+        self.coin_count_images = []
+        self.create_label(self.coin_count_images, '*00', 300, 50)
+
+
+    def create_flashing_coin(self):
+        """Creates the flashing coin next to the coin total"""
+        self.flashing_coin = flashing_coin.Coin(280, 48)
+
+
     def update(self, level_info):
         """Updates all overhead info"""
         self.score = level_info['score']
@@ -148,6 +163,8 @@ class OverheadInfo(object):
 
         self.update_score_images()
         self.update_count_down_clock(level_info)
+        self.flashing_coin.update(level_info['current_time'])
+        self.update_coin_total()
 
 
     def update_score_images(self):
@@ -177,6 +194,24 @@ class OverheadInfo(object):
                 self.set_label_rects(self.count_down_images, 645, 50)
 
 
+    def update_coin_total(self):
+        coin_string = str(self.coin_total)
+        if len(coin_string) < 2:
+            coin_string = '*0' + coin_string
+        elif len(coin_string) > 2:
+            coin_string = '*00'
+        else:
+            coin_string = '*' + coin_string
+
+        x = self.coin_count_images[0].rect.x
+        y = self.coin_count_images[0].rect.y
+
+        self.coin_count_images = []
+
+        self.create_label(self.coin_count_images, coin_string, x, y)
+
+
+
 
     def draw(self, surface):
         """Blits all overhead info onto the screen"""
@@ -186,6 +221,11 @@ class OverheadInfo(object):
         for digit in self.count_down_images:
             surface.blit(digit.image, digit.rect)
 
+        for character in self.coin_count_images:
+            surface.blit(character.image, character.rect)
+
         for label in self.label_list:
             for letter in label:
                 surface.blit(letter.image, letter.rect)
+
+        surface.blit(self.flashing_coin.image, self.flashing_coin.rect)

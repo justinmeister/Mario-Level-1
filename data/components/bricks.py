@@ -96,8 +96,6 @@ class Brick(pg.sprite.Sprite):
                 self.state = c.RESTING
 
 
-
-
     def start_bump(self):
         self.y_vel = -6
 

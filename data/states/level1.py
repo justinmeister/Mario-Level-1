@@ -5,7 +5,7 @@ from .. import setup, tools
 from .. import constants as c
 from .. components import mario
 from .. components import collider
-from .. components import break_brick
+from .. components import bricks
 from .. components import coin_box
 from .. components import enemies
 from .. components import checkpoint
@@ -157,37 +157,37 @@ class Level1(tools._State):
         self.powerup_group = pg.sprite.Group()
         self.brick_pieces_group = pg.sprite.Group()
 
-        brick1  = break_brick.Brick(858,  365)
-        brick2  = break_brick.Brick(944,  365)
-        brick3  = break_brick.Brick(1030, 365)
-        brick4  = break_brick.Brick(3299, 365)
-        brick5  = break_brick.Brick(3385, 365)
-        brick6  = break_brick.Brick(3430, 193)
-        brick7  = break_brick.Brick(3473, 193)
-        brick8  = break_brick.Brick(3516, 193)
-        brick9  = break_brick.Brick(3559, 193)
-        brick10 = break_brick.Brick(3602, 193)
-        brick11 = break_brick.Brick(3645, 193)
-        brick12 = break_brick.Brick(3688, 193)
-        brick13 = break_brick.Brick(3731, 193)
-        brick14 = break_brick.Brick(3901, 193)
-        brick15 = break_brick.Brick(3944, 193)
-        brick16 = break_brick.Brick(3987, 193)
-        brick17 = break_brick.Brick(4030, 365, c.SIXCOINS, self.coin_group)
-        brick18 = break_brick.Brick(4287, 365)
-        brick19 = break_brick.Brick(4330, 365, c.STAR, self.powerup_group)
-        brick20 = break_brick.Brick(5058, 365)
-        brick21 = break_brick.Brick(5187, 193)
-        brick22 = break_brick.Brick(5230, 193)
-        brick23 = break_brick.Brick(5273, 193)
-        brick24 = break_brick.Brick(5488, 193)
-        brick25 = break_brick.Brick(5574, 193)
-        brick26 = break_brick.Brick(5617, 193)
-        brick27 = break_brick.Brick(5531, 365)
-        brick28 = break_brick.Brick(5574, 365)
-        brick29 = break_brick.Brick(7202, 365)
-        brick30 = break_brick.Brick(7245, 365)
-        brick31 = break_brick.Brick(7331, 365)
+        brick1  = bricks.Brick(858,  365)
+        brick2  = bricks.Brick(944,  365)
+        brick3  = bricks.Brick(1030, 365)
+        brick4  = bricks.Brick(3299, 365)
+        brick5  = bricks.Brick(3385, 365)
+        brick6  = bricks.Brick(3430, 193)
+        brick7  = bricks.Brick(3473, 193)
+        brick8  = bricks.Brick(3516, 193)
+        brick9  = bricks.Brick(3559, 193)
+        brick10 = bricks.Brick(3602, 193)
+        brick11 = bricks.Brick(3645, 193)
+        brick12 = bricks.Brick(3688, 193)
+        brick13 = bricks.Brick(3731, 193)
+        brick14 = bricks.Brick(3901, 193)
+        brick15 = bricks.Brick(3944, 193)
+        brick16 = bricks.Brick(3987, 193)
+        brick17 = bricks.Brick(4030, 365, c.SIXCOINS, self.coin_group)
+        brick18 = bricks.Brick(4287, 365)
+        brick19 = bricks.Brick(4330, 365, c.STAR, self.powerup_group)
+        brick20 = bricks.Brick(5058, 365)
+        brick21 = bricks.Brick(5187, 193)
+        brick22 = bricks.Brick(5230, 193)
+        brick23 = bricks.Brick(5273, 193)
+        brick24 = bricks.Brick(5488, 193)
+        brick25 = bricks.Brick(5574, 193)
+        brick26 = bricks.Brick(5617, 193)
+        brick27 = bricks.Brick(5531, 365)
+        brick28 = bricks.Brick(5574, 365)
+        brick29 = bricks.Brick(7202, 365)
+        brick30 = bricks.Brick(7245, 365)
+        brick31 = bricks.Brick(7331, 365)
 
         self.brick_group = pg.sprite.Group(brick1,  brick2,
                                            brick3,  brick4,
@@ -644,16 +644,16 @@ class Level1(tools._State):
                     self.check_if_enemy_on_brick(brick)
                     brick.kill()
                     self.brick_pieces_group.add(
-                        break_brick.BrickPiece(brick.rect.x,
+                        bricks.BrickPiece(brick.rect.x,
                                                brick.rect.y - (brick.rect.height/2),
                                                -2, -12),
-                        break_brick.BrickPiece(brick.rect.right,
+                        bricks.BrickPiece(brick.rect.right,
                                                brick.rect.y - (brick.rect.height/2),
                                                2, -12),
-                        break_brick.BrickPiece(brick.rect.x,
+                        bricks.BrickPiece(brick.rect.x,
                                                brick.rect.y,
                                                -2, -6),
-                        break_brick.BrickPiece(brick.rect.right,
+                        bricks.BrickPiece(brick.rect.right,
                                                brick.rect.y,
                                                2, -6))
                 else:

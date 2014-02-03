@@ -10,7 +10,6 @@ import coin
 
 class Coin_box(pg.sprite.Sprite):
     """Coin box sprite"""
-
     def __init__(self, x, y, contents='coin', group=None):
         pg.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['tile_set']
