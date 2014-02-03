@@ -10,8 +10,8 @@ from .. components import coin_box
 from .. components import enemies
 from .. components import checkpoint
 from .. components import flagpole
-from .. components import coin
 from .. components import info
+from .. components import score
 
 
 class Level1(tools._State):
@@ -27,6 +27,7 @@ class Level1(tools._State):
         self.coin_count = 0
         self.all_sprites_frozen = False
         self.check_bit_masks = pg.sprite.collide_mask
+        self.moving_score_list = []
         self.score = 0
         self.level_info = {}
         self.overhead_info_display = info.OverheadInfo()
@@ -372,6 +373,8 @@ class Level1(tools._State):
          or dies). Checks if he leaves the transition state or dies to
          change the level state back"""
         self.mario.update(keys, current_time, self.powerup_group)
+        for score in self.moving_score_list:
+            score.update()
         self.coin_box_group.update(current_time)
         self.flag_pole_group.update(current_time)
         self.check_if_mario_in_transition_state()
@@ -391,6 +394,8 @@ class Level1(tools._State):
     def update_all_sprites(self, keys, current_time):
         """Updates the location of all sprites on the screen."""
         self.mario.update(keys, current_time, self.powerup_group)
+        for score in self.moving_score_list:
+            score.update()
         self.flag_pole_group.update(current_time)
         self.check_points_check(current_time)
         self.enemy_group.update(current_time)
@@ -405,6 +410,7 @@ class Level1(tools._State):
         self.adjust_camera()
         self.check_if_mario_in_transition_state()
         self.check_for_mario_death(keys)
+        self.check_to_delete_floating_scores()
 
 
     def check_points_check(self, current_time):
@@ -489,15 +495,27 @@ class Level1(tools._State):
 
         elif powerup:
             if powerup.name == c.STAR:
+                self.score += 1000
+
+                self.moving_score_list.append(
+                    score.Score(self.mario.rect.centerx,
+                                self.mario.rect.y, 1000))
                 powerup.kill()
                 self.mario.invincible = True
                 self.mario.invincible_start_timer = current_time
             elif powerup.name == c.MUSHROOM:
-                self.score += 100
+                self.score += 1000
+                self.moving_score_list.append(
+                    score.Score(self.mario.rect.centerx,
+                                self.mario.rect.y - 20, 1000))
                 powerup.kill()
                 self.mario.state = c.SMALL_TO_BIG
                 self.convert_mushrooms_to_fireflowers()
             elif powerup.name == c.FIREFLOWER:
+                self.score += 1000
+                self.moving_score_list.append(
+                    score.Score(self.mario.rect.centerx,
+                                self.mario.rect.y, 1000))
                 powerup.kill()
                 if self.mario.big and self.mario.fire == False:
                     self.mario.state = c.BIG_TO_FIRE
@@ -590,6 +608,10 @@ class Level1(tools._State):
                 self.adjust_mario_for_y_enemy_collisions(enemy, current_time)
 
         elif shell:
+            self.score += 400
+            self.moving_score_list.append(
+                score.Score(self.mario.rect.centerx,
+                            self.mario.rect.y, 400))
             self.adjust_mario_for_y_shell_collisions(shell)
 
         elif powerup:
@@ -732,6 +754,10 @@ class Level1(tools._State):
     def adjust_mario_for_y_enemy_collisions(self, enemy, current_time):
         """Mario collisions with all enemies on the y-axis"""
         if self.mario.y_vel > 0:
+            self.score += 100
+            self.moving_score_list.append(
+                score.Score(enemy.rect.centerx,
+                            enemy.rect.y, 100))
             enemy.state = c.JUMPED_ON
             enemy.kill()
             if enemy.name == c.GOOMBA:
@@ -1143,6 +1169,10 @@ class Level1(tools._State):
                                            self.flag_pole_group
                                            )
 
+        for score in self.moving_score_list:
+            for digit in score.digit_list:
+                digit.rect.x -= self.camera_adjustment
+
         if (self.mario.rect.right > (c.SCREEN_WIDTH * .33))\
             and self.mario.rect.x < ((c.SCREEN_WIDTH / 2) - 50):
 
@@ -1191,6 +1221,24 @@ class Level1(tools._State):
             self.startup(keys, self.persistant)
 
 
+    def check_to_delete_floating_scores(self):
+        """Check if scores need to be deleted"""
+        for i, score in enumerate(self.moving_score_list):
+            for digit in score.digit_list:
+                if int(score.score_string) == 100:
+                    if (score.y - digit.rect.y) > 75:
+                        if len(self.moving_score_list) > 0:
+                            self.moving_score_list.pop(i)
+                elif int(score.score_string) == 1000:
+                    if (score.y - digit.rect.y) > 130:
+                        if len(self.moving_score_list) > 0:
+                            self.moving_score_list.pop(i)
+                elif int(score.score_string) == 400:
+                    if (score.y - digit.rect.y) > 75:
+                        if len(self.moving_score_list) > 0:
+                            self.moving_score_list.pop(i)
+
+
     def blit_everything(self, surface):
         """Blit all sprites to the main surface"""
         surface.blit(self.background, self.back_rect)
@@ -1204,4 +1252,6 @@ class Level1(tools._State):
         self.flag_pole_group.draw(surface)
         self.mario_and_enemy_group.draw(surface)
         self.overhead_info_display.draw(surface)
+        for score in self.moving_score_list:
+            score.draw(surface)
 
