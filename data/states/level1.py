@@ -449,8 +449,9 @@ class Level1(tools._State):
         self.mario.rect.x += self.mario.x_vel
         self.check_mario_x_collisions(current_time)
 
-        self.mario.rect.y += self.mario.y_vel
-        self.check_mario_y_collisions(current_time)
+        if self.mario.in_transition_state == False:
+            self.mario.rect.y += self.mario.y_vel
+            self.check_mario_y_collisions(current_time)
 
         if self.mario.rect.x < 5:
             self.mario.rect.x = 5
@@ -513,6 +514,7 @@ class Level1(tools._State):
                                 self.mario.rect.y - 20, 1000))
                 powerup.kill()
                 self.mario.state = c.SMALL_TO_BIG
+                self.mario.in_transition_state = True
                 self.convert_mushrooms_to_fireflowers()
             elif powerup.name == c.FIREFLOWER:
                 self.score += 1000
@@ -520,6 +522,7 @@ class Level1(tools._State):
                     score.Score(self.mario.rect.centerx,
                                 self.mario.rect.y, 1000))
                 powerup.kill()
+                self.mario.in_transition_state = True
                 if self.mario.big and self.mario.fire == False:
                     self.mario.state = c.BIG_TO_FIRE
                 elif self.mario.big == False:
