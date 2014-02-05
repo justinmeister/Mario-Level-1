@@ -522,11 +522,13 @@ class Level1(tools._State):
                     score.Score(self.mario.rect.centerx,
                                 self.mario.rect.y, 1000))
                 powerup.kill()
-                self.mario.in_transition_state = True
+
                 if self.mario.big and self.mario.fire == False:
                     self.mario.state = c.BIG_TO_FIRE
+                    self.mario.in_transition_state = True
                 elif self.mario.big == False:
                     self.mario.state = c.SMALL_TO_BIG
+                    self.mario.in_transition_state = True
                     self.convert_mushrooms_to_fireflowers()
 
 
@@ -566,6 +568,10 @@ class Level1(tools._State):
         """Deals with Mario if he hits a shell moving on the x axis"""
         if shell.state == c.JUMPED_ON:
             if self.mario.rect.x < shell.rect.x:
+                self.score += 400
+                self.moving_score_list.append(score.Score(shell.rect.centerx,
+                                                          shell.rect.y,
+                                                          400))
                 self.mario.rect.right = shell.rect.left
                 shell.direction = c.RIGHT
                 shell.x_vel = 5
@@ -792,14 +798,12 @@ class Level1(tools._State):
                 shell.state = c.SHELL_SLIDE
                 if self.mario.rect.centerx < shell.rect.centerx:
                     shell.direction = c.RIGHT
+                    shell.rect.left = self.mario.rect.right
                 else:
                     shell.direction = c.LEFT
+                    shell.rect.right = self.mario.rect.left
             else:
                 shell.state = c.JUMPED_ON
-
-            self.mario.rect.bottom = shell.rect.top
-            self.mario.state = c.JUMP
-            self.mario.y_vel = -5
 
 
     def adjust_enemy_position(self):
@@ -1259,6 +1263,8 @@ class Level1(tools._State):
                     if (score.y - digit.rect.y) > 75:
                         if len(self.moving_score_list) > 0:
                             self.moving_score_list.pop(i)
+
+
 
 
     def blit_everything(self, surface):
