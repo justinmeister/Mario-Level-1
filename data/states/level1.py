@@ -1,4 +1,5 @@
-__author__ = 'justinarmstrong'
+from __future__ import division
+
 
 import pygame as pg
 from .. import setup, tools
@@ -67,6 +68,12 @@ class Level1(tools._State):
                                   (int(self.back_rect.width*c.BACKGROUND_MULTIPLER),
                                   int(self.back_rect.height*c.BACKGROUND_MULTIPLER)))
         self.back_rect = self.background.get_rect()
+        width = self.back_rect.width
+        height = self.back_rect.height
+
+        self.level = pg.Surface((width, height))
+        self.level_rect = self.level.get_rect()
+        self.viewport = setup.SCREEN.get_rect(bottom=self.level_rect.bottom)
 
 
     def setup_ground(self):
@@ -346,6 +353,7 @@ class Level1(tools._State):
         """Updates Entire level using states.  Called by the control object"""
         self.update_level_info(current_time)
         self.handle_states(keys, current_time)
+        self.update_viewport()
         self.blit_everything(surface)
 
 
@@ -406,7 +414,6 @@ class Level1(tools._State):
         self.coin_group.update(current_time)
         self.brick_pieces_group.update()
         self.adjust_sprite_positions(current_time)
-        self.adjust_camera()
         self.check_if_mario_in_transition_state()
         self.check_for_mario_death(keys)
         self.check_to_delete_floating_scores()
@@ -1178,54 +1185,7 @@ class Level1(tools._State):
 
     def adjust_camera(self):
         """Makes a camera adjustment for all sprites"""
-        self.calculate_camera_adjustment()
-        adjusted_sprites = pg.sprite.Group(self.ground_group,
-                                           self.pipe_group,
-                                           self.step_group,
-                                           self.coin_box_group,
-                                           self.brick_group,
-                                           self.enemy_group,
-                                           self.sprites_about_to_die_group,
-                                           self.shell_group,
-                                           self.powerup_group,
-                                           self.coin_group,
-                                           self.check_point_group,
-                                           self.brick_pieces_group,
-                                           self.flag_pole_group
-                                           )
-
-
-        if (self.mario.rect.right > (c.SCREEN_WIDTH * .33))\
-            and self.mario.rect.x < ((c.SCREEN_WIDTH / 2) - 50):
-
-            self.mario.rect.x -= (self.camera_adjustment * .75)
-
-        else:
-            self.mario.rect.x -= self.camera_adjustment
-
-        for sprite in adjusted_sprites:
-            sprite.rect.x -= self.camera_adjustment
-        self.back_rect.x -= self.camera_adjustment
-
-
-
-
-    def calculate_camera_adjustment(self):
-        """determines the total camera adjustment"""
-        if self.back_rect.right <= 800:
-            self.camera_adjustment = 0
-
-        elif self.mario.x_vel < 0:
-            self.camera_adjustment = 0
-
-        elif self.mario.rect.right > (c.SCREEN_WIDTH * .33):
-            if self.mario.rect.right < ((c.SCREEN_WIDTH / 2) - 50):
-                self.camera_adjustment = self.mario.rect.right - self.last_x_position
-            else:
-                self.camera_adjustment = self.mario.rect.right - self.last_x_position
-
-        else:
-            self.camera_adjustment = 0
+        pass
 
 
     def check_flag(self):
@@ -1265,22 +1225,41 @@ class Level1(tools._State):
                             self.moving_score_list.pop(i)
 
 
+    def update_viewport(self):
+        """Changes the view of the camera"""
+        first_third = self.viewport[0] + self.viewport.size[0]//3
+        second_third = first_third + self.viewport.size[0]//3
+        mario_center = self.mario.rect.center[0]
+        step = self.viewport[0]
+
+        if self.mario.x_vel > 0 and mario_center >= first_third:
+            if mario_center < self.viewport.center[0]:
+                step = self.viewport[0] + 0.5 * self.mario.x_vel
+            else:
+                step = self.viewport[0] + self.mario.x_vel
+
+        low = max(0, step)
+        high = self.level_rect.size[0] - self.viewport.size[0]
+        self.viewport[0] = min(high, low)
+
 
 
     def blit_everything(self, surface):
         """Blit all sprites to the main surface"""
-        surface.blit(self.background, self.back_rect)
-        self.powerup_group.draw(surface)
-        self.coin_group.draw(surface)
-        self.brick_group.draw(surface)
-        self.coin_box_group.draw(surface)
-        self.sprites_about_to_die_group.draw(surface)
-        self.shell_group.draw(surface)
-        self.brick_pieces_group.draw(surface)
-        self.flag_pole_group.draw(surface)
+        self.level.blit(self.background, self.back_rect)
+        self.powerup_group.draw(self.level)
+        self.coin_group.draw(self.level)
+        self.brick_group.draw(self.level)
+        self.coin_box_group.draw(self.level)
+        self.sprites_about_to_die_group.draw(self.level)
+        self.shell_group.draw(self.level)
+        self.check_point_group.draw(self.level)
+        self.brick_pieces_group.draw(self.level)
+        self.flag_pole_group.draw(self.level)
+        self.mario_and_enemy_group.draw(self.level)
+        self.overhead_info_display.draw(self.level)
+        surface.blit(self.level, (0,0), self.viewport)
         for score in self.moving_score_list:
             score.draw(surface)
-        self.mario_and_enemy_group.draw(surface)
-        self.overhead_info_display.draw(surface)
 
 
