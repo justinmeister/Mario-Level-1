@@ -96,12 +96,12 @@ class Brick(pg.sprite.Sprite):
                 self.state = c.RESTING
 
 
-    def start_bump(self):
+    def start_bump(self, score_group):
         self.y_vel = -6
 
         if self.contents == '6coins':
             if self.coin_total > 0:
-                self.group.add(coin.Coin(self.rect.centerx, self.rect.y))
+                self.group.add(coin.Coin(self.rect.centerx, self.rect.y, score_group))
                 self.coin_total -= 1
                 if self.coin_total == 0:
                     self.frame_index = 1

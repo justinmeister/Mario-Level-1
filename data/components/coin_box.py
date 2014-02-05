@@ -112,12 +112,14 @@ class Coin_box(pg.sprite.Sprite):
         self.image = self.frames[self.frame_index]
 
 
-    def start_bump(self):
+    def start_bump(self, score_group):
         self.y_vel = -6
         self.state = c.BUMPED
 
         if self.contents == 'coin':
-            self.group.add(coin.Coin(self.rect.centerx, self.rect.y))
+            self.group.add(coin.Coin(self.rect.centerx,
+                                     self.rect.y,
+                                     score_group))
 
 
     def opened(self):

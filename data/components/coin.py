@@ -3,10 +3,11 @@ __author__ = 'justinarmstrong'
 import pygame as pg
 from .. import setup
 from .. import constants as c
+import score
 
 
 class Coin(pg.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, x, y, score_group):
         pg.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['item_objects']
         self.frames = []
@@ -21,6 +22,7 @@ class Coin(pg.sprite.Sprite):
         self.gravity = 1
         self.y_vel = -15
         self.initial_height = self.rect.bottom - 5
+        self.score_group = score_group
 
 
     def get_image(self, x, y, width, height):
@@ -66,6 +68,9 @@ class Coin(pg.sprite.Sprite):
 
         if self.rect.bottom > self.initial_height:
             self.kill()
+            self.score_group.append(score.Score(self.rect.centerx,
+                                                self.rect.y,
+                                                200))
 
 
 

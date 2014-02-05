@@ -18,7 +18,6 @@ class Level1(tools._State):
     def __init__(self):
         tools._State.__init__(self)
 
-
     def startup(self, current_time, persistant):
         """Called when the State object is created"""
         self.persistant = persistant
@@ -477,6 +476,10 @@ class Level1(tools._State):
 
         elif enemy:
             if self.mario.invincible:
+                self.score += 100
+                self.moving_score_list.append(score.Score(self.mario.rect.x,
+                                                          self.mario.rect.y,
+                                                         100))
                 enemy.kill()
                 enemy.start_death_jump(c.RIGHT)
                 self.sprites_about_to_die_group.add(enemy)
@@ -602,8 +605,6 @@ class Level1(tools._State):
                 enemy.kill()
                 self.sprites_about_to_die_group.add(enemy)
                 enemy.start_death_jump(c.RIGHT)
-            elif self.mario.hurt_invisible:
-                pass
             else:
                 self.adjust_mario_for_y_enemy_collisions(enemy, current_time)
 
@@ -645,9 +646,13 @@ class Level1(tools._State):
         """Mario collisions with coin boxes on the y-axis"""
         if self.mario.rect.y > coin_box.rect.y:
             if coin_box.state == c.RESTING:
-                coin_box.start_bump()
-                if coin_box.contents == c.COIN:
-                    self.coin_count += 1
+                if coin_box.contents != c.MUSHROOM and coin_box.contents != c.STAR:
+                    self.score += 200
+                    coin_box.start_bump(self.moving_score_list)
+                    if coin_box.contents == c.COIN:
+                        self.coin_count += 1
+                else:
+                    coin_box.start_bump(self.moving_score_list)
 
             self.mario.y_vel = 7
             self.mario.rect.y = coin_box.rect.bottom
@@ -679,9 +684,10 @@ class Level1(tools._State):
                                                brick.rect.y,
                                                2, -6))
                 else:
-                    brick.start_bump()
                     if brick.coin_total > 0:
                         self.coin_count += 1
+                    self.check_if_enemy_on_brick(brick)
+                    brick.start_bump(self.moving_score_list)
             self.mario.y_vel = 7
             self.mario.rect.y = brick.rect.bottom
             self.mario.state = c.FALL
@@ -699,6 +705,10 @@ class Level1(tools._State):
         enemy = pg.sprite.spritecollideany(brick, self.enemy_group)
 
         if enemy:
+            self.score += 100
+            self.moving_score_list.append(score.Score(enemy.rect.centerx,
+                                                      enemy.rect.y,
+                                                      100))
             enemy.kill()
             self.sprites_about_to_die_group.add(enemy)
             if self.mario.rect.centerx > brick.rect.centerx:
@@ -874,6 +884,10 @@ class Level1(tools._State):
 
         elif coin_box:
             if coin_box.state == c.BUMPED:
+                self.score = 100
+                self.moving_score_list.append(score.Score(enemy.rect.centerx,
+                                                          enemy.rect.y,
+                                                          100))
                 enemy.kill()
                 self.sprites_about_to_die_group.add(enemy)
                 if self.mario.rect.centerx > coin_box.rect.centerx:
@@ -1119,6 +1133,10 @@ class Level1(tools._State):
             self.bounce_fireball(fireball)
 
         elif enemy:
+            self.score += 100
+            self.moving_score_list.append(score.Score(enemy.rect.centerx,
+                                                      enemy.rect.y,
+                                                      100))
             fireball.kill()
             enemy.kill()
             self.sprites_about_to_die_group.add(enemy, fireball)
@@ -1169,9 +1187,6 @@ class Level1(tools._State):
                                            self.flag_pole_group
                                            )
 
-        for score in self.moving_score_list:
-            for digit in score.digit_list:
-                digit.rect.x -= self.camera_adjustment
 
         if (self.mario.rect.right > (c.SCREEN_WIDTH * .33))\
             and self.mario.rect.x < ((c.SCREEN_WIDTH / 2) - 50):
@@ -1237,6 +1252,10 @@ class Level1(tools._State):
                     if (score.y - digit.rect.y) > 75:
                         if len(self.moving_score_list) > 0:
                             self.moving_score_list.pop(i)
+                elif int(score.score_string) == 200:
+                    if (score.y - digit.rect.y) > 75:
+                        if len(self.moving_score_list) > 0:
+                            self.moving_score_list.pop(i)
 
 
     def blit_everything(self, surface):
@@ -1250,8 +1269,9 @@ class Level1(tools._State):
         self.shell_group.draw(surface)
         self.brick_pieces_group.draw(surface)
         self.flag_pole_group.draw(surface)
-        self.mario_and_enemy_group.draw(surface)
-        self.overhead_info_display.draw(surface)
         for score in self.moving_score_list:
             score.draw(surface)
+        self.mario_and_enemy_group.draw(surface)
+        self.overhead_info_display.draw(surface)
+
 
