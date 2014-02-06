@@ -1227,20 +1227,14 @@ class Level1(tools._State):
 
     def update_viewport(self):
         """Changes the view of the camera"""
-        first_third = self.viewport[0] + self.viewport.size[0]//3
-        second_third = first_third + self.viewport.size[0]//3
-        mario_center = self.mario.rect.center[0]
-        step = self.viewport[0]
+        third = self.viewport.x + self.viewport.w//3
+        mario_center = self.mario.rect.centerx
 
-        if self.mario.x_vel > 0 and mario_center >= first_third:
-            if mario_center < self.viewport.center[0]:
-                step = self.viewport[0] + 0.5 * self.mario.x_vel
-            else:
-                step = self.viewport[0] + self.mario.x_vel
-
-        low = max(0, step)
-        high = self.level_rect.size[0] - self.viewport.size[0]
-        self.viewport[0] = min(high, low)
+        if self.mario.x_vel > 0 and mario_center >= third:
+            mult = 0.5 if mario_center < self.viewport.centerx else 1
+            new = self.viewport.x + mult * self.mario.x_vel
+            highest = self.level_rect.w - self.viewport.w
+            self.viewport.x = min(highest, new)
 
 
 
@@ -1260,6 +1254,6 @@ class Level1(tools._State):
         self.overhead_info_display.draw(self.level)
         surface.blit(self.level, (0,0), self.viewport)
         for score in self.moving_score_list:
-            score.draw(surface)
+            score.draw(self.level)
 
 
