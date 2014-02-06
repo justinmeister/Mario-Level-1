@@ -116,7 +116,7 @@ class Enemy(pg.sprite.Sprite):
         self.image = self.frames[self.frame_index]
 
 
-    def update(self, current_time):
+    def update(self, current_time, *args):
         self.handle_state(current_time)
         self.animation()
 
@@ -125,7 +125,7 @@ class Enemy(pg.sprite.Sprite):
 
 class Goomba(Enemy):
 
-    def __init__(self, x, y, direction, name='goomba'):
+    def __init__(self, y=c.GROUND_HEIGHT, x=0, direction=c.LEFT, name='goomba'):
         Enemy.__init__(self)
         self.setup_enemy(x, y, direction, name, self.setup_frames)
 
@@ -152,7 +152,7 @@ class Goomba(Enemy):
 
 class Koopa(Enemy):
 
-    def __init__(self, x, y, direction, name='koopa'):
+    def __init__(self, y=c.GROUND_HEIGHT, x=0, direction=c.LEFT, name='koopa'):
         Enemy.__init__(self)
         self.setup_enemy(x, y, direction, name, self.setup_frames)
 

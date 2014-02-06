@@ -23,7 +23,6 @@ class Level1(tools._State):
         """Called when the State object is created"""
         self.persistant = persistant
         self.state = c.NOT_FROZEN
-        self.camera_adjust = 0
         self.coin_count = 0
         self.all_sprites_frozen = False
         self.check_bit_masks = pg.sprite.collide_mask
@@ -71,7 +70,7 @@ class Level1(tools._State):
         width = self.back_rect.width
         height = self.back_rect.height
 
-        self.level = pg.Surface((width, height))
+        self.level = pg.Surface((width, height)).convert()
         self.level_rect = self.level.get_rect()
         self.viewport = setup.SCREEN.get_rect(bottom=self.level_rect.bottom)
 
@@ -270,32 +269,24 @@ class Level1(tools._State):
 
     def setup_enemies(self):
         """Creates all the enemies and stores them in a list of lists."""
-        goomba0 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
-        goomba1 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
-        goomba2 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
-        goomba3 = enemies.Goomba( 860, c.GROUND_HEIGHT, c.LEFT, 'goomba')
-        goomba4 = enemies.Goomba( 800, 193,             c.LEFT, 'goomba')
-        goomba5 = enemies.Goomba( 900, 193,             c.LEFT, 'goomba')
-        goomba6 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
-        goomba7 = enemies.Goomba( 860, c.GROUND_HEIGHT, c.LEFT, 'goomba')
-        goomba8 = enemies.Goomba( 800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
-        goomba9 = enemies.Goomba( 860, c.GROUND_HEIGHT, c.LEFT, 'goomba')
-        goomba10 = enemies.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
-        goomba11 = enemies.Goomba(869, c.GROUND_HEIGHT, c.LEFT, 'goomba')
-        goomba12 = enemies.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
-        goomba13 = enemies.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba')
-        goomba14 = enemies.Goomba(800, c.GROUND_HEIGHT, c.LEFT, 'goomba')
-        goomba15 = enemies.Goomba(860, c.GROUND_HEIGHT, c.LEFT, 'goomba')
+        goomba0 = enemies.Goomba()
+        goomba1 = enemies.Goomba()
+        goomba2 = enemies.Goomba()
+        goomba3 = enemies.Goomba()
+        goomba4 = enemies.Goomba(193)
+        goomba5 = enemies.Goomba(193)
+        goomba6 = enemies.Goomba()
+        goomba7 = enemies.Goomba()
+        goomba8 = enemies.Goomba()
+        goomba9 = enemies.Goomba()
+        goomba10 = enemies.Goomba()
+        goomba11 = enemies.Goomba()
+        goomba12 = enemies.Goomba()
+        goomba13 = enemies.Goomba()
+        goomba14 = enemies.Goomba()
+        goomba15 = enemies.Goomba()
 
-        self.goombas = [goomba0, goomba1, goomba2, goomba3,
-                        goomba4, goomba5, goomba6, goomba7,
-                        goomba8, goomba9, goomba10, goomba11,
-                        goomba12, goomba13, goomba14, goomba15]
-
-
-        koopa0 = enemies.Koopa( 800, c.GROUND_HEIGHT, c.LEFT, 'koopa')
-
-        self.koopas = [koopa0]
+        koopa0 = enemies.Koopa()
 
         enemy_group1 = pg.sprite.Group(goomba0)
         enemy_group2 = pg.sprite.Group(goomba1)
@@ -330,10 +321,10 @@ class Level1(tools._State):
     def setup_checkpoints(self):
         """Creates invisible checkpoints that when collided will trigger
         the creation of enemies from the self.enemy_group_list"""
-        check1 = checkpoint.Checkpoint(530, "1")
-        check2 = checkpoint.Checkpoint(1350, '2')
-        check3 = checkpoint.Checkpoint(1650, '3')
-        check4 = checkpoint.Checkpoint(3000, '4')
+        check1 = checkpoint.Checkpoint(510, "1")
+        check2 = checkpoint.Checkpoint(1400, '2')
+        check3 = checkpoint.Checkpoint(1740, '3')
+        check4 = checkpoint.Checkpoint(3080, '4')
         check5 = checkpoint.Checkpoint(3750, '5')
         check6 = checkpoint.Checkpoint(4150, '6')
         check7 = checkpoint.Checkpoint(4470, '7')
@@ -353,7 +344,6 @@ class Level1(tools._State):
         """Updates Entire level using states.  Called by the control object"""
         self.update_level_info(current_time)
         self.handle_states(keys, current_time)
-        self.update_viewport()
         self.blit_everything(surface)
 
 
@@ -406,17 +396,18 @@ class Level1(tools._State):
         self.flag_pole_group.update(current_time)
         self.check_points_check(current_time)
         self.enemy_group.update(current_time)
-        self.sprites_about_to_die_group.update(current_time)
+        self.sprites_about_to_die_group.update(current_time, self.viewport)
         self.shell_group.update(current_time)
         self.brick_group.update()
         self.coin_box_group.update(current_time)
-        self.powerup_group.update(current_time)
+        self.powerup_group.update(current_time, self.viewport)
         self.coin_group.update(current_time)
         self.brick_pieces_group.update()
         self.adjust_sprite_positions(current_time)
         self.check_if_mario_in_transition_state()
         self.check_for_mario_death(keys)
         self.check_to_delete_floating_scores()
+        self.update_viewport()
 
 
     def check_points_check(self, current_time):
@@ -429,7 +420,10 @@ class Level1(tools._State):
 
             for i in range(1,11):
                 if checkpoint.name == str(i):
+                    for index, enemy in enumerate(self.enemy_group_list[i -1]):
+                        enemy.rect.x = self.viewport.right + (index * 60)
                     self.enemy_group.add(self.enemy_group_list[i-1])
+
 
             if checkpoint.name == '11':
                 self.mario.state = c.FLAGPOLE
@@ -460,8 +454,8 @@ class Level1(tools._State):
             self.mario.rect.y += self.mario.y_vel
             self.check_mario_y_collisions(current_time)
 
-        if self.mario.rect.x < 5:
-            self.mario.rect.x = 5
+        if self.mario.rect.x < (self.viewport.x + 5):
+            self.mario.rect.x = (self.viewport.x + 5)
 
 
     def check_mario_x_collisions(self, current_time):
@@ -1172,20 +1166,15 @@ class Level1(tools._State):
     def delete_if_off_screen(self, enemy):
         """Removes enemy from sprite groups if 500 pixels left off the screen,
          underneath the bottom of the screen, or right of the screen if shell"""
-        if enemy.rect.x < -500:
+        if enemy.rect.x < (self.viewport.x - 500):
             enemy.kill()
 
-        elif enemy.rect.y > 600:
+        elif enemy.rect.y > (self.viewport.right + 600):
             enemy.kill()
 
         elif enemy.state == c.SHELL_SLIDE:
-            if enemy.rect.x > 1000:
+            if enemy.rect.x > (self.viewport.right + 1000):
                 enemy.kill()
-
-
-    def adjust_camera(self):
-        """Makes a camera adjustment for all sprites"""
-        pass
 
 
     def check_flag(self):
@@ -1229,9 +1218,10 @@ class Level1(tools._State):
         """Changes the view of the camera"""
         third = self.viewport.x + self.viewport.w//3
         mario_center = self.mario.rect.centerx
+        mario_right = self.mario.rect.right
 
         if self.mario.x_vel > 0 and mario_center >= third:
-            mult = 0.5 if mario_center < self.viewport.centerx else 1
+            mult = 0.3 if mario_right < self.viewport.centerx else 1
             new = self.viewport.x + mult * self.mario.x_vel
             highest = self.level_rect.w - self.viewport.w
             self.viewport.x = min(highest, new)
@@ -1240,7 +1230,7 @@ class Level1(tools._State):
 
     def blit_everything(self, surface):
         """Blit all sprites to the main surface"""
-        self.level.blit(self.background, self.back_rect)
+        self.level.blit(self.background, self.viewport, self.viewport)
         self.powerup_group.draw(self.level)
         self.coin_group.draw(self.level)
         self.brick_group.draw(self.level)
@@ -1251,9 +1241,9 @@ class Level1(tools._State):
         self.brick_pieces_group.draw(self.level)
         self.flag_pole_group.draw(self.level)
         self.mario_and_enemy_group.draw(self.level)
-        self.overhead_info_display.draw(self.level)
-        surface.blit(self.level, (0,0), self.viewport)
         for score in self.moving_score_list:
             score.draw(self.level)
+        surface.blit(self.level, (0,0), self.viewport)
+        self.overhead_info_display.draw(surface)
 
 

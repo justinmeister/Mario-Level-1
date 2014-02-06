@@ -49,7 +49,7 @@ class Powerup(pg.sprite.Sprite):
         return image
 
 
-    def update(self, current_time):
+    def update(self, current_time, *args):
         self.handle_state(current_time)
 
 
@@ -270,9 +270,9 @@ class FireBall(pg.sprite.Sprite):
         return image
 
 
-    def update(self, current_time):
+    def update(self, current_time, viewport):
         self.handle_state(current_time)
-        self.check_if_off_screen()
+        self.check_if_off_screen(viewport)
 
 
     def handle_state(self, current_time):
@@ -314,9 +314,9 @@ class FireBall(pg.sprite.Sprite):
         self.state = c.EXPLODING
 
 
-    def check_if_off_screen(self):
-        if (self.rect.x > c.SCREEN_WIDTH) or (self.rect.y > c.SCREEN_HEIGHT) \
-            or (self.rect.right < 0):
+    def check_if_off_screen(self, viewport):
+        if (self.rect.x > viewport.right) or (self.rect.y > viewport.bottom) \
+            or (self.rect.right < viewport.x):
             self.kill()
 
 
