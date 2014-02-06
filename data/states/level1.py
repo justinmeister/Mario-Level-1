@@ -518,7 +518,9 @@ class Level1(tools._State):
                 self.mario.in_transition_state = True
                 self.convert_mushrooms_to_fireflowers()
             elif powerup.name == c.FIREFLOWER:
+                print self.score
                 self.score += 1000
+                print self.score
                 self.moving_score_list.append(
                     score.Score(self.mario.rect.centerx,
                                 self.mario.rect.y, 1000))
@@ -656,7 +658,7 @@ class Level1(tools._State):
         """Mario collisions with coin boxes on the y-axis"""
         if self.mario.rect.y > coin_box.rect.y:
             if coin_box.state == c.RESTING:
-                if coin_box.contents != c.MUSHROOM and coin_box.contents != c.STAR:
+                if coin_box.contents == c.COIN:
                     self.score += 200
                     coin_box.start_bump(self.moving_score_list)
                     if coin_box.contents == c.COIN:
@@ -696,6 +698,7 @@ class Level1(tools._State):
                 else:
                     if brick.coin_total > 0:
                         self.coin_count += 1
+                        self.score += 200
                     self.check_if_enemy_on_brick(brick)
                     brick.start_bump(self.moving_score_list)
             self.mario.y_vel = 7
@@ -892,7 +895,7 @@ class Level1(tools._State):
 
         elif coin_box:
             if coin_box.state == c.BUMPED:
-                self.score = 100
+                self.score += 100
                 self.moving_score_list.append(score.Score(enemy.rect.centerx,
                                                           enemy.rect.y,
                                                           100))
@@ -1225,7 +1228,6 @@ class Level1(tools._State):
             new = self.viewport.x + mult * self.mario.x_vel
             highest = self.level_rect.w - self.viewport.w
             self.viewport.x = min(highest, new)
-
 
 
     def blit_everything(self, surface):
