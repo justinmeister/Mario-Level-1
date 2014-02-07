@@ -479,7 +479,7 @@ class Level1(tools._State):
         elif enemy:
             if self.mario.invincible:
                 self.score += 100
-                self.moving_score_list.append(score.Score(self.mario.rect.x,
+                self.moving_score_list.append(score.Score(self.mario.rect.right,
                                                           self.mario.rect.y,
                                                          100))
                 enemy.kill()
@@ -489,7 +489,7 @@ class Level1(tools._State):
                 self.mario.fire = False
                 self.mario.state = c.BIG_TO_SMALL
                 self.convert_fireflowers_to_mushrooms()
-            elif self.mario.hurt_invisible:
+            elif self.mario.hurt_invincible:
                 pass
             else:
                 self.mario.start_death_jump()
@@ -518,9 +518,7 @@ class Level1(tools._State):
                 self.mario.in_transition_state = True
                 self.convert_mushrooms_to_fireflowers()
             elif powerup.name == c.FIREFLOWER:
-                print self.score
                 self.score += 1000
-                print self.score
                 self.moving_score_list.append(
                     score.Score(self.mario.rect.centerx,
                                 self.mario.rect.y, 1000))
@@ -589,7 +587,19 @@ class Level1(tools._State):
             shell.state = c.SHELL_SLIDE
 
         elif shell.state == c.SHELL_SLIDE:
-            self.mario.dead = True
+            if self.mario.big and not self.mario.invincible:
+                self.mario.state = c.BIG_TO_SMALL
+            elif self.mario.invincible:
+                self.score += 200
+                self.moving_score_list.append(score.Score(shell.rect.right,
+                                                          shell.rect.y,
+                                                          200))
+                shell.kill()
+                self.sprites_about_to_die_group.add(shell)
+                shell.start_death_jump(c.RIGHT)
+            else:
+                if not self.mario.hurt_invincible and not self.mario.invincible:
+                    self.mario.start_death_jump()
 
 
     def check_mario_y_collisions(self, current_time):
@@ -621,10 +631,6 @@ class Level1(tools._State):
                 self.adjust_mario_for_y_enemy_collisions(enemy, current_time)
 
         elif shell:
-            self.score += 400
-            self.moving_score_list.append(
-                score.Score(self.mario.rect.centerx,
-                            self.mario.rect.y, 400))
             self.adjust_mario_for_y_shell_collisions(shell)
 
         elif powerup:
@@ -798,14 +804,18 @@ class Level1(tools._State):
     def adjust_mario_for_y_shell_collisions(self, shell):
         """Mario collisions with Koopas in their shells on the y axis"""
         if self.mario.y_vel > 0:
+            self.score += 400
+            self.moving_score_list.append(
+                score.Score(self.mario.rect.centerx,
+                            self.mario.rect.y, 400))
             if shell.state == c.JUMPED_ON:
                 shell.state = c.SHELL_SLIDE
                 if self.mario.rect.centerx < shell.rect.centerx:
                     shell.direction = c.RIGHT
-                    shell.rect.left = self.mario.rect.right
+                    shell.rect.left = self.mario.rect.right + 5
                 else:
                     shell.direction = c.LEFT
-                    shell.rect.right = self.mario.rect.left
+                    shell.rect.right = self.mario.rect.left - 5
             else:
                 shell.state = c.JUMPED_ON
 
@@ -954,6 +964,10 @@ class Level1(tools._State):
                 shell.rect.left = collider.rect.right
 
         if enemy:
+            self.score += 100
+            self.moving_score_list.append(score.Score(enemy.rect.right,
+                                                      enemy.rect.y,
+                                                      100))
             enemy.kill()
             self.sprites_about_to_die_group.add(enemy)
             enemy.start_death_jump(shell.direction)
@@ -1138,21 +1152,30 @@ class Level1(tools._State):
 
         collider = pg.sprite.spritecollideany(fireball, collide_group)
         enemy = pg.sprite.spritecollideany(fireball, self.enemy_group)
+        shell = pg.sprite.spritecollideany(fireball, self.shell_group)
 
         if collider and (fireball in self.powerup_group):
             fireball.rect.bottom = collider.rect.y
             self.bounce_fireball(fireball)
 
         elif enemy:
-            self.score += 100
-            self.moving_score_list.append(score.Score(enemy.rect.centerx,
-                                                      enemy.rect.y,
-                                                      100))
-            fireball.kill()
-            enemy.kill()
-            self.sprites_about_to_die_group.add(enemy, fireball)
-            enemy.start_death_jump(fireball.direction)
-            fireball.explode_transition()
+            self.fireball_kill(fireball, enemy)
+
+        elif shell:
+            self.fireball_kill(fireball, shell)
+
+
+    def fireball_kill(self, fireball, enemy):
+        """Kills enemy if hit with fireball"""
+        self.score += 100
+        self.moving_score_list.append(score.Score(enemy.rect.centerx,
+                                                  enemy.rect.y,
+                                                  100))
+        fireball.kill()
+        enemy.kill()
+        self.sprites_about_to_die_group.add(enemy, fireball)
+        enemy.start_death_jump(fireball.direction)
+        fireball.explode_transition()
 
 
     def check_if_falling(self, sprite, sprite_group):
@@ -1176,7 +1199,7 @@ class Level1(tools._State):
             enemy.kill()
 
         elif enemy.state == c.SHELL_SLIDE:
-            if enemy.rect.x > (self.viewport.right + 1000):
+            if enemy.rect.x > (self.viewport.right + 500):
                 enemy.kill()
 
 

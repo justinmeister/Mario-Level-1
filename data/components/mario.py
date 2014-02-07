@@ -47,7 +47,7 @@ class Mario(pg.sprite.Sprite):
         self.fire = False
         self.allow_fireball = True
         self.in_transition_state = False
-        self.hurt_invisible = False
+        self.hurt_invincible = False
 
 
     def setup_forces(self):
@@ -209,9 +209,9 @@ class Mario(pg.sprite.Sprite):
         self.right_big_green_frames.append(
             self.get_image(128, 192, 16, 32))  # Right skid [5]
         self.right_big_green_frames.append(
-            self.get_image(160, 202, 16, 22))  # Right throwing
+            self.get_image(336, 192, 16, 32))  # Right throwing [6]
         self.right_big_green_frames.append(
-            self.get_image(336, 192, 16, 32))  # Transition big to small [8]
+            self.get_image(160, 202, 16, 22))  # Right Crouching [7]
 
         #Images for red big Mario#
 
@@ -228,9 +228,9 @@ class Mario(pg.sprite.Sprite):
         self.right_big_red_frames.append(
             self.get_image(128, 240, 16, 32))  # Right skid [5]
         self.right_big_red_frames.append(
-            self.get_image(160, 250, 16, 22))  # Right throwing [6]
+            self.get_image(336, 240, 16, 32))  # Right throwing [6]
         self.right_big_red_frames.append(
-            self.get_image(336, 240, 16, 32))  # Transition big to small [8]
+            self.get_image(160, 250, 16, 22))  # Right crouching [7]
 
         #Images for black big Mario#
 
@@ -247,9 +247,9 @@ class Mario(pg.sprite.Sprite):
         self.right_big_black_frames.append(
             self.get_image(128, 144, 16, 32))  # Right skid [5]
         self.right_big_black_frames.append(
-            self.get_image(160, 154, 16, 22))  # Right throwing [6]
+            self.get_image(336, 144, 16, 32))  # Right throwing [6]
         self.right_big_black_frames.append(
-            self.get_image(336, 144, 16, 32))  # Transition big to small [7]
+            self.get_image(160, 154, 16, 22))  # Right Crouching [7]
 
 
         #Images for Fire Mario#
@@ -799,7 +799,7 @@ class Mario(pg.sprite.Sprite):
         """Mario's state and animation when he shrinks from big to small
         after colliding with an enemy"""
         self.in_transition_state = True
-        self.hurt_invisible = True
+        self.hurt_invincible = True
         self.state = c.BIG_TO_SMALL
 
         if self.facing_right:
@@ -1018,13 +1018,13 @@ class Mario(pg.sprite.Sprite):
 
     def check_if_hurt_invincible(self, current_time):
         """Check if Mario is still temporarily invincible after getting hurt"""
-        if self.hurt_invisible and self.state != c.BIG_TO_SMALL:
+        if self.hurt_invincible and self.state != c.BIG_TO_SMALL:
             if self.hurt_invisible_timer2 == 0:
                 self.hurt_invisible_timer2 = current_time
             elif (current_time - self.hurt_invisible_timer2) < 2000:
                 self.hurt_invincible_check(current_time)
             else:
-                self.hurt_invisible = False
+                self.hurt_invincible = False
                 self.hurt_invisible_timer = 0
                 self.hurt_invisible_timer2 = 0
                 for frames in self.all_images:
