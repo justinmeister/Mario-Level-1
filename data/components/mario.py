@@ -54,8 +54,9 @@ class Mario(pg.sprite.Sprite):
         """Sets up forces that affect Mario's velocity"""
         self.x_vel = 0
         self.y_vel = 0
-        self.max_x_vel = 4
-        self.x_accel = c.SMALL_ACCEL
+        self.max_x_vel = c.MAX_WALK_SPEED
+        self.max_y_vel = c.MAX_Y_VEL
+        self.x_accel = c.WALK_ACCEL
         self.jump_vel = c.JUMP_VEL
         self.gravity = c.GRAVITY
 
@@ -104,9 +105,9 @@ class Mario(pg.sprite.Sprite):
         self.right_small_normal_frames.append(
             self.get_image(80,  32, 15, 16))  # Right walking 1 [1]
         self.right_small_normal_frames.append(
-            self.get_image(98,  32, 16, 16))  # Right walking 2 [2]
+            self.get_image(96,  32, 16, 16))  # Right walking 2 [2]
         self.right_small_normal_frames.append(
-            self.get_image(114,  32, 15, 16))  # Right walking 3 [3]
+            self.get_image(112,  32, 16, 16))  # Right walking 3 [3]
         self.right_small_normal_frames.append(
             self.get_image(144, 32, 16, 16))  # Right jump [4]
         self.right_small_normal_frames.append(
@@ -130,9 +131,9 @@ class Mario(pg.sprite.Sprite):
         self.right_small_green_frames.append(
             self.get_image(80, 224, 15, 16))  # Right walking 1 [1]
         self.right_small_green_frames.append(
-            self.get_image(98, 224, 16, 16))  # Right walking 2 [2]
+            self.get_image(96, 224, 16, 16))  # Right walking 2 [2]
         self.right_small_green_frames.append(
-            self.get_image(114, 224, 15, 16))  # Right walking 3 [3]
+            self.get_image(112, 224, 15, 16))  # Right walking 3 [3]
         self.right_small_green_frames.append(
             self.get_image(144, 224, 16, 16))  # Right jump [4]
         self.right_small_green_frames.append(
@@ -145,9 +146,9 @@ class Mario(pg.sprite.Sprite):
         self.right_small_red_frames.append(
             self.get_image(80, 272, 15, 16))  # Right walking 1 [1]
         self.right_small_red_frames.append(
-            self.get_image(98, 272, 16, 16))  # Right walking 2 [2]
+            self.get_image(96, 272, 16, 16))  # Right walking 2 [2]
         self.right_small_red_frames.append(
-            self.get_image(114, 272, 15, 16))  # Right walking 3 [3]
+            self.get_image(112, 272, 15, 16))  # Right walking 3 [3]
         self.right_small_red_frames.append(
             self.get_image(144, 272, 16, 16))  # Right jump [4]
         self.right_small_red_frames.append(
@@ -160,9 +161,9 @@ class Mario(pg.sprite.Sprite):
         self.right_small_black_frames.append(
             self.get_image(80, 176, 15, 16))  # Right walking 1 [1]
         self.right_small_black_frames.append(
-            self.get_image(98, 176, 16, 16))  # Right walking 2 [2]
+            self.get_image(96, 176, 16, 16))  # Right walking 2 [2]
         self.right_small_black_frames.append(
-            self.get_image(114, 176, 15, 16))  # Right walking 3 [3]
+            self.get_image(112, 176, 15, 16))  # Right walking 3 [3]
         self.right_small_black_frames.append(
             self.get_image(144, 176, 16, 16))  # Right jump [4]
         self.right_small_black_frames.append(
@@ -174,11 +175,11 @@ class Mario(pg.sprite.Sprite):
         self.right_big_normal_frames.append(
             self.get_image(176, 0, 16, 32))  # Right standing [0]
         self.right_big_normal_frames.append(
-            self.get_image(80, 0, 16, 32))  # Right walking 1 [1]
+            self.get_image(81, 0, 16, 32))  # Right walking 1 [1]
         self.right_big_normal_frames.append(
             self.get_image(97, 0, 15, 32))  # Right walking 2 [2]
         self.right_big_normal_frames.append(
-            self.get_image(112, 0, 16, 32))  # Right walking 3 [3]
+            self.get_image(113, 0, 15, 32))  # Right walking 3 [3]
         self.right_big_normal_frames.append(
             self.get_image(144, 0, 16, 32))  # Right jump [4]
         self.right_big_normal_frames.append(
@@ -199,11 +200,11 @@ class Mario(pg.sprite.Sprite):
         self.right_big_green_frames.append(
             self.get_image(176, 192, 16, 32))  # Right standing [0]
         self.right_big_green_frames.append(
-            self.get_image(80, 192, 16, 32))  # Right walking 1 [1]
+            self.get_image(81, 192, 16, 32))  # Right walking 1 [1]
         self.right_big_green_frames.append(
             self.get_image(97, 192, 15, 32))  # Right walking 2 [2]
         self.right_big_green_frames.append(
-            self.get_image(112, 192, 16, 32))  # Right walking 3 [3]
+            self.get_image(113, 192, 15, 32))  # Right walking 3 [3]
         self.right_big_green_frames.append(
             self.get_image(144, 192, 16, 32))  # Right jump [4]
         self.right_big_green_frames.append(
@@ -218,11 +219,11 @@ class Mario(pg.sprite.Sprite):
         self.right_big_red_frames.append(
             self.get_image(176, 240, 16, 32))  # Right standing [0]
         self.right_big_red_frames.append(
-            self.get_image(80, 240, 16, 32))  # Right walking 1 [1]
+            self.get_image(81, 240, 16, 32))  # Right walking 1 [1]
         self.right_big_red_frames.append(
             self.get_image(97, 240, 15, 32))  # Right walking 2 [2]
         self.right_big_red_frames.append(
-            self.get_image(112, 240, 16, 32))  # Right walking 3 [3]
+            self.get_image(113, 240, 15, 32))  # Right walking 3 [3]
         self.right_big_red_frames.append(
             self.get_image(144, 240, 16, 32))  # Right jump [4]
         self.right_big_red_frames.append(
@@ -237,11 +238,11 @@ class Mario(pg.sprite.Sprite):
         self.right_big_black_frames.append(
             self.get_image(176, 144, 16, 32))  # Right standing [0]
         self.right_big_black_frames.append(
-            self.get_image(80, 144, 16, 32))  # Right walking 1 [1]
+            self.get_image(81, 144, 16, 32))  # Right walking 1 [1]
         self.right_big_black_frames.append(
             self.get_image(97, 144, 15, 32))  # Right walking 2 [2]
         self.right_big_black_frames.append(
-            self.get_image(112, 144, 16, 32))  # Right walking 3 [3]
+            self.get_image(113, 144, 15, 32))  # Right walking 3 [3]
         self.right_big_black_frames.append(
             self.get_image(144, 144, 16, 32))  # Right jump [4]
         self.right_big_black_frames.append(
@@ -257,11 +258,11 @@ class Mario(pg.sprite.Sprite):
         self.right_fire_frames.append(
             self.get_image(176, 48, 16, 32))  # Right standing [0]
         self.right_fire_frames.append(
-            self.get_image(80, 48, 16, 32))  # Right walking 1 [1]
+            self.get_image(81, 48, 16, 32))  # Right walking 1 [1]
         self.right_fire_frames.append(
             self.get_image(97, 48, 15, 32))  # Right walking 2 [2]
         self.right_fire_frames.append(
-            self.get_image(112, 48, 16, 32))  # Right walking 3 [3]
+            self.get_image(113, 48, 15, 32))  # Right walking 3 [3]
         self.right_fire_frames.append(
             self.get_image(144, 48, 16, 32))  # Right jump [4]
         self.right_fire_frames.append(
@@ -447,7 +448,7 @@ class Mario(pg.sprite.Sprite):
         elif keys[pg.K_a]:
             if self.allow_jump:
                 self.state = c.JUMP
-                self.y_vel = self.jump_vel
+                self.y_vel = c.JUMP_VEL
         else:
             self.state = c.STAND
 
@@ -515,11 +516,13 @@ class Mario(pg.sprite.Sprite):
                 self.walking_timer = current_time
 
         if keys[pg.K_s]:
-            self.max_x_vel = 7
+            self.max_x_vel = c.MAX_RUN_SPEED
+            self.x_accel = c.RUN_ACCEL
             if self.fire and self.allow_fireball:
                 self.shoot_fireball(fire_group, current_time)
         else:
-            self.max_x_vel = 5
+            self.max_x_vel = c.MAX_WALK_SPEED
+            self.x_accel = c.WALK_ACCEL
 
         if keys[pg.K_a]:
             if self.allow_jump:
@@ -532,7 +535,7 @@ class Mario(pg.sprite.Sprite):
                 self.frame_index = 5
                 self.x_accel = c.SMALL_TURNAROUND
             else:
-                self.x_accel = c.SMALL_ACCEL
+                self.x_accel = c.WALK_ACCEL
 
             if self.x_vel > (self.max_x_vel * -1):
                 self.x_vel -= self.x_accel
@@ -545,7 +548,7 @@ class Mario(pg.sprite.Sprite):
                 self.frame_index = 5
                 self.x_accel = c.SMALL_TURNAROUND
             else:
-                self.x_accel = c.SMALL_ACCEL
+                self.x_accel = c.WALK_ACCEL
 
             if self.x_vel < self.max_x_vel:
                 self.x_vel += self.x_accel
@@ -573,9 +576,9 @@ class Mario(pg.sprite.Sprite):
         if self.x_vel == 0:
             animation_speed = 130
         elif self.x_vel > 0:
-            animation_speed = 130 - (self.x_vel * (10))
+            animation_speed = 130 - (self.x_vel * (13))
         else:
-            animation_speed = 130 - (self.x_vel * (10) * -1)
+            animation_speed = 130 - (self.x_vel * (13) * -1)
 
         return animation_speed
 
@@ -588,8 +591,8 @@ class Mario(pg.sprite.Sprite):
         self.y_vel += self.gravity
         self.check_to_allow_fireball(keys)
 
-        if self.y_vel >= 0:
-            self.gravity += .4
+        if self.y_vel >= 0 and self.y_vel < self.max_y_vel:
+            self.gravity = c.GRAVITY
             self.state = c.FALL
 
         if keys[pg.K_LEFT]:
@@ -612,7 +615,8 @@ class Mario(pg.sprite.Sprite):
     def falling(self, keys, current_time, fire_group):
         """Called when Mario is in a FALL state"""
         self.check_to_allow_fireball(keys)
-        self.y_vel += self.gravity
+        if self.y_vel < c.MAX_Y_VEL:
+            self.y_vel += self.gravity
 
         if keys[pg.K_LEFT]:
             if self.x_vel > (self.max_x_vel * - 1):
@@ -945,7 +949,7 @@ class Mario(pg.sprite.Sprite):
     def walking_to_castle(self, current_time):
         """State when Mario walks to the castle to end the level"""
         self.max_x_vel = 5
-        self.x_accel = c.SMALL_ACCEL
+        self.x_accel = c.WALK_ACCEL
 
         if self.x_vel < self.max_x_vel:
             self.x_vel += self.x_accel

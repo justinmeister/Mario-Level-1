@@ -514,6 +514,7 @@ class Level1(tools._State):
                     score.Score(self.mario.rect.centerx,
                                 self.mario.rect.y - 20, 1000))
                 powerup.kill()
+                self.mario.y_vel = -1
                 self.mario.state = c.SMALL_TO_BIG
                 self.mario.in_transition_state = True
                 self.convert_mushrooms_to_fireflowers()
@@ -797,7 +798,7 @@ class Level1(tools._State):
 
             self.mario.rect.bottom = enemy.rect.top
             self.mario.state = c.JUMP
-            self.mario.y_vel = -5
+            self.mario.y_vel = -7
         
 
 
@@ -1247,7 +1248,7 @@ class Level1(tools._State):
         mario_right = self.mario.rect.right
 
         if self.mario.x_vel > 0 and mario_center >= third:
-            mult = 0.3 if mario_right < self.viewport.centerx else 1
+            mult = 0.5 if mario_right < self.viewport.centerx else 1
             new = self.viewport.x + mult * self.mario.x_vel
             highest = self.level_rect.w - self.viewport.w
             self.viewport.x = min(highest, new)
