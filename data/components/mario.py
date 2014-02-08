@@ -527,7 +527,10 @@ class Mario(pg.sprite.Sprite):
         if keys[pg.K_a]:
             if self.allow_jump:
                 self.state = c.JUMP
-                self.y_vel = c.JUMP_VEL
+                if self.x_vel > 4.5 or self.x_vel < -4.5:
+                    self.y_vel = c.JUMP_VEL - .5
+                else:
+                    self.y_vel = c.JUMP_VEL
 
         if keys[pg.K_LEFT]:
             self.facing_right = False

@@ -333,11 +333,13 @@ class Level1(tools._State):
         check10 = checkpoint.Checkpoint(6800, '10')
         check11 = checkpoint.Checkpoint(8506, '11', 6)
         check12 = checkpoint.Checkpoint(8775, '12')
+        check13 = checkpoint.Checkpoint(2740, 'secret_mushroom', 360, 40, 12)
 
         self.check_point_group = pg.sprite.Group(check1, check2, check3,
                                                  check4, check5, check6,
                                                  check7, check8, check9,
-                                                 check10, check11, check12)
+                                                 check10, check11, check12,
+                                                 check13)
 
 
     def update(self, surface, keys, current_time):
@@ -432,6 +434,18 @@ class Level1(tools._State):
             elif checkpoint.name == '12':
                 self.startup(current_time, self.persistant)
 
+            elif checkpoint.name == 'secret_mushroom' and self.mario.y_vel < 0:
+                mushroom_box = coin_box.Coin_box(checkpoint.rect.x,
+                                        checkpoint.rect.bottom - 40,
+                                        'mushroom',
+                                        self.powerup_group)
+                mushroom_box.start_bump(self.moving_score_list)
+                self.coin_box_group.add(mushroom_box)
+
+                self.mario.y_vel = 7
+                self.mario.rect.y = mushroom_box.rect.bottom
+                self.mario.state = c.FALL
+
             self.mario_and_enemy_group.add(self.enemy_group)
 
 
@@ -487,6 +501,7 @@ class Level1(tools._State):
                 self.sprites_about_to_die_group.add(enemy)
             elif self.mario.big:
                 self.mario.fire = False
+                self.mario.y_vel = -1
                 self.mario.state = c.BIG_TO_SMALL
                 self.convert_fireflowers_to_mushrooms()
             elif self.mario.hurt_invincible:
