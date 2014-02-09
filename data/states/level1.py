@@ -439,7 +439,7 @@ class Level1(tools._State):
 
                 self.flag.state = c.SLIDE_DOWN
             elif checkpoint.name == '12':
-                self.startup(current_time, self.persistant)
+                self.startup(current_time, self.persist)
 
             elif checkpoint.name == 'secret_mushroom' and self.mario.y_vel < 0:
                 mushroom_box = coin_box.Coin_box(checkpoint.rect.x,

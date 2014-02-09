@@ -17,12 +17,14 @@ class Character(pg.sprite.Sprite):
 class OverheadInfo(object):
     """Class for level information like score, coin total,
         and time remaining"""
-    def __init__(self, loading_screen=False):
+    def __init__(self, loading_screen=False, lives=3):
         self.sprite_sheet = setup.GFX['text_images']
         self.score = 0
         self.coin_total = 0
         self.time = 400
         self.current_time = 0
+        self.total_lives = lives
+
         self.loading_screen = loading_screen
         self.create_image_dict()
         self.create_score_group()
@@ -31,6 +33,7 @@ class OverheadInfo(object):
         self.create_countdown_clock()
         self.create_coin_counter()
         self.create_flashing_coin()
+        self.create_mario_image()
 
 
     def create_image_dict(self):
@@ -131,8 +134,8 @@ class OverheadInfo(object):
         world_label = []
         number_label = []
 
-        self.create_label(world_label, 'WORLD', 280, 208)
-        self.create_label(number_label, '1-1', 430, 208)
+        self.create_label(world_label, 'WORLD', 280, 200)
+        self.create_label(number_label, '1-1', 430, 200)
 
         self.center_labels = [world_label, number_label]
 
@@ -170,6 +173,21 @@ class OverheadInfo(object):
     def create_flashing_coin(self):
         """Creates the flashing coin next to the coin total"""
         self.flashing_coin = flashing_coin.Coin(280, 53)
+
+
+    def create_mario_image(self):
+        """Get the mario image"""
+        self.life_times_image = self.get_image(75, 247, 6, 6)
+        self.life_times_rect = self.life_times_image.get_rect(center=(378, 295))
+        self.life_total_label = []
+        self.create_label(self.life_total_label, str(self.total_lives),
+                          450, 285)
+
+        self.sprite_sheet = setup.GFX['mario_bros']
+        self.mario_image = self.get_image(178, 32, 12, 16)
+        self.mario_rect = self.mario_image.get_rect(center=(320, 290))
+
+
 
 
     def update(self, level_info):
@@ -242,6 +260,11 @@ class OverheadInfo(object):
             for word in self.center_labels:
                 for letter in word:
                     surface.blit(letter.image, letter.rect)
+            for word in self.life_total_label:
+                surface.blit(word.image, word.rect)
+
+            surface.blit(self.mario_image, self.mario_rect)
+            surface.blit(self.life_times_image, self.life_times_rect)
 
         for character in self.coin_count_images:
             surface.blit(character.image, character.rect)
@@ -251,3 +274,4 @@ class OverheadInfo(object):
                 surface.blit(letter.image, letter.rect)
 
         surface.blit(self.flashing_coin.image, self.flashing_coin.rect)
+

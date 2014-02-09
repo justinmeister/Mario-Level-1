@@ -20,18 +20,24 @@ class Load_Screen(tools._State):
                           'score': self.persist['score'],
                           'current_time': 0}
 
-        self.overhead_info = info.OverheadInfo(True)
+        self.overhead_info = info.OverheadInfo(True, self.persist['lives'])
 
 
     def update(self, surface, keys, current_time):
         self.current_time = current_time
 
-        surface.fill(c.BLACK)
+        if (self.current_time - self.start_time) < 2400:
+            surface.fill(c.BLACK)
+            self.overhead_info.update(self.info_dict)
+            self.overhead_info.draw(surface)
 
-        self.overhead_info.update(self.info_dict)
-        self.overhead_info.draw(surface)
+        elif (self.current_time - self.start_time) < 2600:
+            surface.fill(c.BLACK)
 
-        if (self.current_time - self.start_time) > 6000:
+        elif (self.current_time - self.start_time) < 2635:
+            surface.fill((106, 150, 252))
+
+        else:
             self.done = True
 
 
