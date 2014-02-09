@@ -98,6 +98,16 @@ class Mushroom(Powerup):
             self.falling()
 
 
+class LifeMushroom(Mushroom):
+    """1up mushroom"""
+    def __init__(self, x, y, name='1up_mushroom'):
+        super(LifeMushroom, self).__init__(x, y)
+        self.setup_powerup(x, y, name, self.setup_frames)
+
+    def setup_frames(self):
+        self.frames.append(self.get_image(16, 0, 16, 16))
+
+
 class FireFlower(Powerup):
     """Powerup that allows Mario to throw fire balls"""
     def __init__(self, x, y, name=c.FIREFLOWER):

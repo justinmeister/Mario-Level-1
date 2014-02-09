@@ -106,6 +106,8 @@ class Coin_box(pg.sprite.Sprite):
                 self.group.add(powerups.Mushroom(self.rect.centerx, self.rect.y))
             elif self.contents == 'fireflower':
                 self.group.add(powerups.FireFlower(self.rect.centerx, self.rect.y))
+            elif self.contents == '1up_mushroom':
+                self.group.add(powerups.LifeMushroom(self.rect.centerx, self.rect.y))
 
 
         self.frame_index = 3

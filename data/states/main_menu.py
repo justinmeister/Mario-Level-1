@@ -16,6 +16,9 @@ class Menu(tools._State):
         self.rendered_text = self.font.render(text, 1, c.BLACK)
         self.text_rect = self.rendered_text.get_rect()
         self.text_rect.center = self.rect.center
+        self.persist = {'coins': 0,
+                        'score': 0,
+                        'lives': 3}
 
 
     def update(self, surface, keys, current_time):

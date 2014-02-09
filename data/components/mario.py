@@ -911,10 +911,8 @@ class Mario(pg.sprite.Sprite):
                 self.image = self.right_frames[10]
             elif (current_time - self.flag_pole_timer) >= 130:
                 self.flag_pole_timer = current_time
-            if self.big:
-                self.rect.right = self.flag_pole_right
-            else:
-                self.rect.right = self.flag_pole_right
+
+            self.rect.right = self.flag_pole_right
             self.y_vel = 5
             self.rect.y += self.y_vel
 

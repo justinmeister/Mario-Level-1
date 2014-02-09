@@ -45,8 +45,8 @@ JUMP_VEL = -10
 FAST_JUMP_VEL = -12.5
 MAX_Y_VEL = 11
 
-MAX_RUN_SPEED = 7.5
-MAX_WALK_SPEED = 5
+MAX_RUN_SPEED = 8
+MAX_WALK_SPEED = 6
 
 
 #Mario States
@@ -109,6 +109,7 @@ STAR = 'star'
 FIREFLOWER = 'fireflower'
 SIXCOINS = '6coins'
 COIN = 'coin'
+LIFE_MUSHROOM = '1up_mushroom'
 
 FIREBALL = 'fireball'
 

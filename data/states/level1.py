@@ -19,15 +19,18 @@ class Level1(tools._State):
     def __init__(self):
         tools._State.__init__(self)
 
-    def startup(self, current_time, persistant):
+    def startup(self, current_time, persist):
         """Called when the State object is created"""
-        self.persistant = persistant
+        self.persist = persist
+        self.total_lives = self.persist['lives']
+        self.coin_total = self.persist['coins']
+        self.score = self.persist['score']
         self.state = c.NOT_FROZEN
-        self.coin_count = 0
+        self.death_timer = 0
+
         self.all_sprites_frozen = False
         self.check_bit_masks = pg.sprite.collide_mask
         self.moving_score_list = []
-        self.score = 0
         self.level_info = {}
         self.overhead_info_display = info.OverheadInfo()
 
@@ -331,7 +334,7 @@ class Level1(tools._State):
         check8 = checkpoint.Checkpoint(4950, '8')
         check9 = checkpoint.Checkpoint(5100, '9')
         check10 = checkpoint.Checkpoint(6800, '10')
-        check11 = checkpoint.Checkpoint(8506, '11', 6)
+        check11 = checkpoint.Checkpoint(8504, '11', 5, 6)
         check12 = checkpoint.Checkpoint(8775, '12')
         check13 = checkpoint.Checkpoint(2740, 'secret_mushroom', 360, 40, 12)
 
@@ -353,10 +356,13 @@ class Level1(tools._State):
         """Updates level information, such as score, time and
         total coins"""
         self.level_info['score'] = self.score
-        self.level_info['coin_total'] = self.coin_count
+        self.level_info['coin_total'] = self.coin_total
         self.level_info['current_time'] = current_time
-
         self.overhead_info_display.update(self.level_info)
+
+        self.persist['coins'] = self.coin_total
+        self.persist['score'] = self.score
+        self.persist['lives'] = self.total_lives
 
 
     def handle_states(self, keys, current_time):
@@ -378,7 +384,7 @@ class Level1(tools._State):
         self.flag_pole_group.update(current_time)
         self.check_if_mario_in_transition_state()
         self.check_flag()
-        self.check_for_mario_death(keys)
+        self.check_for_mario_death(keys, current_time)
 
 
     def check_if_mario_in_transition_state(self):
@@ -407,7 +413,7 @@ class Level1(tools._State):
         self.brick_pieces_group.update()
         self.adjust_sprite_positions(current_time)
         self.check_if_mario_in_transition_state()
-        self.check_for_mario_death(keys)
+        self.check_for_mario_death(keys, current_time)
         self.check_to_delete_floating_scores()
         self.update_viewport()
 
@@ -430,6 +436,7 @@ class Level1(tools._State):
             if checkpoint.name == '11':
                 self.mario.state = c.FLAGPOLE
                 self.mario.flag_pole_right = checkpoint.rect.right
+
                 self.flag.state = c.SLIDE_DOWN
             elif checkpoint.name == '12':
                 self.startup(current_time, self.persistant)
@@ -437,7 +444,7 @@ class Level1(tools._State):
             elif checkpoint.name == 'secret_mushroom' and self.mario.y_vel < 0:
                 mushroom_box = coin_box.Coin_box(checkpoint.rect.x,
                                         checkpoint.rect.bottom - 40,
-                                        'mushroom',
+                                        '1up_mushroom',
                                         self.powerup_group)
                 mushroom_box.start_bump(self.moving_score_list)
                 self.coin_box_group.add(mushroom_box)
@@ -533,6 +540,15 @@ class Level1(tools._State):
                 self.mario.state = c.SMALL_TO_BIG
                 self.mario.in_transition_state = True
                 self.convert_mushrooms_to_fireflowers()
+            elif powerup.name == c.LIFE_MUSHROOM:
+                self.score += 1000
+                self.moving_score_list.append(
+                    score.Score(powerup.rect.right,
+                                powerup.rect.y,
+                                1000))
+                powerup.kill()
+                self.total_lives += 1
+                print self.total_lives
             elif powerup.name == c.FIREFLOWER:
                 self.score += 1000
                 self.moving_score_list.append(
@@ -684,7 +700,7 @@ class Level1(tools._State):
                     self.score += 200
                     coin_box.start_bump(self.moving_score_list)
                     if coin_box.contents == c.COIN:
-                        self.coin_count += 1
+                        self.coin_total += 1
                 else:
                     coin_box.start_bump(self.moving_score_list)
 
@@ -719,7 +735,7 @@ class Level1(tools._State):
                                                2, -6))
                 else:
                     if brick.coin_total > 0:
-                        self.coin_count += 1
+                        self.coin_total += 1
                         self.score += 200
                     self.check_if_enemy_on_brick(brick)
                     brick.start_bump(self.moving_score_list)
@@ -1014,6 +1030,8 @@ class Level1(tools._State):
                 self.adjust_star_position(powerup)
             elif powerup.name == c.FIREBALL:
                 self.adjust_fireball_position(powerup)
+            elif powerup.name == '1up_mushroom':
+                self.adjust_mushroom_position(powerup)
 
 
     def adjust_mushroom_position(self, mushroom):
@@ -1225,13 +1243,22 @@ class Level1(tools._State):
             self.mario.set_state_to_bottom_of_pole()
 
 
-    def check_for_mario_death(self, keys):
+    def check_for_mario_death(self, keys, current_time):
         """Restarts the level if Mario is dead"""
         if self.mario.rect.y > c.SCREEN_HEIGHT:
             self.mario.dead = True
 
         if self.mario.dead:
-            self.startup(keys, self.persistant)
+            self.play_death_song(current_time)
+
+
+    def play_death_song(self, current_time):
+        if self.death_timer == 0:
+            self.death_timer = current_time
+        elif (current_time - self.death_timer) > 3000:
+            self.persist['lives'] -= 1
+            self.next = 'LOAD_SCREEN'
+            self.done = True
 
 
     def check_to_delete_floating_scores(self):

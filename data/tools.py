@@ -42,6 +42,7 @@ class Control(object):
         self.state.startup(self.current_time, persist)
         self.state.previous = previous
 
+
     def event_loop(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
