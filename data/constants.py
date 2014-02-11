@@ -131,5 +131,9 @@ BOTTOM_OF_POLE = 'bottom of pole'
 #1UP score
 ONEUP = '379'
 
+#MAIN MENU CURSOR STATES
+PLAYER1 = '1 player'
+PLAYER2 = '2 player'
+
 
 

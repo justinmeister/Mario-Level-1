@@ -17,13 +17,15 @@ class Character(pg.sprite.Sprite):
 class OverheadInfo(object):
     """Class for level information like score, coin total,
         and time remaining"""
-    def __init__(self, loading_screen=False, lives=3):
+    def __init__(self, loading_screen=False, lives=3, main_menu=False, top_score=0):
         self.sprite_sheet = setup.GFX['text_images']
         self.score = 0
         self.coin_total = 0
         self.time = 400
         self.current_time = 0
         self.total_lives = lives
+        self.main_menu = main_menu
+        self.top_score = top_score
 
         self.loading_screen = loading_screen
         self.create_image_dict()
@@ -35,6 +37,7 @@ class OverheadInfo(object):
         self.create_flashing_coin()
         self.create_mario_image()
         self.create_game_over_label()
+        self.create_main_menu_labels()
 
 
     def create_image_dict(self):
@@ -79,14 +82,14 @@ class OverheadInfo(object):
         image_list.append(self.get_image(11, 246, 7, 7))
         image_list.append(self.get_image(20, 246, 7, 7))
         image_list.append(self.get_image(27, 246, 7, 7))
-        #image_list.append(self.get_image(48, 248, 7, 7))
+        image_list.append(self.get_image(48, 248, 7, 7))
 
         image_list.append(self.get_image(68, 249, 6, 2))
         image_list.append(self.get_image(75, 247, 6, 6))
 
 
 
-        character_string = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-*'
+        character_string = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ -*'
 
         for character, image in zip(character_string, image_list):
             self.image_dict[character] = image
@@ -200,28 +203,49 @@ class OverheadInfo(object):
         self.game_over_label = [game_label, over_label]
 
 
+    def create_main_menu_labels(self):
+        """Create labels for the MAIN MENU screen"""
+        player_one_game = []
+        player_two_game = []
+        top = []
+        top_score = []
+
+        self.create_label(player_one_game, '1 PLAYER GAME', 272, 360)
+        self.create_label(player_two_game, '2 PLAYER GAME', 272, 405)
+        self.create_label(top, 'TOP - ', 290, 465)
+        self.create_label(top_score, '000000', 400, 465)
+
+        self.main_menu_labels = [player_one_game, player_two_game,
+                                 top, top_score]
 
 
-    def update(self, level_info):
+
+
+    def update(self, level_info, *args):
         """Updates all overhead info"""
-        self.score = level_info['score']
-        self.coin_total = level_info['coin_total']
+        if self.main_menu:
+            self.update_score_images(self.main_menu_labels[3], self.top_score)
+            self.flashing_coin.update(args[0])
+        else:
+            self.score = level_info['score']
+            self.coin_total = level_info['coin_total']
 
-        self.update_score_images()
-        if level_info['state'] != c.FROZEN:
-            self.update_count_down_clock(level_info)
-        self.flashing_coin.update(level_info['current_time'])
-        self.update_coin_total()
+            self.update_score_images(self.score_images, self.score)
+
+            if level_info['state'] != c.FROZEN:
+                self.update_count_down_clock(level_info)
+            self.flashing_coin.update(level_info['current_time'])
+            self.update_coin_total()
 
 
-    def update_score_images(self):
+    def update_score_images(self, images, score):
         """Updates what numbers are to be blitted for the score"""
-        index = len(self.score_images) - 1
+        index = len(images) - 1
 
-        for digit in reversed(str(self.score)):
-            rect = self.score_images[index].rect
-            self.score_images[index] = Character(self.image_dict[digit])
-            self.score_images[index].rect = rect
+        for digit in reversed(str(score)):
+            rect = images[index].rect
+            images[index] = Character(self.image_dict[digit])
+            images[index].rect = rect
             index -= 1
 
 
@@ -281,6 +305,11 @@ class OverheadInfo(object):
         elif self.loading_screen and self.total_lives <= 0:
             for word in self.game_over_label:
                 for letter in word:
+                    surface.blit(letter.image, letter.rect)
+
+        if self.main_menu:
+            for label in self.main_menu_labels:
+                for letter in label:
                     surface.blit(letter.image, letter.rect)
 
         for character in self.coin_count_images:

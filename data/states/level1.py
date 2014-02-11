@@ -1248,8 +1248,9 @@ class Level1(tools._State):
     def check_for_mario_death(self, keys, current_time):
         """Restarts the level if Mario is dead"""
         if self.mario.rect.y > c.SCREEN_HEIGHT:
-            self.mario.x_vel = 0
             self.mario.dead = True
+            self.mario.x_vel = 0
+            self.state = c.FROZEN
 
         if self.mario.dead:
             self.play_death_song(current_time)
@@ -1259,6 +1260,9 @@ class Level1(tools._State):
         if self.death_timer == 0:
             self.death_timer = current_time
         elif (current_time - self.death_timer) > 3000:
+            if self.score > self.persist['top_score']:
+                print self.score, self.persist['top_score']
+                self.persist['top_score'] = self.score
             self.persist['lives'] -= 1
             self.next = 'LOAD_SCREEN'
             self.done = True
