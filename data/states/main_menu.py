@@ -101,21 +101,17 @@ class Menu(tools._State):
         surface.blit(self.cursor.image, self.cursor.rect)
 
 
-
-    def get_event(self, event):
-        """Checks if the user hits any key to start the game"""
-        if event.type == pg.KEYDOWN:
-            pass
-
-
     def update_cursor(self, keys):
         """Update the position of the cursor"""
+        input_list = [pg.K_RETURN, pg.K_a, pg.K_s]
+
         if self.cursor.state == c.PLAYER1:
             self.cursor.rect.y = 358
             if keys[pg.K_DOWN]:
                 self.cursor.state = c.PLAYER2
-            elif keys[pg.K_RETURN]:
-                self.done = True
+            for input in input_list:
+                if keys[input]:
+                    self.done = True
         elif self.cursor.state == c.PLAYER2:
             self.cursor.rect.y = 403
             if keys[pg.K_UP]:
