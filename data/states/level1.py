@@ -1271,15 +1271,12 @@ class Level1(tools._State):
     def check_to_delete_floating_scores(self):
         """Check if scores need to be deleted"""
         for i, score in enumerate(self.moving_score_list):
-            for digit in score.digit_list:
-                if int(score.score_string) == 1000:
-                    if (score.y - digit.rect.y) > 130:
-                        if len(self.moving_score_list) > 0:
-                            self.moving_score_list.pop(i)
-                else:
-                    if (score.y - digit.rect.y) > 75:
-                        if len(self.moving_score_list) > 0:
-                            self.moving_score_list.pop(i)
+            if int(score.score_string) == 1000:
+                if (score.y - score.digit_list[0].rect.y) > 130:
+                    self.moving_score_list.pop(i)
+            else:
+                if (score.y - score.digit_list[0].rect.y) > 75:
+                    self.moving_score_list.pop(i)
 
 
     def check_if_time_out(self):
