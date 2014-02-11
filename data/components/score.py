@@ -35,6 +35,9 @@ class Score(object):
         image4 = self.get_image(12, 168, 4, 8)
         image5 = self.get_image(16, 168, 5, 8)
         image8 = self.get_image(20, 168, 4, 8)
+        image9 = self.get_image(32, 168, 5, 8)
+        image10 = self.get_image(37, 168, 6, 8)
+        image11 = self.get_image(43, 168, 5, 8)
 
         self.image_dict['0'] = image0
         self.image_dict['1'] = image1
@@ -42,6 +45,9 @@ class Score(object):
         self.image_dict['4'] = image4
         self.image_dict['5'] = image5
         self.image_dict['8'] = image8
+        self.image_dict['3'] = image9
+        self.image_dict['7'] = image10
+        self.image_dict['9'] = image11
 
 
     def get_image(self, x, y, width, height):

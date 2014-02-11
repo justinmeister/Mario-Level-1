@@ -128,5 +128,8 @@ TOP_OF_POLE = 'top of pole'
 SLIDE_DOWN = 'slide down'
 BOTTOM_OF_POLE = 'bottom of pole'
 
+#1UP score
+ONEUP = '379'
+
 
 

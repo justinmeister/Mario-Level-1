@@ -18,7 +18,8 @@ class Load_Screen(tools._State):
 
         self.info_dict = {'coin_total': self.persist['coins'],
                           'score': self.persist['score'],
-                          'current_time': 0}
+                          'current_time': 0,
+                          'state': None}
 
         self.overhead_info = info.OverheadInfo(True, self.persist['lives'])
 

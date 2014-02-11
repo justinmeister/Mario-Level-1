@@ -645,6 +645,7 @@ class Mario(pg.sprite.Sprite):
 
     def start_death_jump(self):
         """Used to put Mario in a DEATH_JUMP state"""
+        self.dead = True
         self.y_vel = -11
         self.gravity = .5
         self.frame_index = 6

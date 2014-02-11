@@ -358,7 +358,9 @@ class Level1(tools._State):
         self.level_info['score'] = self.score
         self.level_info['coin_total'] = self.coin_total
         self.level_info['current_time'] = current_time
+        self.level_info['state'] = self.state
         self.overhead_info_display.update(self.level_info)
+        self.check_if_time_out()
 
         self.persist['coins'] = self.coin_total
         self.persist['score'] = self.score
@@ -527,7 +529,6 @@ class Level1(tools._State):
                 self.moving_score_list.append(
                     score.Score(self.mario.rect.centerx,
                                 self.mario.rect.y, 1000))
-                powerup.kill()
                 self.mario.invincible = True
                 self.mario.invincible_start_timer = current_time
             elif powerup.name == c.MUSHROOM:
@@ -535,26 +536,23 @@ class Level1(tools._State):
                 self.moving_score_list.append(
                     score.Score(self.mario.rect.centerx,
                                 self.mario.rect.y - 20, 1000))
-                powerup.kill()
+
                 self.mario.y_vel = -1
                 self.mario.state = c.SMALL_TO_BIG
                 self.mario.in_transition_state = True
                 self.convert_mushrooms_to_fireflowers()
             elif powerup.name == c.LIFE_MUSHROOM:
-                self.score += 1000
                 self.moving_score_list.append(
                     score.Score(powerup.rect.right,
                                 powerup.rect.y,
-                                1000))
-                powerup.kill()
+                                c.ONEUP))
+
                 self.total_lives += 1
-                print self.total_lives
             elif powerup.name == c.FIREFLOWER:
                 self.score += 1000
                 self.moving_score_list.append(
                     score.Score(self.mario.rect.centerx,
                                 self.mario.rect.y, 1000))
-                powerup.kill()
 
                 if self.mario.big and self.mario.fire == False:
                     self.mario.state = c.BIG_TO_FIRE
@@ -563,6 +561,9 @@ class Level1(tools._State):
                     self.mario.state = c.SMALL_TO_BIG
                     self.mario.in_transition_state = True
                     self.convert_mushrooms_to_fireflowers()
+
+            if powerup.name != c.FIREBALL:
+                powerup.kill()
 
 
     def convert_mushrooms_to_fireflowers(self):
@@ -631,6 +632,7 @@ class Level1(tools._State):
                 shell.start_death_jump(c.RIGHT)
             else:
                 if not self.mario.hurt_invincible and not self.mario.invincible:
+                    self.state = c.FROZEN
                     self.mario.start_death_jump()
 
 
@@ -1246,6 +1248,7 @@ class Level1(tools._State):
     def check_for_mario_death(self, keys, current_time):
         """Restarts the level if Mario is dead"""
         if self.mario.rect.y > c.SCREEN_HEIGHT:
+            self.mario.x_vel = 0
             self.mario.dead = True
 
         if self.mario.dead:
@@ -1265,22 +1268,21 @@ class Level1(tools._State):
         """Check if scores need to be deleted"""
         for i, score in enumerate(self.moving_score_list):
             for digit in score.digit_list:
-                if int(score.score_string) == 100:
-                    if (score.y - digit.rect.y) > 75:
-                        if len(self.moving_score_list) > 0:
-                            self.moving_score_list.pop(i)
-                elif int(score.score_string) == 1000:
+                if int(score.score_string) == 1000:
                     if (score.y - digit.rect.y) > 130:
                         if len(self.moving_score_list) > 0:
                             self.moving_score_list.pop(i)
-                elif int(score.score_string) == 400:
+                else:
                     if (score.y - digit.rect.y) > 75:
                         if len(self.moving_score_list) > 0:
                             self.moving_score_list.pop(i)
-                elif int(score.score_string) == 200:
-                    if (score.y - digit.rect.y) > 75:
-                        if len(self.moving_score_list) > 0:
-                            self.moving_score_list.pop(i)
+
+
+    def check_if_time_out(self):
+        """Check if time has run down to 0"""
+        if self.overhead_info_display.time <= 0 and not self.mario.dead:
+            self.state = c.FROZEN
+            self.mario.start_death_jump()
 
 
     def update_viewport(self):

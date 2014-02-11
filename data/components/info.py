@@ -196,7 +196,8 @@ class OverheadInfo(object):
         self.coin_total = level_info['coin_total']
 
         self.update_score_images()
-        self.update_count_down_clock(level_info)
+        if level_info['state'] != c.FROZEN:
+            self.update_count_down_clock(level_info)
         self.flashing_coin.update(level_info['current_time'])
         self.update_coin_total()
 
