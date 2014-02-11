@@ -8,6 +8,9 @@ from .. import constants as c
 class Menu(tools._State):
     def __init__(self):
         tools._State.__init__(self)
+        self.startup(0.0, None)
+
+    def startup(self, current_time, *args):
         self.next = "LOAD_SCREEN"
         self.surface = pg.Surface(c.SCREEN_SIZE)
         self.rect = self.surface.get_rect()
@@ -19,15 +22,13 @@ class Menu(tools._State):
         self.persist = {'coins': 0,
                         'score': 0,
                         'lives': 3}
+        self.start_time = current_time
 
 
     def update(self, surface, keys, current_time):
         self.current_time = current_time
         surface.fill(c.WHITE)
         surface.blit(self.rendered_text, self.text_rect)
-
-        if self.current_time - self.start_time > 50000.0:
-            self.done = True
 
 
     def get_event(self, event):

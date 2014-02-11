@@ -34,6 +34,7 @@ class OverheadInfo(object):
         self.create_coin_counter()
         self.create_flashing_coin()
         self.create_mario_image()
+        self.create_game_over_label()
 
 
     def create_image_dict(self):
@@ -188,6 +189,17 @@ class OverheadInfo(object):
         self.mario_rect = self.mario_image.get_rect(center=(320, 290))
 
 
+    def create_game_over_label(self):
+        """Create the label for the GAME OVER screen"""
+        game_label = []
+        over_label = []
+
+        self.create_label(game_label, 'GAME', 280, 300)
+        self.create_label(over_label, 'OVER', 400, 300)
+
+        self.game_over_label = [game_label, over_label]
+
+
 
 
     def update(self, level_info):
@@ -257,7 +269,7 @@ class OverheadInfo(object):
             for digit in self.count_down_images:
                 surface.blit(digit.image, digit.rect)
 
-        if self.loading_screen:
+        if self.loading_screen and self.total_lives > 0:
             for word in self.center_labels:
                 for letter in word:
                     surface.blit(letter.image, letter.rect)
@@ -266,6 +278,10 @@ class OverheadInfo(object):
 
             surface.blit(self.mario_image, self.mario_rect)
             surface.blit(self.life_times_image, self.life_times_rect)
+        elif self.loading_screen and self.total_lives <= 0:
+            for word in self.game_over_label:
+                for letter in word:
+                    surface.blit(letter.image, letter.rect)
 
         for character in self.coin_count_images:
             surface.blit(character.image, character.rect)
