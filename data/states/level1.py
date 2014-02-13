@@ -13,6 +13,7 @@ from .. components import checkpoint
 from .. components import flagpole
 from .. components import info
 from .. components import score
+from .. components import castle_flag
 
 
 class Level1(tools._State):
@@ -438,8 +439,9 @@ class Level1(tools._State):
             if checkpoint.name == '11':
                 self.mario.state = c.FLAGPOLE
                 self.mario.flag_pole_right = checkpoint.rect.right
-
                 self.flag.state = c.SLIDE_DOWN
+
+                self.flag_pole_group.add(castle_flag.Flag(8745, 322))
             elif checkpoint.name == '12':
                 self.startup(current_time, self.persist)
 
@@ -1261,7 +1263,6 @@ class Level1(tools._State):
             self.death_timer = current_time
         elif (current_time - self.death_timer) > 3000:
             if self.score > self.persist['top_score']:
-                print self.score, self.persist['top_score']
                 self.persist['top_score'] = self.score
             self.persist['lives'] -= 1
             self.next = 'LOAD_SCREEN'
