@@ -382,12 +382,16 @@ class Level1(tools._State):
          change the level state back"""
         self.mario.update(keys, current_time, self.powerup_group)
         for score in self.moving_score_list:
-            score.update()
+            self.level_info = score.update(
+                self.moving_score_list, self.level_info)
+            self.score = self.level_info['score']
         self.coin_box_group.update(current_time)
         self.flag_pole_group.update(current_time)
         self.check_if_mario_in_transition_state()
         self.check_flag()
         self.check_for_mario_death(keys, current_time)
+        self.overhead_info_display.update(self.level_info)
+
 
 
     def check_if_mario_in_transition_state(self):
@@ -403,7 +407,8 @@ class Level1(tools._State):
         """Updates the location of all sprites on the screen."""
         self.mario.update(keys, current_time, self.powerup_group)
         for score in self.moving_score_list:
-            score.update()
+            self.level_info = score.update(
+                self.moving_score_list, self.level_info)
         self.flag_pole_group.update(current_time)
         self.check_points_check(current_time)
         self.enemy_group.update(current_time)
@@ -417,7 +422,6 @@ class Level1(tools._State):
         self.adjust_sprite_positions(current_time)
         self.check_if_mario_in_transition_state()
         self.check_for_mario_death(keys, current_time)
-        self.check_to_delete_floating_scores()
         self.update_viewport()
 
 
@@ -435,13 +439,13 @@ class Level1(tools._State):
                         enemy.rect.x = self.viewport.right + (index * 60)
                     self.enemy_group.add(self.enemy_group_list[i-1])
 
-
             if checkpoint.name == '11':
                 self.mario.state = c.FLAGPOLE
                 self.mario.flag_pole_right = checkpoint.rect.right
                 self.flag.state = c.SLIDE_DOWN
-
                 self.flag_pole_group.add(castle_flag.Flag(8745, 322))
+                self.create_flag_points()
+
             elif checkpoint.name == '12':
                 self.startup(current_time, self.persist)
 
@@ -458,6 +462,26 @@ class Level1(tools._State):
                 self.mario.state = c.FALL
 
             self.mario_and_enemy_group.add(self.enemy_group)
+
+
+    def create_flag_points(self):
+        """Creates the points that appear when Mario touches the
+        flag pole"""
+        x = 8518
+        y = c.GROUND_HEIGHT - 60
+        mario_bottom = self.mario.rect.bottom
+
+        if mario_bottom > (c.GROUND_HEIGHT - 40 - 40):
+            self.moving_score_list.append(score.Score(x, y, 100, True))
+        elif mario_bottom > (c.GROUND_HEIGHT - 40 - 160):
+            self.moving_score_list.append(score.Score(x, y, 400, True))
+        elif mario_bottom > (c.GROUND_HEIGHT - 40 - 240):
+            self.moving_score_list.append(score.Score(x, y, 800, True))
+        elif mario_bottom > (c.GROUND_HEIGHT - 40 - 360):
+            self.moving_score_list.append(score.Score(x, y, 2000, True))
+        else:
+            self.moving_score_list.append(score.Score(x, y, 5000, True))
+
 
 
     def adjust_sprite_positions(self, current_time):
@@ -1268,16 +1292,6 @@ class Level1(tools._State):
             self.next = 'LOAD_SCREEN'
             self.done = True
 
-
-    def check_to_delete_floating_scores(self):
-        """Check if scores need to be deleted"""
-        for i, score in enumerate(self.moving_score_list):
-            if int(score.score_string) == 1000:
-                if (score.y - score.digit_list[0].rect.y) > 130:
-                    self.moving_score_list.pop(i)
-            else:
-                if (score.y - score.digit_list[0].rect.y) > 75:
-                    self.moving_score_list.pop(i)
 
 
     def check_if_time_out(self):

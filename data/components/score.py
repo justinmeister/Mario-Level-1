@@ -15,14 +15,18 @@ class Digit(pg.sprite.Sprite):
 
 class Score(object):
     """Scores that appear, float up, and disappear"""
-    def __init__(self, x, y, score):
+    def __init__(self, x, y, score, flag_pole=False):
         self.x = x
         self.y = y
-        self.y_vel = -3
+        if flag_pole:
+            self.y_vel = -4
+        else:
+            self.y_vel = -3
         self.sprite_sheet = setup.GFX['item_objects']
         self.create_image_dict()
         self.score_string = str(score)
         self.create_digit_list()
+        self.flag_pole_score = flag_pole
 
 
     def create_image_dict(self):
@@ -82,16 +86,40 @@ class Score(object):
             digit.rect.y = self.y
 
 
-    def update(self):
+    def update(self, score_list, level_info):
         """Updates score movement"""
         for number in self.digit_list:
             number.rect.y += self.y_vel
+
+        print level_info['score']
+
+        level_info = self.check_to_delete_floating_scores(score_list, level_info)
+        print level_info['score']
+        return level_info
 
 
     def draw(self, screen):
         """Draws score numbers onto screen"""
         for digit in self.digit_list:
             screen.blit(digit.image, digit.rect)
+
+
+    def check_to_delete_floating_scores(self, score_list, level_info):
+        """Check if scores need to be deleted"""
+        for i, score in enumerate(score_list):
+            if int(score.score_string) == 1000:
+                if (score.y - score.digit_list[0].rect.y) > 130:
+                    score_list.pop(i)
+            elif score.flag_pole_score:
+                if score.digit_list[0].rect.y <= 120:
+                    score.y_vel = 0
+                    level_info['score'] += int(score.score_string)
+
+            else:
+                if (score.y - score.digit_list[0].rect.y) > 75:
+                    score_list.pop(i)
+
+        return level_info
 
 
 
