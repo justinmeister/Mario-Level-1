@@ -22,10 +22,10 @@ class Level1(tools._State):
 
     def startup(self, current_time, persist):
         """Called when the State object is created"""
-        self.persist = persist
-        self.total_lives = self.persist['lives']
-        self.coin_total = self.persist['coins']
-        self.score = self.persist['score']
+        self.game_info = persist
+        self.game_info[c.CURRENT_TIME] = current_time
+
+
         self.state = c.NOT_FROZEN
         self.death_timer = 0
 
@@ -33,7 +33,7 @@ class Level1(tools._State):
         self.check_bit_masks = pg.sprite.collide_mask
         self.moving_score_list = []
         self.level_info = {}
-        self.overhead_info_display = info.OverheadInfo()
+        self.overhead_info_display = info.OverheadInfo(self.game_info, c.LEVEL)
 
         self.setup_background()
         self.setup_ground()
@@ -348,39 +348,28 @@ class Level1(tools._State):
 
     def update(self, surface, keys, current_time):
         """Updates Entire level using states.  Called by the control object"""
-        self.update_level_info(current_time)
-        self.handle_states(keys, current_time)
+        self.game_info[c.CURRENT_TIME] = current_time
+        self.check_if_time_out()
+        self.handle_states(keys)
         self.blit_everything(surface)
 
 
-    def update_level_info(self, current_time):
-        """Updates level information, such as score, time and
-        total coins"""
-        self.level_info['score'] = self.score
-        self.level_info['coin_total'] = self.coin_total
-        self.level_info['current_time'] = current_time
-        self.level_info['state'] = self.state
-        self.overhead_info_display.update(self.level_info)
-        self.check_if_time_out()
-
-        self.persist['coins'] = self.coin_total
-        self.persist['score'] = self.score
-        self.persist['lives'] = self.total_lives
 
 
-    def handle_states(self, keys, current_time):
+
+    def handle_states(self, keys):
         """If the level is in a FROZEN state, only mario will update"""
         if self.state == c.FROZEN:
-            self.update_during_transition_state(keys, current_time)
+            self.update_during_transition_state(keys)
         elif self.state == c.NOT_FROZEN:
-            self.update_all_sprites(keys, current_time)
+            self.update_all_sprites(keys)
 
 
-    def update_during_transition_state(self, keys, current_time):
+    def update_during_transition_state(self, keys):
         """Updates mario in a transition state (like becoming big, small,
          or dies). Checks if he leaves the transition state or dies to
          change the level state back"""
-        self.mario.update(keys, current_time, self.powerup_group)
+        self.mario.update(keys, self.game_info, self.powerup_group)
         for score in self.moving_score_list:
             self.level_info = score.update(
                 self.moving_score_list, self.level_info)
