@@ -91,10 +91,10 @@ class Score(object):
         for number in self.digit_list:
             number.rect.y += self.y_vel
 
-        print level_info['score']
+
 
         level_info = self.check_to_delete_floating_scores(score_list, level_info)
-        print level_info['score']
+
         return level_info
 
 

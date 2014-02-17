@@ -9,32 +9,31 @@ class Load_Screen(tools._State):
     def __init__(self):
         tools._State.__init__(self)
 
-    def startup(self, current_time, persistant):
+    def startup(self, current_time, persist):
+        self.next = self.determine_next_game_state(persist)
         self.start_time = current_time
+        self.persist = persist
+        self.game_info = self.persist
+
+        self.overhead_info = info.OverheadInfo(self.game_info, c.LOAD_SCREEN)
 
 
-
-        self.persist = persistant
-        if self.persist['lives'] > 0:
-            self.next = "LEVEL1"
+    def determine_next_game_state(self, game_info):
+        """Checks if it's a game over"""
+        if game_info[c.LIVES] > 0:
+            self.next = c.LEVEL1
         else:
-            self.next = "MAIN_MENU"
+            self.next = c.MAIN_MENU
 
-        self.info_dict = {'coin_total': self.persist['coins'],
-                          'score': self.persist['score'],
-                          'current_time': 0,
-                          'state': None}
-
-        self.overhead_info = info.OverheadInfo(True, self.persist['lives'])
+        return self.next
 
 
     def update(self, surface, keys, current_time):
-        self.current_time = current_time
-
-        if self.next == "LEVEL1":
+        """Updates the loading screen"""
+        if self.next == c.LEVEL1:
             if (self.current_time - self.start_time) < 2400:
                 surface.fill(c.BLACK)
-                self.overhead_info.update(self.info_dict)
+                self.overhead_info.update(self.game_info)
                 self.overhead_info.draw(surface)
 
             elif (self.current_time - self.start_time) < 2600:
@@ -46,10 +45,10 @@ class Load_Screen(tools._State):
             else:
                 self.done = True
 
-        elif self.next == 'MAIN_MENU':
+        elif self.next == c.MAIN_MENU:
             if (self.current_time - self.start_time) < 7000:
                 surface.fill(c.BLACK)
-                self.overhead_info.update(self.info_dict)
+                self.overhead_info.update(self.game_info)
                 self.overhead_info.draw(surface)
             elif (self.current_time - self.start_time) < 7200:
                 surface.fill(c.BLACK)

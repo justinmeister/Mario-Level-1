@@ -135,5 +135,29 @@ ONEUP = '379'
 PLAYER1 = '1 player'
 PLAYER2 = '2 player'
 
+#OVERHEAD INFO STATES
+MAIN_MENU = 'main menu'
+LOAD_SCREEN = 'loading screen'
+LEVEL = 'level'
+GAME_OVER = 'game over'
+
+
+#GAME INFO DICTIONARY KEYS
+COIN_TOTAL = 'coin total'
+SCORE = 'score'
+TOP_SCORE = 'top score'
+LIVES = 'lives'
+CURRENT_TIME = 'current time'
+LEVEL_STATE = 'level state'
+
+#STATES FOR ENTIRE GAME
+MAIN_MENU = 'main menu'
+LOAD_SCREEN = 'load screen'
+LEVEL1 = 'level1'
+
+
+
+
+
 
 

@@ -3,7 +3,7 @@ __author__ = 'justinarmstrong'
 import pygame as pg
 from .. import setup
 from .. import constants as c
-import score
+from . import score
 
 
 class Coin(pg.sprite.Sprite):

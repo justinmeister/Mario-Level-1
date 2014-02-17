@@ -10,22 +10,22 @@ class Menu(tools._State):
     def __init__(self):
         """Initializes the state"""
         tools._State.__init__(self)
-        persist = {'coins': 0,
-                   'score': 0,
-                   'lives': 3,
-                   'top_score': 0}
+        persist = {c.COIN_TOTAL: 0,
+                   c.SCORE: 0,
+                   c.LIVES: 3,
+                   c.TOP_SCORE: 0,
+                   c.CURRENT_TIME: 0.0,
+                   c.LEVEL_STATE: None}
         self.startup(0.0, persist)
 
     def startup(self, current_time, persist):
-        """Called everytime the game's state becomes this one.  Initializes
+        """Called every time the game's state becomes this one.  Initializes
         certain values"""
-        self.next = "LOAD_SCREEN"
+        self.next = c.LOAD_SCREEN
         self.persist = persist
-        self.persist['coins'] = 0
-        self.persist['score'] = 0
-        self.persist['lives'] = 3
+        self.game_info = persist
+        self.overhead_info = info.OverheadInfo(self.game_info, c.MAIN_MENU)
 
-        self.start_time = current_time
         self.sprite_sheet = setup.GFX['title_screen']
         self.setup_background()
         self.setup_mario()
@@ -61,7 +61,6 @@ class Menu(tools._State):
         self.image_dict['GAME_NAME_BOX'] = self.get_image(
             1, 60, 176, 88, (170, 100), setup.GFX['title_screen'])
 
-        self.overhead_info = info.OverheadInfo(True, 3, True, self.persist['top_score'])
 
 
     def get_image(self, x, y, width, height, dest, sprite_sheet):
@@ -91,14 +90,14 @@ class Menu(tools._State):
         """Updates the state every refresh"""
         self.current_time = current_time
         self.update_cursor(keys)
-        self.overhead_info.update(None, current_time)
+        self.overhead_info.update(self.game_info)
 
         surface.blit(self.background, self.viewport, self.viewport)
-        self.overhead_info.draw(surface)
         surface.blit(self.image_dict['GAME_NAME_BOX'][0],
                      self.image_dict['GAME_NAME_BOX'][1])
         surface.blit(self.mario.image, self.mario.rect)
         surface.blit(self.cursor.image, self.cursor.rect)
+        self.overhead_info.draw(surface)
 
 
     def update_cursor(self, keys):

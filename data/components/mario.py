@@ -3,7 +3,7 @@ __author__ = 'justinarmstrong'
 import pygame as pg
 from .. import setup, tools
 from .. import constants as c
-import powerups
+from . import powerups
 
 
 class Mario(pg.sprite.Sprite):

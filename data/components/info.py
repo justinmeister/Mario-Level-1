@@ -3,7 +3,7 @@ __author__ = 'justinarmstrong'
 import pygame as pg
 from .. import setup
 from .. import constants as c
-import flashing_coin
+from . import flashing_coin
 
 
 class Character(pg.sprite.Sprite):
@@ -17,17 +17,17 @@ class Character(pg.sprite.Sprite):
 class OverheadInfo(object):
     """Class for level information like score, coin total,
         and time remaining"""
-    def __init__(self, loading_screen=False, lives=3, main_menu=False, top_score=0):
+    def __init__(self, game_info, state):
         self.sprite_sheet = setup.GFX['text_images']
         self.score = 0
         self.coin_total = 0
         self.time = 400
         self.current_time = 0
-        self.total_lives = lives
-        self.main_menu = main_menu
-        self.top_score = top_score
+        self.total_lives = game_info['lives']
+        self.top_score = game_info['top score']
+        self.state = state
+        self.special_state = None
 
-        self.loading_screen = loading_screen
         self.create_image_dict()
         self.create_score_group()
         self.create_info_labels()
@@ -221,21 +221,32 @@ class OverheadInfo(object):
 
 
 
-    def update(self, level_info, *args):
+    def update(self, level_info):
         """Updates all overhead info"""
-        if self.main_menu:
+        if self.state == c.MAIN_MENU:
             self.update_score_images(self.main_menu_labels[3], self.top_score)
-            self.flashing_coin.update(args[0])
-        else:
+            self.flashing_coin.update(level_info['current time'])
+
+        elif self.state == c.LOAD_SCREEN:
             self.score = level_info['score']
-            self.coin_total = level_info['coin_total']
-
+            self.coin_total = level_info['coin total']
             self.update_score_images(self.score_images, self.score)
-
-            if level_info['state'] != c.FROZEN:
-                self.update_count_down_clock(level_info)
-            self.flashing_coin.update(level_info['current_time'])
             self.update_coin_total()
+
+        elif self.state == c.LEVEL:
+            self.score = level_info['score']
+            self.coin_total = level_info['coin total']
+            self.update_score_images(self.score_images, self.score)
+            if level_info['state'] != c.FROZEN:
+                self.update_count_down_clock(level_info['current time'])
+            self.update_coin_total()
+
+
+        elif self.state == 'time out':
+            pass
+        elif self.state == 'game over':
+            pass
+
 
 
     def update_score_images(self, images, score):
@@ -282,35 +293,27 @@ class OverheadInfo(object):
         self.create_label(self.coin_count_images, coin_string, x, y)
 
 
-
-
     def draw(self, surface):
-        """Blits all overhead info onto the screen"""
+        """Draws overhead info based on state"""
+        if self.state == c.MAIN_MENU:
+            self.draw_main_menu_info(surface)
+        elif self.state == c.LOAD_SCREEN:
+            self.draw_loading_screen_info(surface)
+        elif self.state == c.LEVEL:
+            self.draw_level_screen_info(surface)
+        else:
+            pass
+
+
+
+    def draw_main_menu_info(self, surface):
+        """Draws info for main menu"""
         for info in self.score_images:
             surface.blit(info.image, info.rect)
 
-        if not self.loading_screen:
-            for digit in self.count_down_images:
-                surface.blit(digit.image, digit.rect)
-
-        if self.loading_screen and self.total_lives > 0:
-            for word in self.center_labels:
-                for letter in word:
-                    surface.blit(letter.image, letter.rect)
-            for word in self.life_total_label:
-                surface.blit(word.image, word.rect)
-
-            surface.blit(self.mario_image, self.mario_rect)
-            surface.blit(self.life_times_image, self.life_times_rect)
-        elif self.loading_screen and self.total_lives <= 0:
-            for word in self.game_over_label:
-                for letter in word:
-                    surface.blit(letter.image, letter.rect)
-
-        if self.main_menu:
-            for label in self.main_menu_labels:
-                for letter in label:
-                    surface.blit(letter.image, letter.rect)
+        for label in self.main_menu_labels:
+            for letter in label:
+                surface.blit(letter.image, letter.rect)
 
         for character in self.coin_count_images:
             surface.blit(character.image, character.rect)
@@ -320,4 +323,74 @@ class OverheadInfo(object):
                 surface.blit(letter.image, letter.rect)
 
         surface.blit(self.flashing_coin.image, self.flashing_coin.rect)
+
+
+    def draw_loading_screen_info(self, surface):
+        """Draws info for loading screen"""
+        for info in self.score_images:
+            surface.blit(info.image, info.rect)
+
+        for word in self.center_labels:
+            for letter in word:
+                surface.blit(letter.image, letter.rect)
+
+        for word in self.life_total_label:
+            surface.blit(word.image, word.rect)
+
+        surface.blit(self.mario_image, self.mario_rect)
+        surface.blit(self.life_times_image, self.life_times_rect)
+
+        for character in self.coin_count_images:
+            surface.blit(character.image, character.rect)
+
+        for label in self.label_list:
+            for letter in label:
+                surface.blit(letter.image, letter.rect)
+
+        surface.blit(self.flashing_coin.image, self.flashing_coin.rect)
+
+
+    def draw_level_screen_info(self, surface):
+        """Draws info during regular game play"""
+        for info in self.score_images:
+            surface.blit(info.image, info.rect)
+
+        for digit in self.count_down_images:
+                surface.blit(digit.image, digit.rect)
+
+        for character in self.coin_count_images:
+            surface.blit(character.image, character.rect)
+
+        for label in self.label_list:
+            for letter in label:
+                surface.blit(letter.image, letter.rect)
+
+        surface.blit(self.flashing_coin.image, self.flashing_coin.rect)
+
+
+    def draw_game_over_screen_info(self, surface):
+        """Draws info when game over"""
+        for info in self.score_images:
+            surface.blit(info.image, info.rect)
+
+        for word in self.game_over_label:
+            for letter in word:
+                surface.blit(letter.image, letter.rect)
+
+        for character in self.coin_count_images:
+            surface.blit(character.image, character.rect)
+
+        for label in self.label_list:
+            for letter in label:
+                surface.blit(letter.image, letter.rect)
+
+        surface.blit(self.flashing_coin.image, self.flashing_coin.rect)
+
+
+
+
+
+
+
+
 
