@@ -38,22 +38,22 @@ class Flag(pg.sprite.Sprite):
         return image
 
 
-    def update(self, current_time):
+    def update(self, *args):
         """Updates behavior"""
-        self.handle_state(current_time)
+        self.handle_state()
 
 
-    def handle_state(self, current_time):
+    def handle_state(self):
         """Determines behavior based on state"""
         if self.state == c.TOP_OF_POLE:
             self.image = self.frames[0]
         elif self.state == c.SLIDE_DOWN:
-            self.sliding_down(current_time)
+            self.sliding_down()
         elif self.state == c.BOTTOM_OF_POLE:
             self.image = self.frames[0]
 
 
-    def sliding_down(self, current_time):
+    def sliding_down(self):
         """State when Mario reaches flag pole"""
         self.y_vel = 5
         self.rect.y += self.y_vel

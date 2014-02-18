@@ -985,9 +985,9 @@ class Mario(pg.sprite.Sprite):
     def check_if_invincible(self):
         if self.invincible:
             if ((self.current_time - self.invincible_start_timer) < 10000):
-                self.change_frame_list(self.current_time, 30)
+                self.change_frame_list(30)
             elif ((self.current_time - self.invincible_start_timer) < 12000):
-                self.change_frame_list(self.current_time, 100)
+                self.change_frame_list(100)
             else:
                 self.invincible = False
         else:

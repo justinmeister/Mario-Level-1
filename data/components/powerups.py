@@ -49,11 +49,12 @@ class Powerup(pg.sprite.Sprite):
         return image
 
 
-    def update(self, current_time, *args):
-        self.handle_state(current_time)
+    def update(self, game_info, *args):
+        self.current_time = game_info[c.CURRENT_TIME]
+        self.handle_state()
 
 
-    def handle_state(self, current_time):
+    def handle_state(self):
         pass
 
 
@@ -89,7 +90,7 @@ class Mushroom(Powerup):
         self.frames.append(self.get_image(0, 0, 16, 16))
 
 
-    def handle_state(self, *args):
+    def handle_state(self):
         if self.state == c.REVEAL:
             self.revealing()
         elif self.state == c.SLIDE:
@@ -126,14 +127,14 @@ class FireFlower(Powerup):
             self.get_image(48, 32, 16, 16))
 
 
-    def handle_state(self, current_time):
+    def handle_state(self):
         if self.state == c.REVEAL:
-            self.revealing(current_time)
+            self.revealing()
         elif self.state == c.RESTING:
-            self.resting(current_time)
+            self.resting()
 
 
-    def revealing(self,current_time):
+    def revealing(self):
         """Animation of flower coming out of box"""
         self.rect.y += self.y_vel
 
@@ -141,24 +142,24 @@ class FireFlower(Powerup):
             self.rect.bottom = self.box_height
             self.state = c.RESTING
 
-        self.animation(current_time)
+        self.animation()
 
 
-    def resting(self, current_time):
+    def resting(self):
         """Fire Flower staying still on opened box"""
-        self.animation(current_time)
+        self.animation()
 
 
-    def animation(self, current_time):
+    def animation(self):
         """Method to make the Fire Flower blink"""
-        if (current_time - self.animate_timer) > 30:
+        if (self.current_time - self.animate_timer) > 30:
             if self.frame_index < 3:
                 self.frame_index += 1
             else:
                 self.frame_index = 0
 
             self.image = self.frames[self.frame_index]
-            self.animate_timer = current_time
+            self.animate_timer = self.current_time
 
 
 class Star(Powerup):
@@ -180,14 +181,14 @@ class Star(Powerup):
         self.frames.append(self.get_image(49, 48, 15, 16))
 
 
-    def handle_state(self, current_time):
+    def handle_state(self):
         if self.state == c.REVEAL:
-            self.revealing(current_time)
+            self.revealing()
         elif self.state == c.BOUNCE:
-            self.bouncing(current_time)
+            self.bouncing()
 
 
-    def revealing(self, current_time):
+    def revealing(self):
         self.rect.y += self.y_vel
 
         if self.rect.bottom <= self.box_height:
@@ -195,16 +196,16 @@ class Star(Powerup):
             self.start_bounce(-2)
             self.state = c.BOUNCE
 
-        self.animation(current_time)
+        self.animation()
 
 
-    def animation(self, current_time):
-        if (current_time - self.animate_timer) > 30:
+    def animation(self):
+        if (self.current_time - self.animate_timer) > 30:
             if self.frame_index < 3:
                 self.frame_index += 1
             else:
                 self.frame_index = 0
-            self.animate_timer = current_time
+            self.animate_timer = self.current_time
             self.image = self.frames[self.frame_index]
 
 
@@ -212,8 +213,8 @@ class Star(Powerup):
         self.y_vel = vel
 
 
-    def bouncing(self, current_time):
-        self.animation(current_time)
+    def bouncing(self):
+        self.animation()
 
         if self.direction == c.LEFT:
             self.x_vel = -5
@@ -280,38 +281,39 @@ class FireBall(pg.sprite.Sprite):
         return image
 
 
-    def update(self, current_time, viewport):
-        self.handle_state(current_time)
+    def update(self, game_info, viewport):
+        self.current_time = game_info[c.CURRENT_TIME]
+        self.handle_state()
         self.check_if_off_screen(viewport)
 
 
-    def handle_state(self, current_time):
+    def handle_state(self):
 
         if self.state == c.FLYING:
-            self.animation(current_time)
+            self.animation()
         elif self.state == c.BOUNCING:
-            self.animation(current_time)
+            self.animation()
         elif self.state == c.EXPLODING:
-            self.animation(current_time)
+            self.animation()
 
 
-    def animation(self, current_time):
+    def animation(self):
         if self.state == c.FLYING or self.state == c.BOUNCING:
-            if (current_time - self.animation_timer) > 200:
+            if (self.current_time - self.animation_timer) > 200:
                 if self.frame_index < 3:
                     self.frame_index += 1
                 else:
                     self.frame_index = 0
-                self.animation_timer = current_time
+                self.animation_timer = self.current_time
                 self.image = self.frames[self.frame_index]
 
 
         elif self.state == c.EXPLODING:
-            if (current_time - self.animation_timer) > 50:
+            if (self.current_time - self.animation_timer) > 50:
                 if self.frame_index < 6:
                     self.frame_index += 1
                     self.image = self.frames[self.frame_index]
-                    self.animation_timer = current_time
+                    self.animation_timer = self.current_time
                 else:
                     self.kill()
 

@@ -58,13 +58,13 @@ class Enemy(pg.sprite.Sprite):
 
 
 
-    def handle_state(self, current_time):
+    def handle_state(self):
         if self.state == c.WALK:
-            self.walking(current_time)
+            self.walking()
         elif self.state == c.FALL:
-            self.falling(current_time)
+            self.falling()
         elif self.state == c.JUMPED_ON:
-            self.jumped_on(current_time)
+            self.jumped_on()
         elif self.state == c.SHELL_SLIDE:
             self.shell_sliding()
         elif self.state == c.DEATH_JUMP:
@@ -72,22 +72,22 @@ class Enemy(pg.sprite.Sprite):
 
 
 
-    def walking(self, current_time):
-        if (current_time - self.animate_timer) > 125:
+    def walking(self):
+        if (self.current_time - self.animate_timer) > 125:
             if self.frame_index == 0:
                 self.frame_index += 1
             elif self.frame_index == 1:
                 self.frame_index = 0
 
-            self.animate_timer = current_time
+            self.animate_timer = self.current_time
 
 
-    def falling(self, current_time):
+    def falling(self):
         if self.y_vel < 10:
             self.y_vel += self.gravity
 
 
-    def jumped_on(self, current_time):
+    def jumped_on(self):
         pass
 
 
@@ -116,8 +116,9 @@ class Enemy(pg.sprite.Sprite):
         self.image = self.frames[self.frame_index]
 
 
-    def update(self, current_time, *args):
-        self.handle_state(current_time)
+    def update(self, game_info, *args):
+        self.current_time = game_info[c.CURRENT_TIME]
+        self.handle_state()
         self.animation()
 
 
@@ -142,10 +143,10 @@ class Goomba(Enemy):
         self.frames.append(pg.transform.flip(self.frames[1], False, True))
 
 
-    def jumped_on(self, current_time):
+    def jumped_on(self):
         self.frame_index = 2
 
-        if (current_time - self.death_timer) > 500:
+        if (self.current_time - self.death_timer) > 500:
             self.kill()
 
 
@@ -168,7 +169,7 @@ class Koopa(Enemy):
         self.frames.append(pg.transform.flip(self.frames[2], False, True))
 
 
-    def jumped_on(self, current_time):
+    def jumped_on(self):
         self.x_vel = 0
         self.frame_index = 2
         shell_y = self.rect.bottom

@@ -91,11 +91,7 @@ class Score(object):
         for number in self.digit_list:
             number.rect.y += self.y_vel
 
-
-
-        level_info = self.check_to_delete_floating_scores(score_list, level_info)
-
-        return level_info
+        self.check_to_delete_floating_scores(score_list, level_info)
 
 
     def draw(self, screen):
@@ -113,13 +109,12 @@ class Score(object):
             elif score.flag_pole_score:
                 if score.digit_list[0].rect.y <= 120:
                     score.y_vel = 0
-                    level_info['score'] += int(score.score_string)
+                    level_info[c.SCORE] += int(score.score_string)
 
             else:
                 if (score.y - score.digit_list[0].rect.y) > 75:
                     score_list.pop(i)
 
-        return level_info
 
 
 

@@ -32,7 +32,6 @@ class Level1(tools._State):
         self.all_sprites_frozen = False
         self.check_bit_masks = pg.sprite.collide_mask
         self.moving_score_list = []
-        self.level_info = {}
         self.overhead_info_display = info.OverheadInfo(self.game_info, c.LEVEL)
 
         self.setup_background()
@@ -348,7 +347,7 @@ class Level1(tools._State):
 
     def update(self, surface, keys, current_time):
         """Updates Entire level using states.  Called by the control object"""
-        self.game_info[c.CURRENT_TIME] = current_time
+        self.game_info[c.CURRENT_TIME] = self.current_time = current_time
         self.check_if_time_out()
         self.handle_states(keys)
         self.blit_everything(surface)
@@ -371,15 +370,13 @@ class Level1(tools._State):
          change the level state back"""
         self.mario.update(keys, self.game_info, self.powerup_group)
         for score in self.moving_score_list:
-            self.level_info = score.update(
-                self.moving_score_list, self.level_info)
-            self.score = self.level_info['score']
-        self.coin_box_group.update(current_time)
-        self.flag_pole_group.update(current_time)
+            score.update(self.moving_score_list, self.game_info)
+        self.coin_box_group.update(self.game_info)
+        self.flag_pole_group.update(self.game_info)
         self.check_if_mario_in_transition_state()
         self.check_flag()
-        self.check_for_mario_death(keys, current_time)
-        self.overhead_info_display.update(self.level_info)
+        self.check_for_mario_death()
+        self.overhead_info_display.update(self.game_info)
 
 
 
@@ -392,29 +389,28 @@ class Level1(tools._State):
             self.state = c.NOT_FROZEN
 
 
-    def update_all_sprites(self, keys, current_time):
+    def update_all_sprites(self, keys):
         """Updates the location of all sprites on the screen."""
-        self.mario.update(keys, current_time, self.powerup_group)
+        self.mario.update(keys, self.game_info, self.powerup_group)
         for score in self.moving_score_list:
-            self.level_info = score.update(
-                self.moving_score_list, self.level_info)
-        self.flag_pole_group.update(current_time)
-        self.check_points_check(current_time)
-        self.enemy_group.update(current_time)
-        self.sprites_about_to_die_group.update(current_time, self.viewport)
-        self.shell_group.update(current_time)
+            score.update(self.moving_score_list, self.game_info)
+        self.flag_pole_group.update()
+        self.check_points_check()
+        self.enemy_group.update(self.game_info)
+        self.sprites_about_to_die_group.update(self.game_info, self.viewport)
+        self.shell_group.update(self.game_info)
         self.brick_group.update()
-        self.coin_box_group.update(current_time)
-        self.powerup_group.update(current_time, self.viewport)
-        self.coin_group.update(current_time)
+        self.coin_box_group.update(self.game_info)
+        self.powerup_group.update(self.game_info, self.viewport)
+        self.coin_group.update(self.game_info)
         self.brick_pieces_group.update()
-        self.adjust_sprite_positions(current_time)
+        self.adjust_sprite_positions()
         self.check_if_mario_in_transition_state()
-        self.check_for_mario_death(keys, current_time)
+        self.check_for_mario_death()
         self.update_viewport()
 
 
-    def check_points_check(self, current_time):
+    def check_points_check(self):
         """Detect if checkpoint collision occurs, delete checkpoint,
         add enemies to self.enemy_group"""
         checkpoint = pg.sprite.spritecollideany(self.mario,
@@ -436,7 +432,7 @@ class Level1(tools._State):
                 self.create_flag_points()
 
             elif checkpoint.name == '12':
-                self.startup(current_time, self.persist)
+                self.startup(self.current_time, self.persist)
 
             elif checkpoint.name == 'secret_mushroom' and self.mario.y_vel < 0:
                 mushroom_box = coin_box.Coin_box(checkpoint.rect.x,
@@ -473,30 +469,30 @@ class Level1(tools._State):
 
 
 
-    def adjust_sprite_positions(self, current_time):
+    def adjust_sprite_positions(self):
         """Adjusts sprites by their x and y velocities and collisions"""
-        self.adjust_mario_position(current_time)
+        self.adjust_mario_position()
         self.adjust_enemy_position()
         self.adjust_shell_position()
         self.adjust_powerup_position()
 
 
-    def adjust_mario_position(self, current_time):
+    def adjust_mario_position(self):
         """Adjusts Mario's position based on his x, y velocities and
         potential collisions"""
         self.last_x_position = self.mario.rect.right
         self.mario.rect.x += self.mario.x_vel
-        self.check_mario_x_collisions(current_time)
+        self.check_mario_x_collisions()
 
         if self.mario.in_transition_state == False:
             self.mario.rect.y += self.mario.y_vel
-            self.check_mario_y_collisions(current_time)
+            self.check_mario_y_collisions()
 
         if self.mario.rect.x < (self.viewport.x + 5):
             self.mario.rect.x = (self.viewport.x + 5)
 
 
-    def check_mario_x_collisions(self, current_time):
+    def check_mario_x_collisions(self):
         """Check for collisions after Mario is moved on the x axis"""
         collider = pg.sprite.spritecollideany(self.mario, self.ground_step_pipe_group)
         coin_box = pg.sprite.spritecollideany(self.mario, self.coin_box_group)
@@ -516,7 +512,7 @@ class Level1(tools._State):
 
         elif enemy:
             if self.mario.invincible:
-                self.score += 100
+                self.game_info[c.SCORE] += 100
                 self.moving_score_list.append(score.Score(self.mario.rect.right,
                                                           self.mario.rect.y,
                                                          100))
@@ -539,15 +535,15 @@ class Level1(tools._State):
 
         elif powerup:
             if powerup.name == c.STAR:
-                self.score += 1000
+                self.game_info[c.SCORE] += 1000
 
                 self.moving_score_list.append(
                     score.Score(self.mario.rect.centerx,
                                 self.mario.rect.y, 1000))
                 self.mario.invincible = True
-                self.mario.invincible_start_timer = current_time
+                self.mario.invincible_start_timer = self.current_time
             elif powerup.name == c.MUSHROOM:
-                self.score += 1000
+                self.game_info[c.SCORE] += 1000
                 self.moving_score_list.append(
                     score.Score(self.mario.rect.centerx,
                                 self.mario.rect.y - 20, 1000))
@@ -562,9 +558,9 @@ class Level1(tools._State):
                                 powerup.rect.y,
                                 c.ONEUP))
 
-                self.total_lives += 1
+                self.game_info[c.LIVES] += 1
             elif powerup.name == c.FIREFLOWER:
-                self.score += 1000
+                self.game_info[c.SCORE] += 1000
                 self.moving_score_list.append(
                     score.Score(self.mario.rect.centerx,
                                 self.mario.rect.y, 1000))
@@ -617,7 +613,7 @@ class Level1(tools._State):
         """Deals with Mario if he hits a shell moving on the x axis"""
         if shell.state == c.JUMPED_ON:
             if self.mario.rect.x < shell.rect.x:
-                self.score += 400
+                self.game_info[c.SCORE] += 400
                 self.moving_score_list.append(score.Score(shell.rect.centerx,
                                                           shell.rect.y,
                                                           400))
@@ -638,7 +634,7 @@ class Level1(tools._State):
             if self.mario.big and not self.mario.invincible:
                 self.mario.state = c.BIG_TO_SMALL
             elif self.mario.invincible:
-                self.score += 200
+                self.game_info[c.SCORE] += 200
                 self.moving_score_list.append(score.Score(shell.rect.right,
                                                           shell.rect.y,
                                                           200))
@@ -651,7 +647,7 @@ class Level1(tools._State):
                     self.mario.start_death_jump()
 
 
-    def check_mario_y_collisions(self, current_time):
+    def check_mario_y_collisions(self):
         """Checks for collisions when Mario moves along the y-axis"""
         ground_step_or_pipe = pg.sprite.spritecollideany(self.mario, self.ground_step_pipe_group)
         enemy = pg.sprite.spritecollideany(self.mario, self.enemy_group)
@@ -677,7 +673,7 @@ class Level1(tools._State):
                 self.sprites_about_to_die_group.add(enemy)
                 enemy.start_death_jump(c.RIGHT)
             else:
-                self.adjust_mario_for_y_enemy_collisions(enemy, current_time)
+                self.adjust_mario_for_y_enemy_collisions(enemy)
 
         elif shell:
             self.adjust_mario_for_y_shell_collisions(shell)
@@ -686,7 +682,7 @@ class Level1(tools._State):
             if powerup.name == c.STAR:
                 powerup.kill()
                 self.mario.invincible = True
-                self.mario.invincible_start_timer = current_time
+                self.mario.invincible_start_timer = self.current_time
 
         self.test_if_mario_is_falling()
 
@@ -714,10 +710,10 @@ class Level1(tools._State):
         if self.mario.rect.y > coin_box.rect.y:
             if coin_box.state == c.RESTING:
                 if coin_box.contents == c.COIN:
-                    self.score += 200
+                    self.game_info[c.SCORE] += 200
                     coin_box.start_bump(self.moving_score_list)
                     if coin_box.contents == c.COIN:
-                        self.coin_total += 1
+                        self.game_info[c.COIN_TOTAL] += 1
                 else:
                     coin_box.start_bump(self.moving_score_list)
 
@@ -752,8 +748,8 @@ class Level1(tools._State):
                                                2, -6))
                 else:
                     if brick.coin_total > 0:
-                        self.coin_total += 1
-                        self.score += 200
+                        self.game_info[c.COIN_TOTAL] += 1
+                        self.game_info[c.SCORE] += 200
                     self.check_if_enemy_on_brick(brick)
                     brick.start_bump(self.moving_score_list)
             self.mario.y_vel = 7
@@ -773,7 +769,7 @@ class Level1(tools._State):
         enemy = pg.sprite.spritecollideany(brick, self.enemy_group)
 
         if enemy:
-            self.score += 100
+            self.game_info[c.SCORE] += 100
             self.moving_score_list.append(score.Score(enemy.rect.centerx,
                                                       enemy.rect.y,
                                                       100))
@@ -829,17 +825,17 @@ class Level1(tools._State):
         self.mario.rect.y -= 1
 
 
-    def adjust_mario_for_y_enemy_collisions(self, enemy, current_time):
+    def adjust_mario_for_y_enemy_collisions(self, enemy):
         """Mario collisions with all enemies on the y-axis"""
         if self.mario.y_vel > 0:
-            self.score += 100
+            self.game_info[c.SCORE] += 100
             self.moving_score_list.append(
                 score.Score(enemy.rect.centerx,
                             enemy.rect.y, 100))
             enemy.state = c.JUMPED_ON
             enemy.kill()
             if enemy.name == c.GOOMBA:
-                enemy.death_timer = current_time
+                enemy.death_timer = self.current_time
                 self.sprites_about_to_die_group.add(enemy)
             elif enemy.name == c.KOOPA:
                 self.shell_group.add(enemy)
@@ -853,7 +849,7 @@ class Level1(tools._State):
     def adjust_mario_for_y_shell_collisions(self, shell):
         """Mario collisions with Koopas in their shells on the y axis"""
         if self.mario.y_vel > 0:
-            self.score += 400
+            self.game_info[c.SCORE] += 400
             self.moving_score_list.append(
                 score.Score(self.mario.rect.centerx,
                             self.mario.rect.y, 400))
@@ -954,7 +950,7 @@ class Level1(tools._State):
 
         elif coin_box:
             if coin_box.state == c.BUMPED:
-                self.score += 100
+                self.game_info[c.SCORE] += 100
                 self.moving_score_list.append(score.Score(enemy.rect.centerx,
                                                           enemy.rect.y,
                                                           100))
@@ -1013,7 +1009,7 @@ class Level1(tools._State):
                 shell.rect.left = collider.rect.right
 
         if enemy:
-            self.score += 100
+            self.game_info[c.SCORE] += 100
             self.moving_score_list.append(score.Score(enemy.rect.right,
                                                       enemy.rect.y,
                                                       100))
@@ -1218,7 +1214,7 @@ class Level1(tools._State):
 
     def fireball_kill(self, fireball, enemy):
         """Kills enemy if hit with fireball"""
-        self.score += 100
+        self.game_info[c.SCORE] += 100
         self.moving_score_list.append(score.Score(enemy.rect.centerx,
                                                   enemy.rect.y,
                                                   100))
@@ -1260,7 +1256,7 @@ class Level1(tools._State):
             self.mario.set_state_to_bottom_of_pole()
 
 
-    def check_for_mario_death(self, keys, current_time):
+    def check_for_mario_death(self):
         """Restarts the level if Mario is dead"""
         if self.mario.rect.y > c.SCREEN_HEIGHT:
             self.mario.dead = True
@@ -1268,14 +1264,15 @@ class Level1(tools._State):
             self.state = c.FROZEN
 
         if self.mario.dead:
-            self.play_death_song(current_time)
+            self.play_death_song()
 
 
-    def play_death_song(self, current_time):
+    def play_death_song(self):
         if self.death_timer == 0:
-            self.death_timer = current_time
-        elif (current_time - self.death_timer) > 3000:
-            if self.score > self.persist['top_score']:
+            self.death_timer = self.current_time
+        elif (self.current_time - self.death_timer) > 3000:
+            self.persist = self.game_info
+            if self.game_info[c.SCORE] > self.persist['top_score']:
                 self.persist['top_score'] = self.score
             self.persist['lives'] -= 1
             self.next = 'LOAD_SCREEN'

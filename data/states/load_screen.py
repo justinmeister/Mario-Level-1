@@ -32,7 +32,6 @@ class Load_Screen(tools._State):
         """Updates the loading screen"""
         if self.next == c.LEVEL1:
             if (current_time - self.start_time) < 2400:
-                print(current_time - self.start_time)
                 surface.fill(c.BLACK)
                 self.overhead_info.update(self.game_info)
                 self.overhead_info.draw(surface)

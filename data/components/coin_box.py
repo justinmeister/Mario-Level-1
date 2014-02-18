@@ -56,40 +56,41 @@ class Coin_box(pg.sprite.Sprite):
             self.get_image(432, 0, 16, 16))
 
 
-    def update(self, current_time):
-        self.handle_states(current_time)
+    def update(self, game_info):
+        self.current_time = game_info[c.CURRENT_TIME]
+        self.handle_states()
 
 
-    def handle_states(self, current_time):
+    def handle_states(self):
         if self.state == c.RESTING:
-            self.resting(current_time)
+            self.resting()
         elif self.state == c.BUMPED:
             self.bumped()
         elif self.state == c.OPENED:
             self.opened()
 
 
-    def resting(self, current_time):
+    def resting(self):
         if self.first_half:
             if self.frame_index == 0:
-                if (current_time - self.animation_timer) > 375:
+                if (self.current_time - self.animation_timer) > 375:
                     self.frame_index += 1
-                    self.animation_timer = current_time
+                    self.animation_timer = self.current_time
             elif self.frame_index < 2:
-                if (current_time - self.animation_timer) > 125:
+                if (self.current_time - self.animation_timer) > 125:
                     self.frame_index += 1
-                    self.animation_timer = current_time
+                    self.animation_timer = self.current_time
             elif self.frame_index == 2:
-                if (current_time - self.animation_timer) > 125:
+                if (self.current_time - self.animation_timer) > 125:
                     self.frame_index -= 1
                     self.first_half = False
-                    self.animation_timer = current_time
+                    self.animation_timer = self.current_time
         else:
             if self.frame_index == 1:
-                if (current_time - self.animation_timer) > 125:
+                if (self.current_time - self.animation_timer) > 125:
                     self.frame_index -= 1
                     self.first_half = True
-                    self.animation_timer = current_time
+                    self.animation_timer = self.current_time
 
         self.image = self.frames[self.frame_index]
 
