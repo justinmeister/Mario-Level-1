@@ -23,6 +23,7 @@ class Level1(tools._State):
     def startup(self, current_time, persist):
         """Called when the State object is created"""
         self.game_info = persist
+        self.persist = self.game_info
         self.game_info[c.CURRENT_TIME] = current_time
         self.game_info[c.LEVEL_STATE] = c.NOT_FROZEN
 
@@ -434,7 +435,8 @@ class Level1(tools._State):
                 self.create_flag_points()
 
             elif checkpoint.name == '12':
-                self.startup(self.current_time, self.persist)
+                self.set_game_info_values()
+                self.done = True
 
             elif checkpoint.name == 'secret_mushroom' and self.mario.y_vel < 0:
                 mushroom_box = coin_box.Coin_box(checkpoint.rect.x,
@@ -1273,13 +1275,22 @@ class Level1(tools._State):
         if self.death_timer == 0:
             self.death_timer = self.current_time
         elif (self.current_time - self.death_timer) > 3000:
-            self.persist = self.game_info
-            if self.game_info[c.SCORE] > self.persist[c.TOP_SCORE]:
-                self.persist[c.TOP_SCORE] = self.game_info[c.SCORE]
-            self.persist[c.LIVES] -= 1
-            self.next = c.LOAD_SCREEN
+            self.set_game_info_values()
             self.done = True
 
+
+    def set_game_info_values(self):
+        """sets the new game values after a player's death"""
+        if self.game_info[c.SCORE] > self.persist[c.TOP_SCORE]:
+            self.persist[c.TOP_SCORE] = self.game_info[c.SCORE]
+        if self.mario.dead:
+            self.persist[c.LIVES] -= 1
+        if self.persist[c.LIVES] == 0:
+            self.next = c.GAME_OVER
+        elif self.mario.dead == False:
+            self.next = c.MAIN_MENU
+        else:
+            self.next = c.LOAD_SCREEN
 
 
     def check_if_time_out(self):

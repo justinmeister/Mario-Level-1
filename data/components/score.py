@@ -110,6 +110,7 @@ class Score(object):
                 if score.digit_list[0].rect.y <= 120:
                     score.y_vel = 0
                     level_info[c.SCORE] += int(score.score_string)
+                    score_list.pop(i)
 
             else:
                 if (score.y - score.digit_list[0].rect.y) > 75:

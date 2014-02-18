@@ -19,12 +19,11 @@ class OverheadInfo(object):
         and time remaining"""
     def __init__(self, game_info, state):
         self.sprite_sheet = setup.GFX['text_images']
-        self.score = 0
-        self.coin_total = 0
+        self.coin_total = game_info[c.COIN_TOTAL]
         self.time = 400
         self.current_time = 0
-        self.total_lives = game_info['lives']
-        self.top_score = game_info['top score']
+        self.total_lives = game_info[c.LIVES]
+        self.top_score = game_info[c.TOP_SCORE]
         self.state = state
         self.special_state = None
 
@@ -222,7 +221,11 @@ class OverheadInfo(object):
     def update(self, level_info):
         """Updates all overhead info"""
         if self.state == c.MAIN_MENU:
+            self.score = level_info[c.SCORE]
+            self.coin_total = level_info[c.COIN_TOTAL]
+            self.update_score_images(self.score_images, self.score)
             self.update_score_images(self.main_menu_labels[3], self.top_score)
+            self.update_coin_total()
             self.flashing_coin.update(level_info['current time'])
 
         elif self.state == c.LOAD_SCREEN:
@@ -242,8 +245,11 @@ class OverheadInfo(object):
 
         elif self.state == 'time out':
             pass
-        elif self.state == 'game over':
-            pass
+        elif self.state == c.GAME_OVER:
+            self.score = level_info[c.SCORE]
+            self.coin_total = level_info[c.COIN_TOTAL]
+            self.update_score_images(self.score_images, self.score)
+            self.update_coin_total()
 
 
 
@@ -299,6 +305,8 @@ class OverheadInfo(object):
             self.draw_loading_screen_info(surface)
         elif self.state == c.LEVEL:
             self.draw_level_screen_info(surface)
+        elif self.state == c.GAME_OVER:
+            self.draw_game_over_screen_info(surface)
         else:
             pass
 

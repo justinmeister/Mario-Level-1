@@ -110,11 +110,25 @@ class Menu(tools._State):
                 self.cursor.state = c.PLAYER2
             for input in input_list:
                 if keys[input]:
+                    self.reset_game_info()
                     self.done = True
         elif self.cursor.state == c.PLAYER2:
             self.cursor.rect.y = 403
             if keys[pg.K_UP]:
                 self.cursor.state = c.PLAYER1
+
+
+    def reset_game_info(self):
+        """Resets the game info in case of a Game Over and restart"""
+        self.game_info[c.COIN_TOTAL] = 0
+        self.game_info[c.SCORE] = 0
+        self.game_info[c.LIVES] = 3
+        self.game_info[c.CURRENT_TIME] = 0.0
+        self.game_info[c.LEVEL_STATE] = None
+
+        self.persist = self.game_info
+
+
 
 
 
