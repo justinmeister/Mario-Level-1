@@ -3,8 +3,6 @@ __author__ = 'justinarmstrong'
 from . import setup,tools
 from .states import main_menu,load_screen,level1
 from . import constants as c
-import cProfile
-
 
 
 def main():

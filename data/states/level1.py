@@ -355,9 +355,6 @@ class Level1(tools._State):
         self.blit_everything(surface)
 
 
-
-
-
     def handle_states(self, keys):
         """If the level is in a FROZEN state, only mario will update"""
         if self.state == c.FROZEN:
@@ -429,6 +426,7 @@ class Level1(tools._State):
 
             if checkpoint.name == '11':
                 self.mario.state = c.FLAGPOLE
+                self.mario.invincible = False
                 self.mario.flag_pole_right = checkpoint.rect.right
                 self.flag.state = c.SLIDE_DOWN
                 self.flag_pole_group.add(castle_flag.Flag(8745, 322))
@@ -878,10 +876,10 @@ class Level1(tools._State):
         for enemy in self.enemy_group:
             enemy.rect.x += enemy.x_vel
             self.check_enemy_x_collisions(enemy)
-            self.delete_if_off_screen(enemy)
 
             enemy.rect.y += enemy.y_vel
             self.check_enemy_y_collisions(enemy)
+            self.delete_if_off_screen(enemy)
 
 
     def check_enemy_x_collisions(self, enemy):
@@ -997,10 +995,10 @@ class Level1(tools._State):
         for shell in self.shell_group:
             shell.rect.x += shell.x_vel
             self.check_shell_x_collisions(shell)
-            self.delete_if_off_screen(shell)
 
             shell.rect.y += shell.y_vel
             self.check_shell_y_collisions(shell)
+            self.delete_if_off_screen(shell)
 
 
     def check_shell_x_collisions(self, shell):
@@ -1060,10 +1058,10 @@ class Level1(tools._State):
         if mushroom.state != c.REVEAL:
             mushroom.rect.x += mushroom.x_vel
             self.check_mushroom_x_collisions(mushroom)
-            self.delete_if_off_screen(mushroom)
 
             mushroom.rect.y += mushroom.y_vel
             self.check_mushroom_y_collisions(mushroom)
+            self.delete_if_off_screen(mushroom)
 
 
     def check_mushroom_x_collisions(self, mushroom):
@@ -1166,6 +1164,7 @@ class Level1(tools._State):
             fireball.rect.y += fireball.y_vel
             self.check_fireball_y_collisions(fireball)
             fireball.y_vel += fireball.gravity
+        self.delete_if_off_screen(fireball)
 
 
     def bounce_fireball(self, fireball):
@@ -1247,10 +1246,10 @@ class Level1(tools._State):
     def delete_if_off_screen(self, enemy):
         """Removes enemy from sprite groups if 500 pixels left off the screen,
          underneath the bottom of the screen, or right of the screen if shell"""
-        if enemy.rect.x < (self.viewport.x - 500):
+        if enemy.rect.x < (self.viewport.x - 300):
             enemy.kill()
 
-        elif enemy.rect.y > (self.viewport.right + 600):
+        elif enemy.rect.y > (self.viewport.bottom):
             enemy.kill()
 
         elif enemy.state == c.SHELL_SLIDE:

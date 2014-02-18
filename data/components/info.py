@@ -227,34 +227,30 @@ class OverheadInfo(object):
         """Updates info based on what state the game is in"""
         if self.state == c.MAIN_MENU:
             self.score = level_info[c.SCORE]
-            self.coin_total = level_info[c.COIN_TOTAL]
             self.update_score_images(self.score_images, self.score)
             self.update_score_images(self.main_menu_labels[3], self.top_score)
-            self.update_coin_total()
+            self.update_coin_total(level_info)
             self.flashing_coin.update(level_info['current time'])
 
         elif self.state == c.LOAD_SCREEN:
             self.score = level_info[c.SCORE]
-            self.coin_total = level_info[c.COIN_TOTAL]
             self.update_score_images(self.score_images, self.score)
-            self.update_coin_total()
+            self.update_coin_total(level_info)
 
         elif self.state == c.LEVEL:
             self.score = level_info[c.SCORE]
-            self.coin_total = level_info[c.COIN_TOTAL]
             self.update_score_images(self.score_images, self.score)
             if level_info[c.LEVEL_STATE] != c.FROZEN:
                 self.update_count_down_clock(level_info)
-            self.update_coin_total()
+            self.update_coin_total(level_info)
 
 
         elif self.state == 'time out':
             pass
         elif self.state == c.GAME_OVER:
             self.score = level_info[c.SCORE]
-            self.coin_total = level_info[c.COIN_TOTAL]
             self.update_score_images(self.score_images, self.score)
-            self.update_coin_total()
+            self.update_coin_total(level_info)
 
 
         elif self.state == c.FAST_COUNT_DOWN:
@@ -262,7 +258,7 @@ class OverheadInfo(object):
             self.score = level_info[c.SCORE]
             self.update_count_down_clock(level_info)
             self.update_score_images(self.score_images, self.score)
-            self.update_coin_total()
+            self.update_coin_total(level_info)
             if self.time == 0:
                 print(self.state)
                 self.state = c.LEVEL
@@ -301,21 +297,24 @@ class OverheadInfo(object):
             self.set_label_rects(self.count_down_images, 645, 55)
 
 
-    def update_coin_total(self):
-        coin_string = str(self.coin_total)
-        if len(coin_string) < 2:
-            coin_string = '*0' + coin_string
-        elif len(coin_string) > 2:
-            coin_string = '*00'
-        else:
-            coin_string = '*' + coin_string
+    def update_coin_total(self, level_info):
+        if self.coin_total != level_info[c.COIN_TOTAL]:
+            self.coin_total = level_info[c.COIN_TOTAL]
 
-        x = self.coin_count_images[0].rect.x
-        y = self.coin_count_images[0].rect.y
+            coin_string = str(self.coin_total)
+            if len(coin_string) < 2:
+                coin_string = '*0' + coin_string
+            elif len(coin_string) > 2:
+                coin_string = '*00'
+            else:
+                coin_string = '*' + coin_string
 
-        self.coin_count_images = []
+            x = self.coin_count_images[0].rect.x
+            y = self.coin_count_images[0].rect.y
 
-        self.create_label(self.coin_count_images, coin_string, x, y)
+            self.coin_count_images = []
+
+            self.create_label(self.coin_count_images, coin_string, x, y)
 
 
     def draw(self, surface):
