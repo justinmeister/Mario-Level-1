@@ -24,6 +24,7 @@ class Level1(tools._State):
         """Called when the State object is created"""
         self.game_info = persist
         self.game_info[c.CURRENT_TIME] = current_time
+        self.game_info[c.LEVEL_STATE] = c.NOT_FROZEN
 
 
         self.state = c.NOT_FROZEN
@@ -384,9 +385,9 @@ class Level1(tools._State):
         """If mario is in a transition state, the level will be in a FREEZE
         state"""
         if self.mario.in_transition_state:
-            self.state = c.FROZEN
+            self.game_info[c.LEVEL_STATE] = self.state = c.FROZEN
         elif self.mario.in_transition_state == False:
-            self.state = c.NOT_FROZEN
+            self.game_info[c.LEVEL_STATE] = self.state = c.NOT_FROZEN
 
 
     def update_all_sprites(self, keys):
@@ -408,6 +409,7 @@ class Level1(tools._State):
         self.check_if_mario_in_transition_state()
         self.check_for_mario_death()
         self.update_viewport()
+        self.overhead_info_display.update(self.game_info)
 
 
     def check_points_check(self):
@@ -1272,10 +1274,10 @@ class Level1(tools._State):
             self.death_timer = self.current_time
         elif (self.current_time - self.death_timer) > 3000:
             self.persist = self.game_info
-            if self.game_info[c.SCORE] > self.persist['top_score']:
-                self.persist['top_score'] = self.score
-            self.persist['lives'] -= 1
-            self.next = 'LOAD_SCREEN'
+            if self.game_info[c.SCORE] > self.persist[c.TOP_SCORE]:
+                self.persist[c.TOP_SCORE] = self.game_info[c.SCORE]
+            self.persist[c.LIVES] -= 1
+            self.next = c.LOAD_SCREEN
             self.done = True
 
 

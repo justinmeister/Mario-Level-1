@@ -832,7 +832,7 @@ class Mario(pg.sprite.Sprite):
             self.image = frames[1]
             self.hurt_invincible_check()
             self.adjust_rect()
-        elif (self.urrent_time - self.transition_timer) < 395:
+        elif (self.current_time - self.transition_timer) < 395:
             self.image = frames[2]
             self.hurt_invincible_check()
             self.adjust_rect()
@@ -1029,7 +1029,7 @@ class Mario(pg.sprite.Sprite):
             if self.hurt_invisible_timer2 == 0:
                 self.hurt_invisible_timer2 = self.current_time
             elif (self.current_time - self.hurt_invisible_timer2) < 2000:
-                self.hurt_invincible_check(self.current_time)
+                self.hurt_invincible_check()
             else:
                 self.hurt_invincible = False
                 self.hurt_invisible_timer = 0
