@@ -48,6 +48,7 @@ class Mario(pg.sprite.Sprite):
         self.allow_fireball = True
         self.in_transition_state = False
         self.hurt_invincible = False
+        self.in_castle = False
 
 
     def setup_forces(self):

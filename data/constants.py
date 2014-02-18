@@ -140,6 +140,7 @@ MAIN_MENU = 'main menu'
 LOAD_SCREEN = 'loading screen'
 LEVEL = 'level'
 GAME_OVER = 'game over'
+FAST_COUNT_DOWN = 'fast count down'
 
 
 #GAME INFO DICTIONARY KEYS

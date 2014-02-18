@@ -220,6 +220,11 @@ class OverheadInfo(object):
 
     def update(self, level_info):
         """Updates all overhead info"""
+        self.handle_level_state(level_info)
+
+
+    def handle_level_state(self, level_info):
+        """Updates info based on what state the game is in"""
         if self.state == c.MAIN_MENU:
             self.score = level_info[c.SCORE]
             self.coin_total = level_info[c.COIN_TOTAL]
@@ -252,6 +257,18 @@ class OverheadInfo(object):
             self.update_coin_total()
 
 
+        elif self.state == c.FAST_COUNT_DOWN:
+            level_info[c.SCORE] += 50
+            self.score = level_info[c.SCORE]
+            self.update_count_down_clock(level_info)
+            self.update_score_images(self.score_images, self.score)
+            self.update_coin_total()
+            if self.time == 0:
+                print(self.state)
+                self.state = c.LEVEL
+                print(self.state)
+
+
 
     def update_score_images(self, images, score):
         """Updates what numbers are to be blitted for the score"""
@@ -266,18 +283,22 @@ class OverheadInfo(object):
 
     def update_count_down_clock(self, level_info):
         """Updates current time"""
-        if (level_info[c.CURRENT_TIME] - self.current_time) > 400:
+        if self.state == c.FAST_COUNT_DOWN:
+            self.time -= 1
+        elif self.time == 0:
+            pass
+        elif (level_info[c.CURRENT_TIME] - self.current_time) > 400:
             self.current_time = level_info[c.CURRENT_TIME]
             self.time -= 1
-            self.count_down_images = []
-            self.create_label(self.count_down_images, str(self.time), 645, 55)
-            if len(self.count_down_images) < 2:
-                for i in range(2):
-                    self.count_down_images.insert(0, Character(self.image_dict['0']))
-                self.set_label_rects(self.count_down_images, 645, 55)
-            elif len(self.count_down_images) < 3:
+        self.count_down_images = []
+        self.create_label(self.count_down_images, str(self.time), 645, 55)
+        if len(self.count_down_images) < 2:
+            for i in range(2):
                 self.count_down_images.insert(0, Character(self.image_dict['0']))
-                self.set_label_rects(self.count_down_images, 645, 55)
+            self.set_label_rects(self.count_down_images, 645, 55)
+        elif len(self.count_down_images) < 3:
+            self.count_down_images.insert(0, Character(self.image_dict['0']))
+            self.set_label_rects(self.count_down_images, 645, 55)
 
 
     def update_coin_total(self):
@@ -307,6 +328,8 @@ class OverheadInfo(object):
             self.draw_level_screen_info(surface)
         elif self.state == c.GAME_OVER:
             self.draw_game_over_screen_info(surface)
+        elif self.state == c.FAST_COUNT_DOWN:
+            self.draw_level_screen_info(surface)
         else:
             pass
 

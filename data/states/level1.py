@@ -435,8 +435,12 @@ class Level1(tools._State):
                 self.create_flag_points()
 
             elif checkpoint.name == '12':
-                self.set_game_info_values()
-                self.done = True
+                self.mario.kill()
+                self.mario.state == c.STAND
+                self.mario.in_castle = True
+                self.overhead_info_display.state = c.FAST_COUNT_DOWN
+                #self.set_game_info_values()
+                #self.done = True
 
             elif checkpoint.name == 'secret_mushroom' and self.mario.y_vel < 0:
                 mushroom_box = coin_box.Coin_box(checkpoint.rect.x,
@@ -1262,7 +1266,7 @@ class Level1(tools._State):
 
     def check_for_mario_death(self):
         """Restarts the level if Mario is dead"""
-        if self.mario.rect.y > c.SCREEN_HEIGHT:
+        if self.mario.rect.y > c.SCREEN_HEIGHT and not self.mario.in_castle:
             self.mario.dead = True
             self.mario.x_vel = 0
             self.state = c.FROZEN
@@ -1295,7 +1299,9 @@ class Level1(tools._State):
 
     def check_if_time_out(self):
         """Check if time has run down to 0"""
-        if self.overhead_info_display.time <= 0 and not self.mario.dead:
+        if self.overhead_info_display.time <= 0 \
+                and not self.mario.dead \
+                and not self.mario.in_castle:
             self.state = c.FROZEN
             self.mario.start_death_jump()
 
