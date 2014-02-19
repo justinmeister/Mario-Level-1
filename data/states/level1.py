@@ -30,6 +30,7 @@ class Level1(tools._State):
 
         self.state = c.NOT_FROZEN
         self.death_timer = 0
+        self.flag_timer = 0
 
         self.all_sprites_frozen = False
         self.check_bit_masks = pg.sprite.collide_mask
@@ -349,6 +350,7 @@ class Level1(tools._State):
 
     def update(self, surface, keys, current_time):
         """Updates Entire level using states.  Called by the control object"""
+        print(self.state)
         self.game_info[c.CURRENT_TIME] = self.current_time = current_time
         self.check_if_time_out()
         self.handle_states(keys)
@@ -361,6 +363,10 @@ class Level1(tools._State):
             self.update_during_transition_state(keys)
         elif self.state == c.NOT_FROZEN:
             self.update_all_sprites(keys)
+        elif self.state == c.IN_CASTLE:
+            self.update_while_in_castle()
+        elif self.state == c.FLAG_AND_FIREWORKS:
+            self.update_flag_and_fireworks()
 
 
     def update_during_transition_state(self, keys):
@@ -385,7 +391,8 @@ class Level1(tools._State):
         if self.mario.in_transition_state:
             self.game_info[c.LEVEL_STATE] = self.state = c.FROZEN
         elif self.mario.in_transition_state == False:
-            self.game_info[c.LEVEL_STATE] = self.state = c.NOT_FROZEN
+            if self.state == c.FROZEN:
+                self.game_info[c.LEVEL_STATE] = self.state = c.NOT_FROZEN
 
 
     def update_all_sprites(self, keys):
@@ -429,10 +436,10 @@ class Level1(tools._State):
                 self.mario.invincible = False
                 self.mario.flag_pole_right = checkpoint.rect.right
                 self.flag.state = c.SLIDE_DOWN
-                self.flag_pole_group.add(castle_flag.Flag(8745, 322))
                 self.create_flag_points()
 
             elif checkpoint.name == '12':
+                self.state = c.IN_CASTLE
                 self.mario.kill()
                 self.mario.state == c.STAND
                 self.mario.in_castle = True
@@ -1316,6 +1323,38 @@ class Level1(tools._State):
             new = self.viewport.x + mult * self.mario.x_vel
             highest = self.level_rect.w - self.viewport.w
             self.viewport.x = min(highest, new)
+
+
+    def update_while_in_castle(self):
+        """Updates while Mario is in castle at the end of the level"""
+        print('in castle')
+        for score in self.moving_score_list:
+            score.update(self.moving_score_list, self.game_info)
+        self.overhead_info_display.update(self.game_info)
+
+        if self.overhead_info_display.state == c.END_OF_LEVEL:
+            self.state = c.FLAG_AND_FIREWORKS
+            self.flag_pole_group.add(castle_flag.Flag(8745, 322))
+
+
+
+    def update_flag_and_fireworks(self):
+        """Updates the level for the fireworks and castle flag"""
+        for score in self.moving_score_list:
+            score.update(self.moving_score_list, self.game_info)
+        self.overhead_info_display.update(self.game_info)
+        self.flag_pole_group.update()
+
+        self.end_game()
+
+
+    def end_game(self):
+        """End the game"""
+        if self.flag_timer == 0:
+            self.flag_timer = self.current_time
+        elif (self.current_time - self.flag_timer) > 2000:
+            self.set_game_info_values()
+            self.done = True
 
 
     def blit_everything(self, surface):

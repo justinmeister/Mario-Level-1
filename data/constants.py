@@ -122,6 +122,8 @@ KOOPA = 'koopa'
 
 FROZEN = 'frozen'
 NOT_FROZEN = 'not frozen'
+IN_CASTLE = 'in castle'
+FLAG_AND_FIREWORKS = 'flag and fireworks'
 
 #FLAG STATE
 TOP_OF_POLE = 'top of pole'
@@ -141,6 +143,7 @@ LOAD_SCREEN = 'loading screen'
 LEVEL = 'level'
 GAME_OVER = 'game over'
 FAST_COUNT_DOWN = 'fast count down'
+END_OF_LEVEL = 'end of level'
 
 
 #GAME INFO DICTIONARY KEYS

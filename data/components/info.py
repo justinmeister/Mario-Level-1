@@ -260,9 +260,10 @@ class OverheadInfo(object):
             self.update_score_images(self.score_images, self.score)
             self.update_coin_total(level_info)
             if self.time == 0:
-                print(self.state)
-                self.state = c.LEVEL
-                print(self.state)
+                self.state = c.END_OF_LEVEL
+
+        elif self.state == c.END_OF_LEVEL:
+            pass
 
 
 
@@ -281,8 +282,7 @@ class OverheadInfo(object):
         """Updates current time"""
         if self.state == c.FAST_COUNT_DOWN:
             self.time -= 1
-        elif self.time == 0:
-            pass
+
         elif (level_info[c.CURRENT_TIME] - self.current_time) > 400:
             self.current_time = level_info[c.CURRENT_TIME]
             self.time -= 1
@@ -328,6 +328,8 @@ class OverheadInfo(object):
         elif self.state == c.GAME_OVER:
             self.draw_game_over_screen_info(surface)
         elif self.state == c.FAST_COUNT_DOWN:
+            self.draw_level_screen_info(surface)
+        elif self.state == c.END_OF_LEVEL:
             self.draw_level_screen_info(surface)
         else:
             pass
