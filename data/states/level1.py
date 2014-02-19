@@ -350,7 +350,6 @@ class Level1(tools._State):
 
     def update(self, surface, keys, current_time):
         """Updates Entire level using states.  Called by the control object"""
-        print(self.state)
         self.game_info[c.CURRENT_TIME] = self.current_time = current_time
         self.check_if_time_out()
         self.handle_states(keys)
@@ -1327,7 +1326,6 @@ class Level1(tools._State):
 
     def update_while_in_castle(self):
         """Updates while Mario is in castle at the end of the level"""
-        print('in castle')
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
         self.overhead_info_display.update(self.game_info)
@@ -1335,7 +1333,6 @@ class Level1(tools._State):
         if self.overhead_info_display.state == c.END_OF_LEVEL:
             self.state = c.FLAG_AND_FIREWORKS
             self.flag_pole_group.add(castle_flag.Flag(8745, 322))
-
 
 
     def update_flag_and_fireworks(self):

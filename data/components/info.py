@@ -230,7 +230,7 @@ class OverheadInfo(object):
             self.update_score_images(self.score_images, self.score)
             self.update_score_images(self.main_menu_labels[3], self.top_score)
             self.update_coin_total(level_info)
-            self.flashing_coin.update(level_info['current time'])
+            self.flashing_coin.update(level_info[c.CURRENT_TIME])
 
         elif self.state == c.LOAD_SCREEN:
             self.score = level_info[c.SCORE]
@@ -243,6 +243,7 @@ class OverheadInfo(object):
             if level_info[c.LEVEL_STATE] != c.FROZEN:
                 self.update_count_down_clock(level_info)
             self.update_coin_total(level_info)
+            self.flashing_coin.update(level_info[c.CURRENT_TIME])
 
 
         elif self.state == 'time out':
