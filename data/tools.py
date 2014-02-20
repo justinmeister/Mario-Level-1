@@ -3,6 +3,12 @@ __author__ = 'justinarmstrong'
 import os
 import pygame as pg
 
+keybinding = {
+    'action':pg.K_LSHIFT,
+    'jump':pg.K_SPACE,
+    'left':pg.K_a,
+    'right':pg.K_d
+}
 
 class Control(object):
     """Control class for entire project. Contains the game loop, and contains
