@@ -407,7 +407,7 @@ class Level1(tools._State):
         self.brick_group.update()
         self.coin_box_group.update(self.game_info)
         self.powerup_group.update(self.game_info, self.viewport)
-        self.coin_group.update(self.game_info)
+        self.coin_group.update(self.game_info, self.viewport)
         self.brick_pieces_group.update()
         self.adjust_sprite_positions()
         self.check_if_mario_in_transition_state()
@@ -525,9 +525,9 @@ class Level1(tools._State):
         elif enemy:
             if self.mario.invincible:
                 self.game_info[c.SCORE] += 100
-                self.moving_score_list.append(score.Score(self.mario.rect.right,
-                                                          self.mario.rect.y,
-                                                         100))
+                self.moving_score_list.append(
+                    score.Score(self.mario.rect.right - self.viewport.x,
+                                self.mario.rect.y, 100))
                 enemy.kill()
                 enemy.start_death_jump(c.RIGHT)
                 self.sprites_about_to_die_group.add(enemy)
@@ -550,14 +550,14 @@ class Level1(tools._State):
                 self.game_info[c.SCORE] += 1000
 
                 self.moving_score_list.append(
-                    score.Score(self.mario.rect.centerx,
+                    score.Score(self.mario.rect.centerx - self.viewport.x,
                                 self.mario.rect.y, 1000))
                 self.mario.invincible = True
                 self.mario.invincible_start_timer = self.current_time
             elif powerup.name == c.MUSHROOM:
                 self.game_info[c.SCORE] += 1000
                 self.moving_score_list.append(
-                    score.Score(self.mario.rect.centerx,
+                    score.Score(self.mario.rect.centerx - self.viewport.x,
                                 self.mario.rect.y - 20, 1000))
 
                 self.mario.y_vel = -1
@@ -566,7 +566,7 @@ class Level1(tools._State):
                 self.convert_mushrooms_to_fireflowers()
             elif powerup.name == c.LIFE_MUSHROOM:
                 self.moving_score_list.append(
-                    score.Score(powerup.rect.right,
+                    score.Score(powerup.rect.right - self.viewport.x,
                                 powerup.rect.y,
                                 c.ONEUP))
 
@@ -574,7 +574,7 @@ class Level1(tools._State):
             elif powerup.name == c.FIREFLOWER:
                 self.game_info[c.SCORE] += 1000
                 self.moving_score_list.append(
-                    score.Score(self.mario.rect.centerx,
+                    score.Score(self.mario.rect.centerx - self.viewport.x,
                                 self.mario.rect.y, 1000))
 
                 if self.mario.big and self.mario.fire == False:
@@ -626,9 +626,10 @@ class Level1(tools._State):
         if shell.state == c.JUMPED_ON:
             if self.mario.rect.x < shell.rect.x:
                 self.game_info[c.SCORE] += 400
-                self.moving_score_list.append(score.Score(shell.rect.centerx,
-                                                          shell.rect.y,
-                                                          400))
+                self.moving_score_list.append(
+                    score.Score(shell.rect.centerx - self.viewport.x,
+                                shell.rect.y,
+                                400))
                 self.mario.rect.right = shell.rect.left
                 shell.direction = c.RIGHT
                 shell.x_vel = 5
@@ -647,9 +648,9 @@ class Level1(tools._State):
                 self.mario.state = c.BIG_TO_SMALL
             elif self.mario.invincible:
                 self.game_info[c.SCORE] += 200
-                self.moving_score_list.append(score.Score(shell.rect.right,
-                                                          shell.rect.y,
-                                                          200))
+                self.moving_score_list.append(
+                    score.Score(shell.rect.right - self.viewport.x,
+                                shell.rect.y, 200))
                 shell.kill()
                 self.sprites_about_to_die_group.add(shell)
                 shell.start_death_jump(c.RIGHT)
@@ -782,9 +783,10 @@ class Level1(tools._State):
 
         if enemy:
             self.game_info[c.SCORE] += 100
-            self.moving_score_list.append(score.Score(enemy.rect.centerx,
-                                                      enemy.rect.y,
-                                                      100))
+            self.moving_score_list.append(
+                score.Score(enemy.rect.centerx - self.viewport.x,
+                            enemy.rect.y,
+                            100))
             enemy.kill()
             self.sprites_about_to_die_group.add(enemy)
             if self.mario.rect.centerx > brick.rect.centerx:
@@ -842,7 +844,7 @@ class Level1(tools._State):
         if self.mario.y_vel > 0:
             self.game_info[c.SCORE] += 100
             self.moving_score_list.append(
-                score.Score(enemy.rect.centerx,
+                score.Score(enemy.rect.centerx - self.viewport.x,
                             enemy.rect.y, 100))
             enemy.state = c.JUMPED_ON
             enemy.kill()
@@ -863,7 +865,7 @@ class Level1(tools._State):
         if self.mario.y_vel > 0:
             self.game_info[c.SCORE] += 400
             self.moving_score_list.append(
-                score.Score(self.mario.rect.centerx,
+                score.Score(self.mario.rect.centerx - self.viewport.x,
                             self.mario.rect.y, 400))
             if shell.state == c.JUMPED_ON:
                 shell.state = c.SHELL_SLIDE
@@ -963,9 +965,9 @@ class Level1(tools._State):
         elif coin_box:
             if coin_box.state == c.BUMPED:
                 self.game_info[c.SCORE] += 100
-                self.moving_score_list.append(score.Score(enemy.rect.centerx,
-                                                          enemy.rect.y,
-                                                          100))
+                self.moving_score_list.append(
+                    score.Score(enemy.rect.centerx - self.viewport.x,
+                                enemy.rect.y, 100))
                 enemy.kill()
                 self.sprites_about_to_die_group.add(enemy)
                 if self.mario.rect.centerx > coin_box.rect.centerx:
@@ -1022,9 +1024,9 @@ class Level1(tools._State):
 
         if enemy:
             self.game_info[c.SCORE] += 100
-            self.moving_score_list.append(score.Score(enemy.rect.right,
-                                                      enemy.rect.y,
-                                                      100))
+            self.moving_score_list.append(
+                score.Score(enemy.rect.right - self.viewport.x,
+                            enemy.rect.y, 100))
             enemy.kill()
             self.sprites_about_to_die_group.add(enemy)
             enemy.start_death_jump(shell.direction)
@@ -1228,9 +1230,9 @@ class Level1(tools._State):
     def fireball_kill(self, fireball, enemy):
         """Kills enemy if hit with fireball"""
         self.game_info[c.SCORE] += 100
-        self.moving_score_list.append(score.Score(enemy.rect.centerx,
-                                                  enemy.rect.y,
-                                                  100))
+        self.moving_score_list.append(
+            score.Score(enemy.rect.centerx - self.viewport.x,
+                        enemy.rect.y,100))
         fireball.kill()
         enemy.kill()
         self.sprites_about_to_die_group.add(enemy, fireball)
@@ -1351,6 +1353,7 @@ class Level1(tools._State):
             self.flag_timer = self.current_time
         elif (self.current_time - self.flag_timer) > 2000:
             self.set_game_info_values()
+            self.next = c.GAME_OVER
             self.done = True
 
 
@@ -1367,9 +1370,10 @@ class Level1(tools._State):
         self.brick_pieces_group.draw(self.level)
         self.flag_pole_group.draw(self.level)
         self.mario_and_enemy_group.draw(self.level)
-        for score in self.moving_score_list:
-            score.draw(self.level)
+
         surface.blit(self.level, (0,0), self.viewport)
         self.overhead_info_display.draw(surface)
+        for score in self.moving_score_list:
+            score.draw(surface)
 
 

@@ -48,8 +48,9 @@ class Coin(pg.sprite.Sprite):
         self.frames.append(self.get_image(36, 113, 8, 14))
 
 
-    def update(self, game_info):
+    def update(self, game_info, viewport):
         self.current_time = game_info[c.CURRENT_TIME]
+        self.viewport = viewport
         if self.state == c.SPIN:
             self.spinning()
 
@@ -69,7 +70,7 @@ class Coin(pg.sprite.Sprite):
 
         if self.rect.bottom > self.initial_height:
             self.kill()
-            self.score_group.append(score.Score(self.rect.centerx,
+            self.score_group.append(score.Score(self.rect.centerx - self.viewport.x,
                                                 self.rect.y,
                                                 200))
 
