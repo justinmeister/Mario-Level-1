@@ -49,6 +49,7 @@ class Mario(pg.sprite.Sprite):
         self.in_transition_state = False
         self.hurt_invincible = False
         self.in_castle = False
+        self.crouching = False
 
 
     def setup_forces(self):
@@ -441,11 +442,16 @@ class Mario(pg.sprite.Sprite):
             if self.fire and self.allow_fireball:
                 self.shoot_fireball(fire_group)
 
+        if keys[pg.K_DOWN]:
+            self.crouching = True
+
         if keys[pg.K_LEFT]:
             self.facing_right = False
+            self.get_out_of_crouch()
             self.state = c.WALK
         elif keys[pg.K_RIGHT]:
             self.facing_right = True
+            self.get_out_of_crouch()
             self.state = c.WALK
         elif keys[pg.K_a]:
             if self.allow_jump:
@@ -453,6 +459,23 @@ class Mario(pg.sprite.Sprite):
                 self.y_vel = c.JUMP_VEL
         else:
             self.state = c.STAND
+
+        if not keys[pg.K_DOWN]:
+            self.get_out_of_crouch()
+
+
+    def get_out_of_crouch(self):
+        """Get out of crouch"""
+        bottom = self.rect.bottom
+        left = self.rect.x
+        if self.facing_right:
+            self.image = self.right_frames[0]
+        else:
+            self.image = self.left_frames[0]
+        self.rect = self.image.get_rect()
+        self.rect.bottom = bottom
+        self.rect.x = left
+        self.crouching = False
 
 
     def check_to_allow_jump(self, keys):
@@ -535,6 +558,7 @@ class Mario(pg.sprite.Sprite):
                     self.y_vel = c.JUMP_VEL
 
         if keys[pg.K_LEFT]:
+            self.get_out_of_crouch()
             self.facing_right = False
             if self.x_vel > 0:
                 self.frame_index = 5
@@ -548,6 +572,7 @@ class Mario(pg.sprite.Sprite):
                 self.x_vel += self.x_accel
 
         elif keys[pg.K_RIGHT]:
+            self.get_out_of_crouch()
             self.facing_right = True
             if self.x_vel < 0:
                 self.frame_index = 5
@@ -984,6 +1009,7 @@ class Mario(pg.sprite.Sprite):
         self.check_if_invincible()
         self.check_if_fire()
         self.check_if_hurt_invincible()
+        self.check_if_crouching()
 
 
     def check_if_invincible(self):
@@ -1054,13 +1080,28 @@ class Mario(pg.sprite.Sprite):
             self.hurt_invisible_timer = self.current_time
 
 
+    def check_if_crouching(self):
+        """Checks if mario is crouching"""
+        if self.crouching and self.big:
+            bottom = self.rect.bottom
+            left = self.rect.x
+            if self.facing_right:
+                self.image = self.right_frames[7]
+            else:
+                self.image = self.left_frames[7]
+            self.rect = self.image.get_rect()
+            self.rect.bottom = bottom
+            self.rect.x = left
+
+
     def animation(self):
         if self.state == c.DEATH_JUMP \
             or self.state == c.SMALL_TO_BIG \
             or self.state == c.BIG_TO_FIRE \
             or self.state == c.BIG_TO_SMALL \
             or self.state == c.FLAGPOLE \
-            or self.state == c.BOTTOM_OF_POLE:
+            or self.state == c.BOTTOM_OF_POLE \
+            or self.crouching:
             pass
         elif self.facing_right:
             self.image = self.right_frames[self.frame_index]
