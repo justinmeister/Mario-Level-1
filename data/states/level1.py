@@ -442,6 +442,8 @@ class Level1(tools._State):
                 self.mario.state = c.FLAGPOLE
                 self.mario.invincible = False
                 self.mario.flag_pole_right = checkpoint.rect.right
+                if self.mario.rect.bottom < self.flag.rect.y:
+                    self.mario.rect.bottom = self.flag.rect.y
                 self.flag.state = c.SLIDE_DOWN
                 self.create_flag_points()
 

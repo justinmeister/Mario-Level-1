@@ -935,14 +935,17 @@ class Mario(pg.sprite.Sprite):
             self.image = self.left_frames[10]
         else:
             self.in_transition_state = False
-            self.state = c.WALKING_TO_CASTLE
+            if self.rect.bottom < 485:
+                self.state = c.END_OF_LEVEL_FALL
+            else:
+                self.state = c.WALKING_TO_CASTLE
 
 
     def set_state_to_bottom_of_pole(self):
         """Sets Mario to the BOTTOM_OF_POLE state"""
         self.image = self.left_frames[9]
         right = self.rect.right
-        self.rect.bottom = 493
+        #self.rect.bottom = 493
         self.rect.x = right
         if self.big:
             self.rect.x -= 10
