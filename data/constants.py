@@ -153,10 +153,12 @@ TOP_SCORE = 'top score'
 LIVES = 'lives'
 CURRENT_TIME = 'current time'
 LEVEL_STATE = 'level state'
+CAMERA_START_X = 'camera start x'
 
 #STATES FOR ENTIRE GAME
 MAIN_MENU = 'main menu'
 LOAD_SCREEN = 'load screen'
+GAME_OVER = 'game over'
 LEVEL1 = 'level1'
 
 

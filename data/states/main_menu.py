@@ -15,7 +15,8 @@ class Menu(tools._State):
                    c.LIVES: 3,
                    c.TOP_SCORE: 0,
                    c.CURRENT_TIME: 0.0,
-                   c.LEVEL_STATE: None}
+                   c.LEVEL_STATE: None,
+                   c.CAMERA_START_X: 0}
         self.startup(0.0, persist)
 
     def startup(self, current_time, persist):

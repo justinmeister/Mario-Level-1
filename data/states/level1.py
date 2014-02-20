@@ -81,6 +81,7 @@ class Level1(tools._State):
         self.level = pg.Surface((width, height)).convert()
         self.level_rect = self.level.get_rect()
         self.viewport = setup.SCREEN.get_rect(bottom=self.level_rect.bottom)
+        self.viewport.x = self.game_info[c.CAMERA_START_X]
 
 
     def setup_ground(self):
@@ -322,7 +323,7 @@ class Level1(tools._State):
     def setup_mario(self):
         """Places Mario at the beginning of the level"""
         self.mario = mario.Mario()
-        self.mario.rect.x = 110
+        self.mario.rect.x = self.viewport.x + 110
         self.mario.rect.bottom = c.GROUND_HEIGHT
 
 
@@ -1320,9 +1321,14 @@ class Level1(tools._State):
             self.persist[c.LIVES] -= 1
         if self.persist[c.LIVES] == 0:
             self.next = c.GAME_OVER
+            self.game_info[c.CAMERA_START_X] = 0
         elif self.mario.dead == False:
             self.next = c.MAIN_MENU
+            self.game_info[c.CAMERA_START_X] = 0
         else:
+            if self.mario.rect.x > 3670 \
+                    and self.game_info[c.CAMERA_START_X] == 0:
+                self.game_info[c.CAMERA_START_X] = 3440
             self.next = c.LOAD_SCREEN
 
 
