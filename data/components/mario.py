@@ -442,7 +442,7 @@ class Mario(pg.sprite.Sprite):
             if self.fire and self.allow_fireball:
                 self.shoot_fireball(fire_group)
 
-        if keys[pg.K_DOWN]:
+        if keys[tools.keybinding['down']]:
             self.crouching = True
 
         if keys[tools.keybinding['left']]:
@@ -460,7 +460,7 @@ class Mario(pg.sprite.Sprite):
         else:
             self.state = c.STAND
 
-        if not keys[pg.K_DOWN]:
+        if not keys[tools.keybinding['down']]:
             self.get_out_of_crouch()
 
 
