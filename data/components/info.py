@@ -260,11 +260,13 @@ class OverheadInfo(object):
             self.update_count_down_clock(level_info)
             self.update_score_images(self.score_images, self.score)
             self.update_coin_total(level_info)
+            self.flashing_coin.update(level_info[c.CURRENT_TIME])
             if self.time == 0:
                 self.state = c.END_OF_LEVEL
 
         elif self.state == c.END_OF_LEVEL:
-            pass
+            self.flashing_coin.update(level_info[c.CURRENT_TIME])
+
 
 
 
