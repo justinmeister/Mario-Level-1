@@ -31,6 +31,8 @@ class Level1(tools._State):
         self.state = c.NOT_FROZEN
         self.death_timer = 0
         self.flag_timer = 0
+        self.flag_score = None
+        self.flag_score_total = 0
 
         self.all_sprites_frozen = False
         self.check_bit_masks = pg.sprite.collide_mask
@@ -375,6 +377,9 @@ class Level1(tools._State):
         self.mario.update(keys, self.game_info, self.powerup_group)
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
+        if self.flag_score:
+            self.flag_score.update(None, self.game_info)
+            self.check_to_add_flag_score()
         self.coin_box_group.update(self.game_info)
         self.flag_pole_group.update(self.game_info)
         self.check_if_mario_in_transition_state()
@@ -399,6 +404,9 @@ class Level1(tools._State):
         self.mario.update(keys, self.game_info, self.powerup_group)
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
+        if self.flag_score:
+            self.flag_score.update(None, self.game_info)
+            self.check_to_add_flag_score()
         self.flag_pole_group.update()
         self.check_points_check()
         self.enemy_group.update(self.game_info)
@@ -469,15 +477,20 @@ class Level1(tools._State):
         mario_bottom = self.mario.rect.bottom
 
         if mario_bottom > (c.GROUND_HEIGHT - 40 - 40):
-            self.moving_score_list.append(score.Score(x, y, 100, True))
+            self.flag_score = score.Score(x, y, 100, True)
+            self.flag_score_total = 100
         elif mario_bottom > (c.GROUND_HEIGHT - 40 - 160):
-            self.moving_score_list.append(score.Score(x, y, 400, True))
+            self.flag_score = score.Score(x, y, 400, True)
+            self.flag_score_total = 400
         elif mario_bottom > (c.GROUND_HEIGHT - 40 - 240):
-            self.moving_score_list.append(score.Score(x, y, 800, True))
+            self.flag_score = score.Score(x, y, 800, True)
+            self.flag_score_total = 800
         elif mario_bottom > (c.GROUND_HEIGHT - 40 - 360):
-            self.moving_score_list.append(score.Score(x, y, 2000, True))
+            self.flag_score = score.Score(x, y, 2000, True)
+            self.flag_score_total = 2000
         else:
-            self.moving_score_list.append(score.Score(x, y, 5000, True))
+            self.flag_score = score.Score(x, y, 5000, True)
+            self.flag_score_total = 5000
 
 
 
@@ -1271,6 +1284,13 @@ class Level1(tools._State):
             self.mario.set_state_to_bottom_of_pole()
 
 
+    def check_to_add_flag_score(self):
+        """Adds flag score if at top"""
+        if self.flag_score.y_vel == 0:
+            self.game_info[c.SCORE] += self.flag_score_total
+            self.flag_score_total = 0
+
+
     def check_for_mario_death(self):
         """Restarts the level if Mario is dead"""
         if self.mario.rect.y > c.SCREEN_HEIGHT and not self.mario.in_castle:
@@ -1360,6 +1380,8 @@ class Level1(tools._State):
     def blit_everything(self, surface):
         """Blit all sprites to the main surface"""
         self.level.blit(self.background, self.viewport, self.viewport)
+        if self.flag_score:
+            self.flag_score.draw(self.level)
         self.powerup_group.draw(self.level)
         self.coin_group.draw(self.level)
         self.brick_group.draw(self.level)
