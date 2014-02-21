@@ -10,6 +10,7 @@ def main():
     run_it = tools.Control(setup.ORIGINAL_CAPTION)
     state_dict = {c.MAIN_MENU: main_menu.Menu(),
                   c.LOAD_SCREEN: load_screen.LoadScreen(),
+                  c.TIME_OUT: load_screen.TimeOut(),
                   c.GAME_OVER: load_screen.GameOver(),
                   c.LEVEL1: level1.Level1()}
 

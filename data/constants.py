@@ -158,6 +158,7 @@ CAMERA_START_X = 'camera start x'
 #STATES FOR ENTIRE GAME
 MAIN_MENU = 'main menu'
 LOAD_SCREEN = 'load screen'
+TIME_OUT = 'time out'
 GAME_OVER = 'game over'
 LEVEL1 = 'level1'
 

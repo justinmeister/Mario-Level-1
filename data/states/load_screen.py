@@ -77,6 +77,36 @@ class GameOver(LoadScreen):
             self.done = True
 
 
+class TimeOut(LoadScreen):
+    """Loading Screen with Time Out"""
+    def __init__(self):
+        super(TimeOut, self).__init__()
+
+    def set_next_state(self):
+        """Sets next state"""
+        if self.persist[c.LIVES] == 0:
+            return c.GAME_OVER
+        else:
+            return c.LOAD_SCREEN
+
+    def set_overhead_info_state(self):
+        """Sets the state to send to the overhead info object"""
+        return c.TIME_OUT
+
+    def update(self, surface, keys, current_time):
+        self.current_time = current_time
+
+        if (self.current_time - self.start_time) < 2400:
+            surface.fill(c.BLACK)
+            self.overhead_info.update(self.game_info)
+            self.overhead_info.draw(surface)
+        else:
+            self.done = True
+
+
+
+
+
 
 
 
