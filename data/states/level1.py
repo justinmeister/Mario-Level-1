@@ -548,6 +548,7 @@ class Level1(tools._State):
                 enemy.start_death_jump(c.RIGHT)
                 self.sprites_about_to_die_group.add(enemy)
             elif self.mario.big:
+                setup.SFX['pipe'].play()
                 self.mario.fire = False
                 self.mario.y_vel = -1
                 self.mario.state = c.BIG_TO_SMALL
