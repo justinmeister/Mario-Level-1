@@ -702,6 +702,7 @@ class Level1(tools._State):
 
         elif enemy:
             if self.mario.invincible:
+                setup.SFX['kick'].play()
                 enemy.kill()
                 self.sprites_about_to_die_group.add(enemy)
                 enemy.start_death_jump(c.RIGHT)
@@ -1395,7 +1396,9 @@ class Level1(tools._State):
 
     def end_game(self):
         """End the game"""
-        if pg.mixer.music.get_busy() == 0:
+        if self.flag_timer == 0:
+            self.flag_timer = self.current_time
+        elif (self.current_time - self.flag_timer) > 2000:
             self.set_game_info_values()
             self.next = c.GAME_OVER
             self.sound_manager.stop_music()
