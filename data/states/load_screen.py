@@ -2,6 +2,7 @@ __author__ = 'justinarmstrong'
 
 from .. import setup, tools
 from .. import constants as c
+from .. import game_sound
 from ..components import info
 
 
@@ -18,6 +19,7 @@ class LoadScreen(tools._State):
         info_state = self.set_overhead_info_state()
 
         self.overhead_info = info.OverheadInfo(self.game_info, info_state)
+        self.sound_manager = game_sound.Sound(self.overhead_info)
 
 
     def set_next_state(self):
@@ -64,6 +66,7 @@ class GameOver(LoadScreen):
 
     def update(self, surface, keys, current_time):
         self.current_time = current_time
+        self.sound_manager.update(self.persist, None)
 
         if (self.current_time - self.start_time) < 7000:
             surface.fill(c.BLACK)

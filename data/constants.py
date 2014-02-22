@@ -154,6 +154,7 @@ LIVES = 'lives'
 CURRENT_TIME = 'current time'
 LEVEL_STATE = 'level state'
 CAMERA_START_X = 'camera start x'
+MARIO_DEAD = 'mario dead'
 
 #STATES FOR ENTIRE GAME
 MAIN_MENU = 'main menu'
@@ -162,6 +163,10 @@ TIME_OUT = 'time out'
 GAME_OVER = 'game over'
 LEVEL1 = 'level1'
 
+#SOUND STATEZ
+NORMAL = 'normal'
+STAGE_CLEAR = 'stage clear'
+WORLD_CLEAR = 'world clear'
 
 
 

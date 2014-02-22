@@ -26,6 +26,7 @@ class OverheadInfo(object):
         self.top_score = game_info[c.TOP_SCORE]
         self.state = state
         self.special_state = None
+        self.game_info = game_info
 
         self.create_image_dict()
         self.create_score_group()

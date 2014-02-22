@@ -492,6 +492,7 @@ class Mario(pg.sprite.Sprite):
 
     def shoot_fireball(self, powerup_group):
         """Shoots fireball, allowing no more than two to exist at once"""
+        setup.SFX['fireball'].play()
         self.fireball_count = self.count_number_of_fireballs(powerup_group)
 
         if (self.current_time - self.last_fireball_time) > 200:
@@ -551,6 +552,10 @@ class Mario(pg.sprite.Sprite):
 
         if keys[tools.keybinding['jump']]:
             if self.allow_jump:
+                if self.big:
+                    setup.SFX['big_jump'].play()
+                else:
+                    setup.SFX['small_jump'].play()
                 self.state = c.JUMP
                 if self.x_vel > 4.5 or self.x_vel < -4.5:
                     self.y_vel = c.JUMP_VEL - .5
@@ -672,9 +677,10 @@ class Mario(pg.sprite.Sprite):
             self.y_vel += self.gravity
 
 
-    def start_death_jump(self):
+    def start_death_jump(self, game_info):
         """Used to put Mario in a DEATH_JUMP state"""
         self.dead = True
+        game_info[c.MARIO_DEAD] = True
         self.y_vel = -11
         self.gravity = .5
         self.frame_index = 6
