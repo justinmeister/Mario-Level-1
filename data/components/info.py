@@ -311,23 +311,22 @@ class OverheadInfo(object):
 
     def update_coin_total(self, level_info):
         """Updates the coin total and adjusts label accordingly"""
-        if self.coin_total != level_info[c.COIN_TOTAL]:
-            self.coin_total = level_info[c.COIN_TOTAL]
+        self.coin_total = level_info[c.COIN_TOTAL]
 
-            coin_string = str(self.coin_total)
-            if len(coin_string) < 2:
-                coin_string = '*0' + coin_string
-            elif len(coin_string) > 2:
-                coin_string = '*00'
-            else:
-                coin_string = '*' + coin_string
+        coin_string = str(self.coin_total)
+        if len(coin_string) < 2:
+            coin_string = '*0' + coin_string
+        elif len(coin_string) > 2:
+            coin_string = '*00'
+        else:
+            coin_string = '*' + coin_string
 
-            x = self.coin_count_images[0].rect.x
-            y = self.coin_count_images[0].rect.y
+        x = self.coin_count_images[0].rect.x
+        y = self.coin_count_images[0].rect.y
 
-            self.coin_count_images = []
+        self.coin_count_images = []
 
-            self.create_label(self.coin_count_images, coin_string, x, y)
+        self.create_label(self.coin_count_images, coin_string, x, y)
 
 
     def draw(self, surface):
