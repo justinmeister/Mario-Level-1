@@ -50,6 +50,7 @@ class Mario(pg.sprite.Sprite):
         self.hurt_invincible = False
         self.in_castle = False
         self.crouching = False
+        self.losing_invincibility = False
 
 
     def setup_forces(self):
@@ -455,6 +456,10 @@ class Mario(pg.sprite.Sprite):
             self.state = c.WALK
         elif keys[tools.keybinding['jump']]:
             if self.allow_jump:
+                if self.big:
+                    setup.SFX['big_jump'].play()
+                else:
+                    setup.SFX['small_jump'].play()
                 self.state = c.JUMP
                 self.y_vel = c.JUMP_VEL
         else:
@@ -1023,10 +1028,13 @@ class Mario(pg.sprite.Sprite):
     def check_if_invincible(self):
         if self.invincible:
             if ((self.current_time - self.invincible_start_timer) < 10000):
+                self.losing_invincibility = False
                 self.change_frame_list(30)
             elif ((self.current_time - self.invincible_start_timer) < 12000):
+                self.losing_invincibility = True
                 self.change_frame_list(100)
             else:
+                self.losing_invincibility = False
                 self.invincible = False
         else:
             if self.big:

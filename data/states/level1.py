@@ -713,6 +713,7 @@ class Level1(tools._State):
 
         elif powerup:
             if powerup.name == c.STAR:
+                setup.SFX['powerup'].play()
                 powerup.kill()
                 self.mario.invincible = True
                 self.mario.invincible_start_timer = self.current_time

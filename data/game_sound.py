@@ -39,10 +39,14 @@ class Sound(object):
         if self.state == c.NORMAL:
             if self.mario.dead:
                 self.play_music('death', c.MARIO_DEAD)
+            elif self.mario.invincible \
+                    and self.mario.losing_invincibility == False:
+                self.play_music('invincible', c.MARIO_INVINCIBLE)
             elif self.mario.state == c.FLAGPOLE:
                 self.play_music('flagpole', c.FLAGPOLE)
             elif self.overhead_info.time == 100:
                 self.play_music('out_of_time', c.TIME_WARNING)
+
 
         elif self.state == c.FLAGPOLE:
             if self.mario.state == c.WALKING_TO_CASTLE:
@@ -67,6 +71,10 @@ class Sound(object):
                 self.play_music('death', c.MARIO_DEAD)
             elif self.mario.state == c.FLAGPOLE:
                 self.play_music('flagpole', c.FLAGPOLE)
+
+        elif self.state == c.MARIO_INVINCIBLE:
+            if (self.mario.current_time - self.mario.invincible_start_timer) > 11000:
+                self.play_music('main_theme', c.NORMAL)
 
         elif self.state == c.WORLD_CLEAR:
             pass
