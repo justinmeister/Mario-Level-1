@@ -387,7 +387,7 @@ class Level1(tools._State):
         self.check_if_mario_in_transition_state()
         self.check_flag()
         self.check_for_mario_death()
-        self.overhead_info_display.update(self.game_info)
+        self.overhead_info_display.update(self.game_info, self.mario)
 
 
 
@@ -423,7 +423,7 @@ class Level1(tools._State):
         self.check_if_mario_in_transition_state()
         self.check_for_mario_death()
         self.update_viewport()
-        self.overhead_info_display.update(self.game_info)
+        self.overhead_info_display.update(self.game_info, self.mario)
 
 
     def check_points_check(self):

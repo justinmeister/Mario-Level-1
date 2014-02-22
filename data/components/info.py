@@ -228,8 +228,9 @@ class OverheadInfo(object):
                                  top, top_score]
 
 
-    def update(self, level_info):
+    def update(self, level_info, mario=None):
         """Updates all overhead info"""
+        self.mario = mario
         self.handle_level_state(level_info)
 
 
@@ -250,7 +251,9 @@ class OverheadInfo(object):
         elif self.state == c.LEVEL:
             self.score = level_info[c.SCORE]
             self.update_score_images(self.score_images, self.score)
-            if level_info[c.LEVEL_STATE] != c.FROZEN:
+            if level_info[c.LEVEL_STATE] != c.FROZEN \
+                    and self.mario.state != c.WALKING_TO_CASTLE \
+                    and self.mario.state != c.END_OF_LEVEL_FALL:
                 self.update_count_down_clock(level_info)
             self.update_coin_total(level_info)
             self.flashing_coin.update(level_info[c.CURRENT_TIME])
