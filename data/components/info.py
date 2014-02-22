@@ -310,6 +310,7 @@ class OverheadInfo(object):
 
 
     def update_coin_total(self, level_info):
+        """Updates the coin total and adjusts label accordingly"""
         if self.coin_total != level_info[c.COIN_TOTAL]:
             self.coin_total = level_info[c.COIN_TOTAL]
 

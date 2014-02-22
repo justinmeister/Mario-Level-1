@@ -1103,6 +1103,7 @@ class Mario(pg.sprite.Sprite):
 
 
     def animation(self):
+        """Adjusts Mario's image for animation"""
         if self.state == c.DEATH_JUMP \
             or self.state == c.SMALL_TO_BIG \
             or self.state == c.BIG_TO_FIRE \

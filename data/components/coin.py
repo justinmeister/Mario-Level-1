@@ -7,6 +7,7 @@ from . import score
 
 
 class Coin(pg.sprite.Sprite):
+    """Coins found in boxes and bricks"""
     def __init__(self, x, y, score_group):
         pg.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['item_objects']
@@ -27,7 +28,6 @@ class Coin(pg.sprite.Sprite):
 
     def get_image(self, x, y, width, height):
         """Get the image frames from the sprite sheet"""
-
         image = pg.Surface([width, height]).convert()
         rect = image.get_rect()
 
@@ -42,6 +42,7 @@ class Coin(pg.sprite.Sprite):
 
 
     def setup_frames(self):
+        """create the frame list"""
         self.frames.append(self.get_image(52, 113, 8, 14))
         self.frames.append(self.get_image(4, 113, 8, 14))
         self.frames.append(self.get_image(20, 113, 8, 14))
@@ -49,6 +50,7 @@ class Coin(pg.sprite.Sprite):
 
 
     def update(self, game_info, viewport):
+        """Update the coin's behavior"""
         self.current_time = game_info[c.CURRENT_TIME]
         self.viewport = viewport
         if self.state == c.SPIN:
@@ -56,6 +58,7 @@ class Coin(pg.sprite.Sprite):
 
 
     def spinning(self):
+        """Action when the coin is in the SPIN state"""
         self.image = self.frames[self.frame_index]
         self.rect.y += self.y_vel
         self.y_vel += self.gravity

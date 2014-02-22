@@ -8,6 +8,7 @@ from .. import constants as c
 class Flag(pg.sprite.Sprite):
     """Flag on the castle"""
     def __init__(self, x, y):
+        """Initialize object"""
         super(Flag, self).__init__()
         self.sprite_sheet = setup.GFX['item_objects']
         self.image = self.get_image(129, 2, 14, 14)

@@ -41,6 +41,8 @@ class Sound(object):
                 self.play_music('death', c.MARIO_DEAD)
             elif self.mario.state == c.FLAGPOLE:
                 self.play_music('flagpole', c.FLAGPOLE)
+            elif self.overhead_info.time == 100:
+                self.play_music('out_of_time', c.TIME_WARNING)
 
         elif self.state == c.FLAGPOLE:
             if self.mario.state == c.WALKING_TO_CASTLE:
@@ -55,6 +57,16 @@ class Sound(object):
             if self.overhead_info.time == 0:
                 self.sfx_dict['count_down'].stop()
                 self.state = c.WORLD_CLEAR
+
+        elif self.state == c. TIME_WARNING:
+            if pg.mixer.music.get_busy() == 0:
+                self.play_music('main_theme_sped_up', c.SPED_UP_NORMAL)
+
+        elif self.state == c.SPED_UP_NORMAL:
+            if self.mario.dead:
+                self.play_music('death', c.MARIO_DEAD)
+            elif self.mario.state == c.FLAGPOLE:
+                self.play_music('flagpole', c.FLAGPOLE)
 
         elif self.state == c.WORLD_CLEAR:
             pass

@@ -31,8 +31,8 @@ class Coin_box(pg.sprite.Sprite):
         self.group = group
 
 
-
     def get_image(self, x, y, width, height):
+        """Extract image from sprite sheet"""
         image = pg.Surface([width, height]).convert()
         rect = image.get_rect()
 
@@ -46,6 +46,7 @@ class Coin_box(pg.sprite.Sprite):
 
 
     def setup_frames(self):
+        """Create frame list"""
         self.frames.append(
             self.get_image(384, 0, 16, 16))
         self.frames.append(
@@ -57,11 +58,14 @@ class Coin_box(pg.sprite.Sprite):
 
 
     def update(self, game_info):
+        """Update coin box behavior"""
         self.current_time = game_info[c.CURRENT_TIME]
         self.handle_states()
 
 
     def handle_states(self):
+        """Determine action based on RESTING, BUMPED or OPENED
+        state"""
         if self.state == c.RESTING:
             self.resting()
         elif self.state == c.BUMPED:
@@ -71,6 +75,7 @@ class Coin_box(pg.sprite.Sprite):
 
 
     def resting(self):
+        """Action when in the RESTING state"""
         if self.first_half:
             if self.frame_index == 0:
                 if (self.current_time - self.animation_timer) > 375:
@@ -96,7 +101,7 @@ class Coin_box(pg.sprite.Sprite):
 
 
     def bumped(self):
-
+        """Action after Mario has bumped the box from below"""
         self.rect.y += self.y_vel
         self.y_vel += self.gravity
 
@@ -116,6 +121,7 @@ class Coin_box(pg.sprite.Sprite):
 
 
     def start_bump(self, score_group):
+        """Transitions box into BUMPED state"""
         self.y_vel = -6
         self.state = c.BUMPED
 
@@ -128,8 +134,8 @@ class Coin_box(pg.sprite.Sprite):
             setup.SFX['powerup_appears'].play()
 
 
-
     def opened(self):
+        """Placeholder for OPENED state"""
         pass
 
 

@@ -5,7 +5,7 @@ from .. import setup
 from .. import constants as c
 
 class Flag(pg.sprite.Sprite):
-
+    """Flag on top of the flag pole at the end of the level"""
     def __init__(self, x, y):
         super(Flag, self).__init__()
         self.sprite_sheet = setup.GFX['item_objects']
@@ -63,7 +63,7 @@ class Flag(pg.sprite.Sprite):
 
 
 class Pole(pg.sprite.Sprite):
-
+    """Pole that the flag is on top of"""
     def __init__(self, x, y):
         super(Pole, self).__init__()
         self.sprite_sheet = setup.GFX['tile_set']
@@ -72,7 +72,6 @@ class Pole(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-
 
 
     def setup_frames(self):
@@ -97,6 +96,7 @@ class Pole(pg.sprite.Sprite):
 
 
     def update(self, *args):
+        """Placeholder for update, since there is nothing to update"""
         pass
 
 

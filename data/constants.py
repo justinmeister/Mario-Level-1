@@ -63,7 +63,6 @@ WALKING_TO_CASTLE = 'walking to castle'
 END_OF_LEVEL_FALL = 'end of level fall'
 
 
-
 #GOOMBA Stuff
 
 LEFT = 'left'
@@ -167,6 +166,8 @@ LEVEL1 = 'level1'
 NORMAL = 'normal'
 STAGE_CLEAR = 'stage clear'
 WORLD_CLEAR = 'world clear'
+TIME_WARNING = 'time warning'
+SPED_UP_NORMAL = 'sped up normal'
 
 
 

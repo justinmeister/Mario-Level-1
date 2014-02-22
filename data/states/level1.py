@@ -29,15 +29,12 @@ class Level1(tools._State):
         self.game_info[c.LEVEL_STATE] = c.NOT_FROZEN
         self.game_info[c.MARIO_DEAD] = False
 
-
         self.state = c.NOT_FROZEN
         self.death_timer = 0
         self.flag_timer = 0
         self.flag_score = None
         self.flag_score_total = 0
 
-        self.all_sprites_frozen = False
-        self.check_bit_masks = pg.sprite.collide_mask
         self.moving_score_list = []
         self.overhead_info_display = info.OverheadInfo(self.game_info, c.LEVEL)
         self.sound_manager = game_sound.Sound(self.overhead_info_display)
@@ -53,20 +50,6 @@ class Level1(tools._State):
         self.setup_mario()
         self.setup_checkpoints()
         self.setup_spritegroups()
-
-
-    def setup_spritegroups(self):
-        """Sprite groups created for convenience"""
-        self.sprites_about_to_die_group = pg.sprite.Group()
-        self.shell_group = pg.sprite.Group()
-        self.enemy_group = pg.sprite.Group()
-
-        self.ground_step_pipe_group = pg.sprite.Group(self.ground_group,
-                                                      self.pipe_group,
-                                                      self.step_group)
-
-        self.mario_and_enemy_group = pg.sprite.Group(self.mario,
-                                                     self.enemy_group)
 
 
     def setup_background(self):
@@ -354,12 +337,26 @@ class Level1(tools._State):
                                                  check13)
 
 
+    def setup_spritegroups(self):
+        """Sprite groups created for convenience"""
+        self.sprites_about_to_die_group = pg.sprite.Group()
+        self.shell_group = pg.sprite.Group()
+        self.enemy_group = pg.sprite.Group()
+
+        self.ground_step_pipe_group = pg.sprite.Group(self.ground_group,
+                                                      self.pipe_group,
+                                                      self.step_group)
+
+        self.mario_and_enemy_group = pg.sprite.Group(self.mario,
+                                                     self.enemy_group)
+
+
     def update(self, surface, keys, current_time):
         """Updates Entire level using states.  Called by the control object"""
         self.game_info[c.CURRENT_TIME] = self.current_time = current_time
         self.sound_manager.update(self.game_info, self.mario)
-        self.check_if_time_out()
         self.handle_states(keys)
+        self.check_if_time_out()
         self.blit_everything(surface)
 
 
@@ -458,8 +455,7 @@ class Level1(tools._State):
                 self.mario.state == c.STAND
                 self.mario.in_castle = True
                 self.overhead_info_display.state = c.FAST_COUNT_DOWN
-                #self.set_game_info_values()
-                #self.done = True
+
 
             elif checkpoint.name == 'secret_mushroom' and self.mario.y_vel < 0:
                 mushroom_box = coin_box.Coin_box(checkpoint.rect.x,
@@ -498,7 +494,6 @@ class Level1(tools._State):
         else:
             self.flag_score = score.Score(x, y, 5000, True)
             self.flag_score_total = 5000
-
 
 
     def adjust_sprite_positions(self):
@@ -1298,6 +1293,7 @@ class Level1(tools._State):
 
 
     def check_flag(self):
+        """Adjusts mario's state when the flag is at the bottom"""
         if (self.flag.state == c.BOTTOM_OF_POLE
             and self.mario.state == c.FLAGPOLE):
             self.mario.set_state_to_bottom_of_pole()
@@ -1397,9 +1393,7 @@ class Level1(tools._State):
 
     def end_game(self):
         """End the game"""
-        if self.flag_timer == 0:
-            self.flag_timer = self.current_time
-        elif (self.current_time - self.flag_timer) > 2000:
+        if pg.mixer.music.get_busy() == 0:
             self.set_game_info_values()
             self.next = c.GAME_OVER
             self.sound_manager.stop_music()
