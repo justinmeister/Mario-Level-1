@@ -808,6 +808,7 @@ class Level1(tools._State):
         enemy = pg.sprite.spritecollideany(brick, self.enemy_group)
 
         if enemy:
+            setup.SFX['kick'].play()
             self.game_info[c.SCORE] += 100
             self.moving_score_list.append(
                 score.Score(enemy.rect.centerx - self.viewport.x,
@@ -895,6 +896,7 @@ class Level1(tools._State):
                 score.Score(self.mario.rect.centerx - self.viewport.x,
                             self.mario.rect.y, 400))
             if shell.state == c.JUMPED_ON:
+                setup.SFX['kick'].play()
                 shell.state = c.SHELL_SLIDE
                 if self.mario.rect.centerx < shell.rect.centerx:
                     shell.direction = c.RIGHT
