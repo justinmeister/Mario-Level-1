@@ -18,7 +18,7 @@ DEPENDENCIES:
 
 Python (2 or 3)
 
-Pygame 1.9.2
+Pygame 1.9.1
 
 VIDEO DEMO:
 
