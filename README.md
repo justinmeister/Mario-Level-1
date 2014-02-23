@@ -19,4 +19,8 @@ DEPENDENCIES:
 Python (2 or 3)
 
 Pygame 1.9.2
+
+VIDEO DEMO:
+
+http://www.youtube.com/watch?v=HBbzYKMfx5Y
    
