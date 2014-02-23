@@ -20,6 +20,10 @@ Python (2 or 3)
 
 Pygame 1.9.1
 
+to install dependencies:
+
+	pip install -r requirements.txt
+
 VIDEO DEMO:
 
 http://www.youtube.com/watch?v=HBbzYKMfx5Y
