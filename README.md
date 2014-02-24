@@ -16,11 +16,10 @@ Arrow keys for direction
 
 DEPENDENCIES:
 
-Python (2 or 3)
+Pygame 1.9.1 (Python 2)
+Pygame 1.9.2 (Python 3) - a little trickier to get going.
 
-Pygame 1.9.1
-
-to install dependencies:
+To install dependencies for Python 2.x:
 
 	pip install -r requirements.txt
 
