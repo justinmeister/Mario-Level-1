@@ -354,10 +354,11 @@ class Level1(tools._State):
     def update(self, surface, keys, current_time):
         """Updates Entire level using states.  Called by the control object"""
         self.game_info[c.CURRENT_TIME] = self.current_time = current_time
-        self.sound_manager.update(self.game_info, self.mario)
         self.handle_states(keys)
         self.check_if_time_out()
         self.blit_everything(surface)
+        self.sound_manager.update(self.game_info, self.mario)
+
 
 
     def handle_states(self, keys):
@@ -388,7 +389,6 @@ class Level1(tools._State):
         self.check_flag()
         self.check_for_mario_death()
         self.overhead_info_display.update(self.game_info, self.mario)
-
 
 
     def check_if_mario_in_transition_state(self):
@@ -753,8 +753,8 @@ class Level1(tools._State):
                     coin_box.start_bump(self.moving_score_list)
 
             elif coin_box.state == c.OPENED:
-                setup.SFX['bump'].play()
-
+                pass
+            setup.SFX['bump'].play()
             self.mario.y_vel = 7
             self.mario.rect.y = coin_box.rect.bottom
             self.mario.state = c.FALL
@@ -786,11 +786,14 @@ class Level1(tools._State):
                                                brick.rect.y,
                                                2, -6))
                 else:
+                    setup.SFX['bump'].play()
                     if brick.coin_total > 0:
                         self.game_info[c.COIN_TOTAL] += 1
                         self.game_info[c.SCORE] += 200
                     self.check_if_enemy_on_brick(brick)
                     brick.start_bump(self.moving_score_list)
+            elif brick.state == c.OPENED:
+                setup.SFX['bump'].play()
             self.mario.y_vel = 7
             self.mario.rect.y = brick.rect.bottom
             self.mario.state = c.FALL

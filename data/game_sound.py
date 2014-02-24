@@ -65,6 +65,8 @@ class Sound(object):
         elif self.state == c. TIME_WARNING:
             if pg.mixer.music.get_busy() == 0:
                 self.play_music('main_theme_sped_up', c.SPED_UP_NORMAL)
+            elif self.mario.dead:
+                self.play_music('death', c.MARIO_DEAD)
 
         elif self.state == c.SPED_UP_NORMAL:
             if self.mario.dead:
@@ -75,6 +77,9 @@ class Sound(object):
         elif self.state == c.MARIO_INVINCIBLE:
             if (self.mario.current_time - self.mario.invincible_start_timer) > 11000:
                 self.play_music('main_theme', c.NORMAL)
+            elif self.mario.dead:
+                self.play_music('death', c.MARIO_DEAD)
+
 
         elif self.state == c.WORLD_CLEAR:
             pass
