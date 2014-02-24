@@ -253,7 +253,8 @@ class OverheadInfo(object):
             self.update_score_images(self.score_images, self.score)
             if level_info[c.LEVEL_STATE] != c.FROZEN \
                     and self.mario.state != c.WALKING_TO_CASTLE \
-                    and self.mario.state != c.END_OF_LEVEL_FALL:
+                    and self.mario.state != c.END_OF_LEVEL_FALL \
+                    and not self.mario.dead:
                 self.update_count_down_clock(level_info)
             self.update_coin_total(level_info)
             self.flashing_coin.update(level_info[c.CURRENT_TIME])
