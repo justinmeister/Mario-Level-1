@@ -65,7 +65,7 @@ class Control(object):
         if key == pg.K_F5:
             self.show_fps = not self.show_fps
             if not self.show_fps:
-                pg.display.set_caption(with_fps)
+                pg.display.set_caption(self.caption)
 
 
     def main(self):
