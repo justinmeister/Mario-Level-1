@@ -32,8 +32,10 @@ class Control(object):
         self.state = None
         self.transmitter = transmitter.Transmitter()
         self.ledsurf = pg.transform.scale(self.screen.subsurface((0,0,c.SCREEN_WIDTH,200)), (512,64))
-        self.ledbuf = pg.PixelArray(self.ledsurf).transpose()
-        pg.time.set_timer(pg.USEREVENT+1, 100)
+        #self.ledbuf = pg.PixelArray(self.ledsurf).transpose()
+        #pg.time.set_timer(pg.USEREVENT+1, 100)
+        self.transmitter.start()
+
 
     def setup_states(self, state_dict, start_state):
         self.state_dict = state_dict
@@ -88,9 +90,12 @@ class Control(object):
 
             pg.display.update()
 
+            self.send()
+
             if self.show_fps:
                 fps = self.clock.get_fps()
-                with_fps = "{} - {:.2f} FPS".format(self.caption, fps)
+                tfps = self.transmitter.frames / ((pg.time.get_ticks()+1)/1000.0)
+                with_fps = "{} - {:.2f}/{:.2f} FPS".format(self.caption, fps, tfps)
                 pg.display.set_caption(with_fps)
 
     def send(self):
@@ -105,7 +110,7 @@ class Control(object):
             offset = self.state.viewport.x % 512
         
         pg.transform.scale(self.screen.subsurface((0,wt,c.SCREEN_WIDTH,200)), (512,64), self.ledsurf)
-        self.transmitter.send(self.ledbuf, offset)
+        self.transmitter.queue(pg.surfarray.array3d(self.ledsurf), offset)
         #pg.draw.rect(self.screen, (255,0,0), (0,wt,1200,200),1)
 
 class _State(object):
@@ -169,14 +174,4 @@ def load_all_sfx(directory, accept=('.wav','.mpe','.ogg','.mdi')):
         if ext.lower() in accept:
             effects[name] = pg.mixer.Sound(os.path.join(directory, fx))
     return effects
-
-
-
-
-
-
-
-
-
-
 
