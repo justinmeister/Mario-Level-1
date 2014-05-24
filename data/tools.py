@@ -18,7 +18,7 @@ class Control(object):
     """Control class for entire project. Contains the game loop, and contains
     the event_loop which passes events to States as needed. Logic for flipping
     states is also found here."""
-    def __init__(self, caption):
+    def __init__(self, caption, queue):
         self.screen = pg.display.get_surface()
         self.done = False
         self.clock = pg.time.Clock()
@@ -30,12 +30,11 @@ class Control(object):
         self.state_dict = {}
         self.state_name = None
         self.state = None
-        self.transmitter = transmitter.Transmitter()
+        self.transmitter = transmitter.Transmitter(queue)
         self.ledsurf = pg.transform.scale(self.screen.subsurface((0,0,c.SCREEN_WIDTH,200)), (512,64))
         #self.ledbuf = pg.PixelArray(self.ledsurf).transpose()
         #pg.time.set_timer(pg.USEREVENT+1, 100)
-        self.transmitter.start()
-
+        #self.transmitter.start()
 
     def setup_states(self, state_dict, start_state):
         self.state_dict = state_dict
@@ -94,8 +93,7 @@ class Control(object):
 
             if self.show_fps:
                 fps = self.clock.get_fps()
-                tfps = self.transmitter.frames / ((pg.time.get_ticks()+1)/1000.0)
-                with_fps = "{} - {:.2f}/{:.2f} FPS".format(self.caption, fps, tfps)
+                with_fps = "{} - {:.2f} FPS".format(self.caption, fps)
                 pg.display.set_caption(with_fps)
 
     def send(self):

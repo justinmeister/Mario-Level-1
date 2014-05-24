@@ -11,11 +11,14 @@ PACKET_SIZE = 49153
 
 class Transmitter(threading.Thread):
 
-    def __init__(self):
+    def __init__(self,q):
         self.sendbuf = numpy.zeros(PACKET_SIZE, numpy.uint8)
+        self.q = q
         self.buffers = [ None, None, None ]
         self.sending = 0
         self.drawing = 1
+        self.frames = 0
+        self.stime = time.time()
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.setsockopt(socket.SOL_SOCKET,socket.SO_SNDBUF,49153)
         self.lock = threading.Lock()
@@ -39,9 +42,15 @@ class Transmitter(threading.Thread):
         self.lock.release()
 
     def queue(self, data, offset):
+        if (self.q.empty()):
+            self.q.put({ "data":data, "offset":offset })
+
+    def dequeue(self):
+        a = self.q.get()
+
         self.incdrawing()
 
-        self.buffers[self.drawing] = { "sent": False, "data": data, "offset": offset }
+        self.buffers[self.drawing] = { "sent": False, "data": a["data"], "offset": a["offset"] }
 
     def send(self):
         self.incsending()
@@ -85,16 +94,17 @@ class Transmitter(threading.Thread):
 
         self.buffers[self.sending]["sent"] = True
 
+        self.frames = self.frames + 1
+        if (self.frames % 10 == 0):
+            t = time.time()
+            print "Transmit FPS = {:.2f}".format(self.frames/(t-self.stime))
+            
+
         return True
 
     def run(self):
-        self.frames = 0
         while(True):
             if (not self.send()):
                 print "Send failed.  Sleep"
                 time.sleep(0.1)
-            else:
-                self.frames += 1
-
-
 
