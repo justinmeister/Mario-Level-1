@@ -22,6 +22,8 @@ class Mario(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.mask = pg.mask.from_surface(self.image)
 
+        self.key_timer = 0
+
 
     def setup_timers(self):
         """Sets up timers for animations"""
@@ -581,7 +583,6 @@ class Mario(pg.sprite.Sprite):
                 self.x_vel -= self.x_accel
             elif self.x_vel < (self.max_x_vel * -1):
                 self.x_vel += self.x_accel
-
 
         elif keys[tools.keybinding['right']]:
             self.get_out_of_crouch()

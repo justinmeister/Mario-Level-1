@@ -508,11 +508,11 @@ class Level1(tools._State):
         """Adjusts Mario's position based on his x, y velocities and
         potential collisions"""
         self.last_x_position = self.mario.rect.right
-        self.mario.rect.x += self.mario.x_vel
+        self.mario.rect.x += round(self.mario.x_vel)
         self.check_mario_x_collisions()
 
         if self.mario.in_transition_state == False:
-            self.mario.rect.y += self.mario.y_vel
+            self.mario.rect.y += round(self.mario.y_vel)
             self.check_mario_y_collisions()
 
         if self.mario.rect.x < (self.viewport.x + 5):
