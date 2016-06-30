@@ -581,6 +581,8 @@ class Mario(pg.sprite.Sprite):
 
             if self.x_vel > (self.max_x_vel * -1):
                 self.x_vel -= self.x_accel
+                if self.x_vel > -0.5:
+                    self.x_vel = -0.5
             elif self.x_vel < (self.max_x_vel * -1):
                 self.x_vel += self.x_accel
 
@@ -595,6 +597,8 @@ class Mario(pg.sprite.Sprite):
 
             if self.x_vel < self.max_x_vel:
                 self.x_vel += self.x_accel
+                if self.x_vel < 0.5:
+                    self.x_vel = 0.5
             elif self.x_vel > self.max_x_vel:
                 self.x_vel -= self.x_accel
 
