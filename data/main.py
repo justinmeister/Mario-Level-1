@@ -5,9 +5,9 @@ from .states import main_menu,load_screen,level1
 from . import constants as c
 
 
-def main():
+def main(queue):
     """Add states to control here."""
-    run_it = tools.Control(setup.ORIGINAL_CAPTION)
+    run_it = tools.Control(setup.ORIGINAL_CAPTION, queue)
     state_dict = {c.MAIN_MENU: main_menu.Menu(),
                   c.LOAD_SCREEN: load_screen.LoadScreen(),
                   c.TIME_OUT: load_screen.TimeOut(),

@@ -2,6 +2,9 @@ __author__ = 'justinarmstrong'
 
 import os
 import pygame as pg
+import pygame.surfarray as surfarray
+import transmitter
+import constants as c
 
 keybinding = {
     'action':pg.K_s,
@@ -15,18 +18,23 @@ class Control(object):
     """Control class for entire project. Contains the game loop, and contains
     the event_loop which passes events to States as needed. Logic for flipping
     states is also found here."""
-    def __init__(self, caption):
+    def __init__(self, caption, queue):
         self.screen = pg.display.get_surface()
         self.done = False
         self.clock = pg.time.Clock()
         self.caption = caption
-        self.fps = 60
-        self.show_fps = False
+        self.fps = 60 
+        self.show_fps = True
         self.current_time = 0.0
         self.keys = pg.key.get_pressed()
         self.state_dict = {}
         self.state_name = None
         self.state = None
+        self.transmitter = transmitter.Transmitter(queue)
+        self.ledsurf = pg.transform.scale(self.screen.subsurface((0,0,c.SCREEN_WIDTH,200)), (512,64))
+        #self.ledbuf = pg.PixelArray(self.ledsurf).transpose()
+        #pg.time.set_timer(pg.USEREVENT+1, 100)
+        #self.transmitter.start()
 
     def setup_states(self, state_dict, start_state):
         self.state_dict = state_dict
@@ -58,6 +66,8 @@ class Control(object):
                 self.toggle_show_fps(event.key)
             elif event.type == pg.KEYUP:
                 self.keys = pg.key.get_pressed()
+            elif event.type == pg.USEREVENT + 1:
+                self.send()
             self.state.get_event(event)
 
 
@@ -70,16 +80,36 @@ class Control(object):
 
     def main(self):
         """Main loop for entire program"""
+
+
         while not self.done:
             self.event_loop()
             self.update()
-            pg.display.update()
             self.clock.tick(self.fps)
+
+            pg.display.update()
+
+            self.send()
+
             if self.show_fps:
                 fps = self.clock.get_fps()
                 with_fps = "{} - {:.2f} FPS".format(self.caption, fps)
                 pg.display.set_caption(with_fps)
 
+    def send(self):
+        wt = 200
+        offset = 0
+        
+        if hasattr(self.state,'mario'):
+            y = self.state.mario.rect.y
+            wt = max(0, min(350, y-100))
+
+        if hasattr(self.state,'viewport'):
+            offset = self.state.viewport.x % 512
+        
+        pg.transform.scale(self.screen.subsurface((0,wt,c.SCREEN_WIDTH,200)), (512,64), self.ledsurf)
+        self.transmitter.queue(pg.surfarray.array3d(self.ledsurf), offset)
+        #pg.draw.rect(self.screen, (255,0,0), (0,wt,1200,200),1)
 
 class _State(object):
     def __init__(self):
@@ -142,14 +172,4 @@ def load_all_sfx(directory, accept=('.wav','.mpe','.ogg','.mdi')):
         if ext.lower() in accept:
             effects[name] = pg.mixer.Sound(os.path.join(directory, fx))
     return effects
-
-
-
-
-
-
-
-
-
-
 

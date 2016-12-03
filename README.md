@@ -1,3 +1,13 @@
+UPDATED FOR USE WITH MEGASCROLLER
+============
+
+I've updated this for use on the NYC Resistor Mega Scroller for our upcoming show.  I also chopped
+out the sound because I couldn't get pygame to work with OGG on my mac.
+
+https://github.com/nycresistor/megaScrollerSimulator
+
+Original README follows...
+
 Super Mario Bros Level 1
 =============
 
