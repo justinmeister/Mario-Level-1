@@ -8,7 +8,7 @@ keybinding = {
     'jump':pg.K_a,
     'left':pg.K_LEFT,
     'right':pg.K_RIGHT,
-    'down':pg.K_DOWN
+    'down':pg.K_DOWN,
 }
 
 class Control(object):
