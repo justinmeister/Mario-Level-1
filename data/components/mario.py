@@ -169,6 +169,21 @@ class Mario(pg.sprite.Sprite):
         self.right_small_green_frames.append(
             self.get_image(130, 224, 14, 16))  # Right skid [5]
 
+        # Little_Mario_Dejavu stella
+        # self.right_small_normal_frames.append(
+        #     self.get_image(177, 123, 16, 16))  # Right [0]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(79, 124, 16, 16))  # Right walking 1 [1]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(96, 124, 16, 15))  # Right walking 2 [2]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(113, 123, 16, 16))  # Right walking 3 [3]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(144, 122, 16, 17))  # Right jump [4]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(130, 123, 13, 16))  # Right skid [5]
+
+
         #Images for red mario (for invincible animation)#
 
         self.right_small_red_frames.append(
@@ -200,7 +215,7 @@ class Mario(pg.sprite.Sprite):
             self.get_image(130, 176, 14, 16))  # Right skid [5]
 
 
-        #Images for normal big Mario -> Changed to comments for Dejavu mode
+        #Big Mario Dejavu normale -> right_big_normal_frames
         self.right_big_normal_frames.append(
           self.get_image(197, 1, 24, 14))
         self.right_big_normal_frames.append(
@@ -214,15 +229,16 @@ class Mario(pg.sprite.Sprite):
         self.right_big_normal_frames.append(
           self.get_image(154, 1, 17, 14))
         self.right_big_normal_frames.append(
-          self.get_image(336, 0, 16, 32)) #-> BOH
+          self.get_image(336, 0, 16, 32))
         self.right_big_normal_frames.append(
-          self.get_image(160, 10, 16, 22)) #-> (252, 1, 24, 14) per quando si inserirà nuovo sprite
+          self.get_image(252, 1, 24, 14))
         self.right_big_normal_frames.append(
           self.get_image(272, 2, 16, 29))
         self.right_big_normal_frames.append(
           self.get_image(222, 1, 14, 24))
         self.right_big_normal_frames.append(
           self.get_image(237, 1, 14, 24))
+
 
         # self.right_big_normal_frames.append(
         #     self.get_image(176, 0, 16, 32))  # Right standing [0]
@@ -267,6 +283,24 @@ class Mario(pg.sprite.Sprite):
             self.get_image(336, 192, 16, 32))  # Right throwing [6]
         self.right_big_green_frames.append(
             self.get_image(160, 202, 16, 22))  # Right Crouching [7]
+
+        # Big_Mario_dejavu stella -> right_big_green_frames
+        # self.right_big_green_frames.append(
+        #     self.get_image(197, 97, 24, 14))
+        # self.right_big_green_frames.append(
+        #     self.get_image(79, 97, 24, 14))
+        # self.right_big_green_frames.append(
+        #     self.get_image(104, 97, 24, 14))
+        # self.right_big_green_frames.append(
+        #     self.get_image(129, 97, 24, 14))
+        # self.right_big_green_frames.append(
+        #     self.get_image(172, 96, 24, 14))
+        # self.right_big_green_frames.append(
+        #     self.get_image(154, 97, 17, 14))
+        # self.right_big_green_frames.append(
+        #     self.get_image(197, 97, 24, 14))
+        # self.right_big_green_frames.append(
+        #     self.get_image(252, 97, 24, 14))
 
         #Images for red big Mario#
 

@@ -170,7 +170,13 @@ TIME_WARNING = 'time warning'
 SPED_UP_NORMAL = 'sped up normal'
 MARIO_INVINCIBLE = 'mario invincible'
 
-
+#MODE CONSTANTS
+NORMAL_MODE = 'normal mode'
+ENEMY_MODE = 'enemy mode'
+DEJAVU_MODE = 'dejavu mode'
+LUIGI_MODE = 'luigi mode'
+TALL_MODE = 'tall mode'
+HARD_MODE = 'hard mode'
 
 
 
