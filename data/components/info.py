@@ -187,9 +187,10 @@ class OverheadInfo(object):
         self.life_total_label = []
         self.create_label(self.life_total_label, str(self.total_lives),
                           450, 285)
-
+        #ADD HERE A CONDITION TO VERIFY WHAT MODE IS SELECTED
         self.sprite_sheet = setup.GFX['mario_bros_dejavu']
-        self.mario_image = self.get_image(178, 32, 12, 16)
+        #self.mario_image = self.get_image(178, 32, 12, 16)
+        self.mario_image = self.get_image(177, 32, 16, 16) #Sprite position and size for Mario_Dejavu
         self.mario_rect = self.mario_image.get_rect(center=(320, 290))
 
 
