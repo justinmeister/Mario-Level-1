@@ -9,7 +9,7 @@ from . import powerups
 class Mario(pg.sprite.Sprite):
     def __init__(self):
         pg.sprite.Sprite.__init__(self)
-        self.sprite_sheet = setup.GFX['mario_bros']
+        self.sprite_sheet = setup.GFX['mario_bros_dejavu']
 
         self.setup_timers()
         self.setup_state_booleans()
@@ -105,18 +105,42 @@ class Mario(pg.sprite.Sprite):
 
         #Images for normal small mario#
 
+        # self.right_small_normal_frames.append(
+        #     self.get_image(178, 32, 12, 16))  # Right [0]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(80,  32, 15, 16))  # Right walking 1 [1]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(96,  32, 16, 16))  # Right walking 2 [2]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(112,  32, 16, 16))  # Right walking 3 [3]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(144, 32, 16, 16))  # Right jump [4]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(130, 32, 14, 16))  # Right skid [5]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(160, 32, 15, 16))  # Death frame [6]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(320, 8, 16, 24))  # Transition small to big [7]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(241, 33, 16, 16))  # Transition big to small [8]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(194, 32, 12, 16))  # Frame 1 of flag pole Slide [9]
+        # self.right_small_normal_frames.append(
+        #     self.get_image(210, 33, 12, 16))  # Frame 2 of flag pole slide [10]
+
+        #little mario dejavu
         self.right_small_normal_frames.append(
-            self.get_image(178, 32, 12, 16))  # Right [0]
+            self.get_image(177, 32, 16, 16))  # Right [0]
         self.right_small_normal_frames.append(
-            self.get_image(80,  32, 15, 16))  # Right walking 1 [1]
+            self.get_image(79, 33, 16, 16))  # Right walking 1 [1]
         self.right_small_normal_frames.append(
-            self.get_image(96,  32, 16, 16))  # Right walking 2 [2]
+            self.get_image(96, 33, 16, 15))  # Right walking 2 [2]
         self.right_small_normal_frames.append(
-            self.get_image(112,  32, 16, 16))  # Right walking 3 [3]
+            self.get_image(113, 32, 16, 16))  # Right walking 3 [3]
         self.right_small_normal_frames.append(
-            self.get_image(144, 32, 16, 16))  # Right jump [4]
+            self.get_image(144, 31, 16, 17))  # Right jump [4]
         self.right_small_normal_frames.append(
-            self.get_image(130, 32, 14, 16))  # Right skid [5]
+            self.get_image(130, 32, 13, 16))  # Right skid [5]
         self.right_small_normal_frames.append(
             self.get_image(160, 32, 15, 16))  # Death frame [6]
         self.right_small_normal_frames.append(
@@ -124,9 +148,10 @@ class Mario(pg.sprite.Sprite):
         self.right_small_normal_frames.append(
             self.get_image(241, 33, 16, 16))  # Transition big to small [8]
         self.right_small_normal_frames.append(
-            self.get_image(194, 32, 12, 16))  # Frame 1 of flag pole Slide [9]
+            self.get_image(194, 33, 16, 16))  # Frame 1 of flag pole Slide [9]
         self.right_small_normal_frames.append(
-            self.get_image(210, 33, 12, 16))  # Frame 2 of flag pole slide [10]
+            self.get_image(211, 34, 16, 16))  # Frame 2 of flag pole slide [10]
+
 
 
         #Images for small green mario (for invincible animation)#
@@ -175,30 +200,54 @@ class Mario(pg.sprite.Sprite):
             self.get_image(130, 176, 14, 16))  # Right skid [5]
 
 
-        #Images for normal big Mario
+        #Images for normal big Mario -> Changed to comments for Dejavu mode
+        self.right_big_normal_frames.append(
+          self.get_image(197, 1, 24, 14))
+        self.right_big_normal_frames.append(
+          self.get_image(79, 1, 24, 14))
+        self.right_big_normal_frames.append(
+          self.get_image(104, 1, 24, 14))
+        self.right_big_normal_frames.append(
+          self.get_image(129, 1, 24, 14))
+        self.right_big_normal_frames.append(
+          self.get_image(172, 0, 24, 14))
+        self.right_big_normal_frames.append(
+          self.get_image(154, 1, 17, 14))
+        self.right_big_normal_frames.append(
+          self.get_image(336, 0, 16, 32)) #-> BOH
+        self.right_big_normal_frames.append(
+          self.get_image(160, 10, 16, 22)) #-> (252, 1, 24, 14) per quando si inserirà nuovo sprite
+        self.right_big_normal_frames.append(
+          self.get_image(272, 2, 16, 29))
+        self.right_big_normal_frames.append(
+          self.get_image(222, 1, 14, 24))
+        self.right_big_normal_frames.append(
+          self.get_image(237, 1, 14, 24))
 
-        self.right_big_normal_frames.append(
-            self.get_image(176, 0, 16, 32))  # Right standing [0]
-        self.right_big_normal_frames.append(
-            self.get_image(81, 0, 16, 32))  # Right walking 1 [1]
-        self.right_big_normal_frames.append(
-            self.get_image(97, 0, 15, 32))  # Right walking 2 [2]
-        self.right_big_normal_frames.append(
-            self.get_image(113, 0, 15, 32))  # Right walking 3 [3]
-        self.right_big_normal_frames.append(
-            self.get_image(144, 0, 16, 32))  # Right jump [4]
-        self.right_big_normal_frames.append(
-            self.get_image(128, 0, 16, 32))  # Right skid [5]
-        self.right_big_normal_frames.append(
-            self.get_image(336, 0, 16, 32))  # Right throwing [6]
-        self.right_big_normal_frames.append(
-            self.get_image(160, 10, 16, 22))  # Right crouching [7]
-        self.right_big_normal_frames.append(
-            self.get_image(272, 2, 16, 29))  # Transition big to small [8]
-        self.right_big_normal_frames.append(
-            self.get_image(193, 2, 16, 30))  # Frame 1 of flag pole slide [9]
-        self.right_big_normal_frames.append(
-            self.get_image(209, 2, 16, 29))  # Frame 2 of flag pole slide [10]
+        # self.right_big_normal_frames.append(
+        #     self.get_image(176, 0, 16, 32))  # Right standing [0]
+        # self.right_big_normal_frames.append(
+        #     self.get_image(81, 0, 16, 32))  # Right walking 1 [1]
+        # self.right_big_normal_frames.append(
+        #     self.get_image(97, 0, 15, 32))  # Right walking 2 [2]
+        # self.right_big_normal_frames.append(
+        #     self.get_image(113, 0, 15, 32))  # Right walking 3 [3]
+        # self.right_big_normal_frames.append(
+        #     self.get_image(144, 0, 16, 32))  # Right jump [4]
+        # self.right_big_normal_frames.append(
+        #     self.get_image(128, 0, 16, 32))  # Right skid [5]
+        # self.right_big_normal_frames.append(
+        #     self.get_image(336, 0, 16, 32))  # Right throwing [6]
+        # self.right_big_normal_frames.append(
+        #     self.get_image(160, 10, 16, 22))  # Right crouching [7]
+        # self.right_big_normal_frames.append(
+        #     self.get_image(272, 2, 16, 29))  # Transition big to small [8]
+        # self.right_big_normal_frames.append(
+        #     self.get_image(193, 2, 16, 30))  # Frame 1 of flag pole slide [9]
+        # self.right_big_normal_frames.append(
+        #      self.get_image(209, 2, 16, 29))  # Frame 2 of flag pole slide [10]
+
+
 
         #Images for green big Mario#
 

@@ -188,7 +188,7 @@ class OverheadInfo(object):
         self.create_label(self.life_total_label, str(self.total_lives),
                           450, 285)
 
-        self.sprite_sheet = setup.GFX['mario_bros']
+        self.sprite_sheet = setup.GFX['mario_bros_dejavu']
         self.mario_image = self.get_image(178, 32, 12, 16)
         self.mario_rect = self.mario_image.get_rect(center=(320, 290))
 
