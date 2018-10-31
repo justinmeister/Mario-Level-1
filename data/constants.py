@@ -133,8 +133,12 @@ BOTTOM_OF_POLE = 'bottom of pole'
 ONEUP = '379'
 
 #MAIN MENU CURSOR STATES
-PLAYER1 = '1 player'
-PLAYER2 = '2 player'
+NORMALMODE = 'normal'
+DEJAVUMODE = 'dejavu'
+TALLMODE = 'tall'
+LUIGIMODE = 'luigi'
+ENEMYMODE = 'enemy'
+HARDMODE = 'hard'
 
 #OVERHEAD INFO STATES
 MAIN_MENU = 'main menu'
@@ -170,7 +174,13 @@ TIME_WARNING = 'time warning'
 SPED_UP_NORMAL = 'sped up normal'
 MARIO_INVINCIBLE = 'mario invincible'
 
-
+#MODE CONSTANTS
+NORMAL_MODE = 'normal mode'
+ENEMY_MODE = 'enemy mode'
+DEJAVU_MODE = 'dejavu mode'
+LUIGI_MODE = 'luigi mode'
+TALL_MODE = 'tall mode'
+HARD_MODE = 'hard mode'
 
 
 

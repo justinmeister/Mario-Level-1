@@ -22,9 +22,10 @@ DA DEFINIRE:
 - MARIO MACCHINA CON DEJAV	(IN LAVORAZIONE)
 - MODIFICA GRAFICA DEL LIVELLO
 
+- Mario alto stella fix							(FATTO)
 FIX
 - Crouch Mario Macchina / colori neri 					(FATTO)
-- Mario alto stella fix							(FATTO)
 
 MUSICA: (C'è Dikan??!!)
 Trasferito tutti nel README_Music.md
+- TAGLIARE AUDIO TENENDO 'JOHN CENA' (DIKAN)
