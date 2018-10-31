@@ -156,32 +156,32 @@ class Mario(pg.sprite.Sprite):
 
         #Images for small green mario (for invincible animation)#
 
-        self.right_small_green_frames.append(
-            self.get_image(178, 224, 12, 16))  # Right standing [0]
-        self.right_small_green_frames.append(
-            self.get_image(80, 224, 15, 16))  # Right walking 1 [1]
-        self.right_small_green_frames.append(
-            self.get_image(96, 224, 16, 16))  # Right walking 2 [2]
-        self.right_small_green_frames.append(
-            self.get_image(112, 224, 15, 16))  # Right walking 3 [3]
-        self.right_small_green_frames.append(
-            self.get_image(144, 224, 16, 16))  # Right jump [4]
-        self.right_small_green_frames.append(
-            self.get_image(130, 224, 14, 16))  # Right skid [5]
+        # self.right_small_green_frames.append(
+        #     self.get_image(178, 224, 12, 16))  # Right standing [0]
+        # self.right_small_green_frames.append(
+        #     self.get_image(80, 224, 15, 16))  # Right walking 1 [1]
+        # self.right_small_green_frames.append(
+        #     self.get_image(96, 224, 16, 16))  # Right walking 2 [2]
+        # self.right_small_green_frames.append(
+        #     self.get_image(112, 224, 15, 16))  # Right walking 3 [3]
+        # self.right_small_green_frames.append(
+        #     self.get_image(144, 224, 16, 16))  # Right jump [4]
+        # self.right_small_green_frames.append(
+        #     self.get_image(130, 224, 14, 16))  # Right skid [5]
 
         # Little_Mario_Dejavu stella
-        # self.right_small_normal_frames.append(
-        #     self.get_image(177, 123, 16, 16))  # Right [0]
-        # self.right_small_normal_frames.append(
-        #     self.get_image(79, 124, 16, 16))  # Right walking 1 [1]
-        # self.right_small_normal_frames.append(
-        #     self.get_image(96, 124, 16, 15))  # Right walking 2 [2]
-        # self.right_small_normal_frames.append(
-        #     self.get_image(113, 123, 16, 16))  # Right walking 3 [3]
-        # self.right_small_normal_frames.append(
-        #     self.get_image(144, 122, 16, 17))  # Right jump [4]
-        # self.right_small_normal_frames.append(
-        #     self.get_image(130, 123, 13, 16))  # Right skid [5]
+        self.right_small_green_frames.append(
+            self.get_image(177, 123, 16, 16))  # Right [0]
+        self.right_small_green_frames.append(
+            self.get_image(79, 124, 16, 16))  # Right walking 1 [1]
+        self.right_small_green_frames.append(
+            self.get_image(96, 124, 16, 15))  # Right walking 2 [2]
+        self.right_small_green_frames.append(
+            self.get_image(113, 123, 16, 16))  # Right walking 3 [3]
+        self.right_small_green_frames.append(
+            self.get_image(144, 122, 16, 17))  # Right jump [4]
+        self.right_small_green_frames.append(
+            self.get_image(130, 123, 13, 16))  # Right skid [5]
 
 
         #Images for red mario (for invincible animation)#
@@ -267,40 +267,40 @@ class Mario(pg.sprite.Sprite):
 
         #Images for green big Mario#
 
-        self.right_big_green_frames.append(
-            self.get_image(176, 192, 16, 32))  # Right standing [0]
-        self.right_big_green_frames.append(
-            self.get_image(81, 192, 16, 32))  # Right walking 1 [1]
-        self.right_big_green_frames.append(
-            self.get_image(97, 192, 15, 32))  # Right walking 2 [2]
-        self.right_big_green_frames.append(
-            self.get_image(113, 192, 15, 32))  # Right walking 3 [3]
-        self.right_big_green_frames.append(
-            self.get_image(144, 192, 16, 32))  # Right jump [4]
-        self.right_big_green_frames.append(
-            self.get_image(128, 192, 16, 32))  # Right skid [5]
-        self.right_big_green_frames.append(
-            self.get_image(336, 192, 16, 32))  # Right throwing [6]
-        self.right_big_green_frames.append(
-            self.get_image(160, 202, 16, 22))  # Right Crouching [7]
+        # self.right_big_green_frames.append(
+        #     self.get_image(176, 192, 16, 32))  # Right standing [0]
+        # self.right_big_green_frames.append(
+        #     self.get_image(81, 192, 16, 32))  # Right walking 1 [1]
+        # self.right_big_green_frames.append(
+        #     self.get_image(97, 192, 15, 32))  # Right walking 2 [2]
+        # self.right_big_green_frames.append(
+        #     self.get_image(113, 192, 15, 32))  # Right walking 3 [3]
+        # self.right_big_green_frames.append(
+        #     self.get_image(144, 192, 16, 32))  # Right jump [4]
+        # self.right_big_green_frames.append(
+        #     self.get_image(128, 192, 16, 32))  # Right skid [5]
+        # self.right_big_green_frames.append(
+        #     self.get_image(336, 192, 16, 32))  # Right throwing [6]
+        # self.right_big_green_frames.append(
+        #     self.get_image(160, 202, 16, 22))  # Right Crouching [7]
 
-        # Big_Mario_dejavu stella -> right_big_green_frames
-        # self.right_big_green_frames.append(
-        #     self.get_image(197, 97, 24, 14))
-        # self.right_big_green_frames.append(
-        #     self.get_image(79, 97, 24, 14))
-        # self.right_big_green_frames.append(
-        #     self.get_image(104, 97, 24, 14))
-        # self.right_big_green_frames.append(
-        #     self.get_image(129, 97, 24, 14))
-        # self.right_big_green_frames.append(
-        #     self.get_image(172, 96, 24, 14))
-        # self.right_big_green_frames.append(
-        #     self.get_image(154, 97, 17, 14))
-        # self.right_big_green_frames.append(
-        #     self.get_image(197, 97, 24, 14))
-        # self.right_big_green_frames.append(
-        #     self.get_image(252, 97, 24, 14))
+        #Big_Mario_dejavu stella -> right_big_green_frames
+        self.right_big_green_frames.append(
+            self.get_image(197, 97, 24, 14))
+        self.right_big_green_frames.append(
+            self.get_image(79, 97, 24, 14))
+        self.right_big_green_frames.append(
+            self.get_image(104, 97, 24, 14))
+        self.right_big_green_frames.append(
+            self.get_image(129, 97, 24, 14))
+        self.right_big_green_frames.append(
+            self.get_image(172, 96, 24, 14))
+        self.right_big_green_frames.append(
+            self.get_image(154, 97, 17, 14))
+        self.right_big_green_frames.append(
+            self.get_image(197, 97, 24, 14))
+        self.right_big_green_frames.append(
+            self.get_image(252, 97, 24, 14))
 
         #Images for red big Mario#
 
@@ -419,10 +419,14 @@ class Mario(pg.sprite.Sprite):
         self.black_small_frames = [self.right_small_black_frames,
                              self.left_small_black_frames]
 
+        # self.invincible_small_frames_list = [self.normal_small_frames,
+        #                                   self.green_small_frames,
+        #                                   self.red_small_frames,
+        #                                   self.black_small_frames]
         self.invincible_small_frames_list = [self.normal_small_frames,
-                                          self.green_small_frames,
-                                          self.red_small_frames,
-                                          self.black_small_frames]
+                                             self.green_small_frames,
+                                             self.normal_small_frames,
+                                             self.green_small_frames]
 
         self.normal_big_frames = [self.right_big_normal_frames,
                                   self.left_big_normal_frames]
@@ -439,10 +443,14 @@ class Mario(pg.sprite.Sprite):
         self.fire_frames = [self.right_fire_frames,
                             self.left_fire_frames]
 
+        # self.invincible_big_frames_list = [self.normal_big_frames,
+        #                                    self.green_big_frames,
+        #                                    self.red_big_frames,
+        #                                    self.black_big_frames]
         self.invincible_big_frames_list = [self.normal_big_frames,
                                            self.green_big_frames,
-                                           self.red_big_frames,
-                                           self.black_big_frames]
+                                           self.normal_big_frames,
+                                           self.green_big_frames]
 
         self.all_images = [self.right_big_normal_frames,
                            self.right_big_black_frames,
@@ -939,14 +947,14 @@ class Mario(pg.sprite.Sprite):
         self.state = c.BIG_TO_SMALL
 
         if self.facing_right:
-            frames = [self.right_big_normal_frames[4],
-                      self.right_big_normal_frames[8],
-                      self.right_small_normal_frames[8]
+            frames = [self.right_big_normal_frames[0],
+                      self.right_big_normal_frames[0],
+                      self.right_small_normal_frames[0]
                       ]
         else:
-            frames = [self.left_big_normal_frames[4],
-                      self.left_big_normal_frames[8],
-                      self.left_small_normal_frames[8]
+            frames = [self.left_big_normal_frames[0],
+                      self.left_big_normal_frames[0],
+                      self.left_small_normal_frames[0]
                      ]
 
         if self.transition_timer == 0:
@@ -1117,7 +1125,7 @@ class Mario(pg.sprite.Sprite):
         if self.invincible:
             if ((self.current_time - self.invincible_start_timer) < 10000):
                 self.losing_invincibility = False
-                self.change_frame_list(30)
+                self.change_frame_list(60)
             elif ((self.current_time - self.invincible_start_timer) < 12000):
                 self.losing_invincibility = True
                 self.change_frame_list(100)
