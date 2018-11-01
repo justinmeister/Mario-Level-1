@@ -223,7 +223,7 @@ class Mario(pg.sprite.Sprite):
         self.right_big_normal_frames.append(
           self.get_image(104, 1, 24, 14))
         self.right_big_normal_frames.append(
-          self.get_image(129, 1, 24, 14))
+          self.get_image(129, 0, 24, 14))
         self.right_big_normal_frames.append(
           self.get_image(172, 0, 24, 14))
         self.right_big_normal_frames.append(
@@ -292,7 +292,7 @@ class Mario(pg.sprite.Sprite):
         self.right_big_green_frames.append(
             self.get_image(104, 97, 24, 14))
         self.right_big_green_frames.append(
-            self.get_image(129, 97, 24, 14))
+            self.get_image(129, 96, 24, 14))
         self.right_big_green_frames.append(
             self.get_image(172, 96, 24, 14))
         self.right_big_green_frames.append(
@@ -368,27 +368,27 @@ class Mario(pg.sprite.Sprite):
 
         #Images for fire Mario Dejavu
         self.right_fire_frames.append(
-            self.get_image(197, 1, 24, 14))
+            self.get_image(197, 51, 24, 14))
         self.right_fire_frames.append(
-            self.get_image(79, 1, 24, 14))
+            self.get_image(79, 51, 24, 14))
         self.right_fire_frames.append(
-            self.get_image(104, 1, 24, 14))
+            self.get_image(104, 51, 24, 14))
         self.right_fire_frames.append(
-            self.get_image(129, 1, 24, 14))
+            self.get_image(129, 50, 24, 14))
         self.right_fire_frames.append(
-            self.get_image(172, 0, 24, 14))
+            self.get_image(172, 50, 24, 14))
         self.right_fire_frames.append(
-            self.get_image(154, 1, 17, 14))
+            self.get_image(154, 51, 17, 14))
         self.right_fire_frames.append(
-            self.get_image(336, 0, 16, 32))
+            self.get_image(336, 50, 16, 32))
         self.right_fire_frames.append(
-            self.get_image(252, 1, 24, 14))
+            self.get_image(252, 51, 24, 14))
         self.right_fire_frames.append(
-            self.get_image(272, 2, 16, 29))
+            self.get_image(272, 52, 16, 29))
         self.right_fire_frames.append(
-            self.get_image(222, 1, 14, 24))
+            self.get_image(222, 51, 14, 24))
         self.right_fire_frames.append(
-            self.get_image(237, 1, 14, 24))
+            self.get_image(237, 51, 14, 24))
 
 
         #The left image frames are numbered the same as the right
@@ -917,13 +917,13 @@ class Mario(pg.sprite.Sprite):
         if self.facing_right:
             frames = [self.right_fire_frames[3],
                       self.right_big_green_frames[3],
-                      self.right_big_red_frames[3],
-                      self.right_big_black_frames[3]]
+                      self.right_fire_frames[3],
+                      self.right_big_normal_frames[3]]
         else:
             frames = [self.left_fire_frames[3],
                       self.left_big_green_frames[3],
-                      self.left_big_red_frames[3],
-                      self.left_big_black_frames[3]]
+                      self.left_fire_frames[3],
+                      self.left_big_normal_frames[3]]
 
         if self.fire_transition_timer == 0:
             self.fire_transition_timer = self.current_time
