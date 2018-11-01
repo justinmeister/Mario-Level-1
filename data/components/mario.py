@@ -343,28 +343,52 @@ class Mario(pg.sprite.Sprite):
 
         #Images for Fire Mario#
 
+        # self.right_fire_frames.append(
+        #     self.get_image(176, 48, 16, 32))  # Right standing [0]
+        # self.right_fire_frames.append(
+        #     self.get_image(81, 48, 16, 32))  # Right walking 1 [1]
+        # self.right_fire_frames.append(
+        #     self.get_image(97, 48, 15, 32))  # Right walking 2 [2]
+        # self.right_fire_frames.append(
+        #     self.get_image(113, 48, 15, 32))  # Right walking 3 [3]
+        # self.right_fire_frames.append(
+        #     self.get_image(144, 48, 16, 32))  # Right jump [4]
+        # self.right_fire_frames.append(
+        #     self.get_image(128, 48, 16, 32))  # Right skid [5]
+        # self.right_fire_frames.append(
+        #     self.get_image(336, 48, 16, 32))  # Right throwing [6]
+        # self.right_fire_frames.append(
+        #     self.get_image(160, 58, 16, 22))  # Right crouching [7]
+        # self.right_fire_frames.append(
+        #     self.get_image(0, 0, 0, 0))  # Place holder [8]
+        # self.right_fire_frames.append(
+        #     self.get_image(193, 50, 16, 29))  # Frame 1 of flag pole slide [9]
+        # self.right_fire_frames.append(
+        #     self.get_image(209, 50, 16, 29))  # Frame 2 of flag pole slide [10]
+
+        #Images for fire Mario Dejavu
         self.right_fire_frames.append(
-            self.get_image(176, 48, 16, 32))  # Right standing [0]
+            self.get_image(197, 1, 24, 14))
         self.right_fire_frames.append(
-            self.get_image(81, 48, 16, 32))  # Right walking 1 [1]
+            self.get_image(79, 1, 24, 14))
         self.right_fire_frames.append(
-            self.get_image(97, 48, 15, 32))  # Right walking 2 [2]
+            self.get_image(104, 1, 24, 14))
         self.right_fire_frames.append(
-            self.get_image(113, 48, 15, 32))  # Right walking 3 [3]
+            self.get_image(129, 1, 24, 14))
         self.right_fire_frames.append(
-            self.get_image(144, 48, 16, 32))  # Right jump [4]
+            self.get_image(172, 0, 24, 14))
         self.right_fire_frames.append(
-            self.get_image(128, 48, 16, 32))  # Right skid [5]
+            self.get_image(154, 1, 17, 14))
         self.right_fire_frames.append(
-            self.get_image(336, 48, 16, 32))  # Right throwing [6]
+            self.get_image(336, 0, 16, 32))
         self.right_fire_frames.append(
-            self.get_image(160, 58, 16, 22))  # Right crouching [7]
+            self.get_image(252, 1, 24, 14))
         self.right_fire_frames.append(
-            self.get_image(0, 0, 0, 0))  # Place holder [8]
+            self.get_image(272, 2, 16, 29))
         self.right_fire_frames.append(
-            self.get_image(193, 50, 16, 29))  # Frame 1 of flag pole slide [9]
+            self.get_image(222, 1, 14, 24))
         self.right_fire_frames.append(
-            self.get_image(209, 50, 16, 29))  # Frame 2 of flag pole slide [10]
+            self.get_image(237, 1, 14, 24))
 
 
         #The left image frames are numbered the same as the right

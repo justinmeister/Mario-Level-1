@@ -14,12 +14,12 @@ CAMBIO PERSONAGGIO DA SCHERMATA INIZIALE
 
 - MANNO COMPITI
 1- NO POWER-UP
-2- CAMBIARE CODICE PER VERSIONI DI GIOCO (IN CORSO)
+2- CAMBIARE CODICE PER VERSIONI DI GIOCO (FATTO)
 3- INSERIRE SCELTA MODALITÀ
-4- TESTARE STELLA MARIO DEJAVU (IN ATTESA DI IMMAGINI)
+4- TESTARE STELLA MARIO DEJAVU (FATTO)
 
 DA DEFINIRE:
-- MARIO MACCHINA CON DEJAV	(IN LAVORAZIONE)
+- MARIO MACCHINA CON DEJAV	(FATTO)
 - MODIFICA GRAFICA DEL LIVELLO
 
 - Mario alto stella fix							(FATTO)
@@ -29,3 +29,9 @@ FIX
 MUSICA: (C'è Dikan??!!)
 Trasferito tutti nel README_Music.md
 - TAGLIARE AUDIO TENENDO 'JOHN CENA' (DIKAN)
+
+BUGS:
+- quando Mario Dejavu Fuoco salta e spara in aria, lo sprite sparisce
+- sistemare scatto con sequenza di tasti
+- modificare visuale in caso di velocità del personaggio elevata
+- goomba che attraversano la piattaforma a metà del livello
