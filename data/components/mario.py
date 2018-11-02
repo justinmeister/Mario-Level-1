@@ -624,7 +624,8 @@ class Mario(pg.sprite.Sprite):
                     powerups.FireBall(self.rect.right, self.rect.y, self.facing_right))
                 self.last_fireball_time = self.current_time
 
-                self.frame_index = 6
+                #self.frame_index = 6
+                self.frame_index = 0
                 if self.facing_right:
                     self.image = self.right_frames[self.frame_index]
                 else:

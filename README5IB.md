@@ -19,7 +19,7 @@ NUOVE SPRITE: (LONGONI)
 COMPITI MANNO:
 1- NO POWER-UP
 2- CAMBIARE CODICE PER VERSIONI DI GIOCO 				(FATTO)
-3- INSERIRE SCELTA MODALITÀ
+3- INSERIRE SCELTA MODALITÀ                     (IN ATTESA DI VERSIONE BETA)
 4- TESTARE STELLA MARIO DEJAVU 						(FATTO)
 5- CAMBIO PERSONAGGIO DA SCHERMATA INIZIALE
 
@@ -36,7 +36,7 @@ Trasferito tutti nel README_Music.md
 - TAGLIARE AUDIO TENENDO 'JOHN CENA'					(FATTO)
 
 BUGS:
-- quando Mario Dejavu Fuoco salta e spara in aria, lo sprite sparisce
+- quando Mario Dejavu Fuoco salta e spara in aria, lo sprite sparisce (RISOLTO)
 - sistemare scatto con sequenza di tasti
 - modificare visuale in caso di velocità del personaggio elevata
 - goomba che attraversano la piattaforma a metà del livello
