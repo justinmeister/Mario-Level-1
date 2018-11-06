@@ -8,7 +8,7 @@ keybinding = {
     'jump':pg.K_a,
     'left':pg.K_LEFT,
     'right':pg.K_RIGHT,
-    'down':pg.K_DOWN
+    'down':pg.K_DOWN,
 }
 
 class Control(object):
@@ -107,7 +107,7 @@ class _State(object):
 
 
 
-def load_all_gfx(directory, colorkey=(255,0,255), accept=('.png', 'jpg', 'bmp')):
+def load_all_gfx(directory, colorkey=(255,255,255), accept=('.png', 'jpg', 'bmp')):
     graphics = {}
     for pic in os.listdir(directory):
         name, ext = os.path.splitext(pic)

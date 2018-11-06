@@ -1,3 +1,5 @@
+import time
+
 __author__ = 'justinarmstrong'
 
 import pygame as pg
@@ -40,7 +42,7 @@ class Menu(tools._State):
         dest = (220, 358)
         self.cursor.image, self.cursor.rect = self.get_image(
             24, 160, 8, 8, dest, setup.GFX['item_objects'])
-        self.cursor.state = c.PLAYER1
+        self.cursor.state = c.NORMALMODE
 
 
     def setup_mario(self):
@@ -106,19 +108,72 @@ class Menu(tools._State):
     def update_cursor(self, keys):
         """Update the position of the cursor"""
         input_list = [pg.K_RETURN, pg.K_a, pg.K_s]
+        self.cursor.rect.y = 388 #Cursor locked on Dejavu_mode
+        self.cursor.state = c.NORMALMODE;
+        for input in input_list:
+             if keys[input]:
+                 self.reset_game_info()
+                 self.done = True
 
-        if self.cursor.state == c.PLAYER1:
-            self.cursor.rect.y = 358
-            if keys[pg.K_DOWN]:
-                self.cursor.state = c.PLAYER2
-            for input in input_list:
-                if keys[input]:
-                    self.reset_game_info()
-                    self.done = True
-        elif self.cursor.state == c.PLAYER2:
-            self.cursor.rect.y = 403
-            if keys[pg.K_UP]:
-                self.cursor.state = c.PLAYER1
+        # if self.cursor.state == c.NORMALMODE:
+        #     self.cursor.rect.y = 358
+        #     if keys[pg.K_DOWN]:
+        #         self.cursor.state = c.DEJAVUMODE
+        #     for input in input_list:
+        #         if keys[input]:
+        #             self.reset_game_info()
+        #             self.done = True
+        # elif self.cursor.state == c.DEJAVUMODE:
+        #     self.cursor.rect.y = 388
+        #     if keys[pg.K_UP]:
+        #         self.cursor.state = c.NORMALMODE
+        #     if keys[pg.K_DOWN]:
+        #         self.cursor.state = c.TALLMODE
+        #     for input in input_list:
+        #         if keys[input]:
+        #             self.reset_game_info()
+        #             self.done = True
+        # elif self.cursor.state == c.TALLMODE:
+        #         self.cursor.rect.y = 418
+        #         if keys[pg.K_UP]:
+        #             self.cursor.state = c.DEJAVUMODE
+        #         if keys[pg.K_DOWN]:
+        #             self.cursor.state = c.LUIGIMODE
+        #         for input in input_list:
+        #             if keys[input]:
+        #                 self.reset_game_info()
+        #                 self.done = True
+        # elif self.cursor.state == c.LUIGIMODE:
+        #     self.cursor.rect.y = 448
+        #     if keys[pg.K_UP]:
+        #         self.cursor.state = c.TALLMODE
+        #     if keys[pg.K_DOWN]:
+        #         self.cursor.state = c.ENEMYMODE
+        #     for input in input_list:
+        #         if keys[input]:
+        #             self.reset_game_info()
+        #             self.done = True
+        # elif self.cursor.state == c.ENEMYMODE:
+        #     self.cursor.rect.y = 478
+        #     if keys[pg.K_UP]:
+        #         self.cursor.state = c.LUIGIMODE
+        #     if keys[pg.K_DOWN]:
+        #         self.cursor.state = c.HARDMODE
+        #     for input in input_list:
+        #         if keys[input]:
+        #             self.reset_game_info()
+        #             self.done = True
+        # elif self.cursor.state == c.HARDMODE:
+        #     self.cursor.rect.y = 508
+        #     if keys[pg.K_UP]:
+        #         self.cursor.state = c.ENEMYMODE
+        #     for input in input_list:
+        #         if keys[input]:
+        #             self.reset_game_info()
+        #             self.done = True
+        # time.sleep(0.09)
+
+        #CLASSIC - DEJAVU - TALL - LUIGI - ENEMY - HARD
 
 
     def reset_game_info(self):
