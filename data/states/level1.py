@@ -21,6 +21,7 @@ class Level1(tools._State):
     def __init__(self):
         tools._State.__init__(self)
 
+
     def startup(self, current_time, persist):
         """Called when the State object is created"""
         self.game_info = persist
@@ -50,7 +51,7 @@ class Level1(tools._State):
         self.setup_mario()
         self.setup_checkpoints()
         self.setup_spritegroups()
-
+        self.mario.load_images_from_sheet()
 
     def setup_background(self):
         """Sets the background image, rect and scales it to the correct
@@ -309,6 +310,7 @@ class Level1(tools._State):
     def setup_mario(self):
         """Places Mario at the beginning of the level"""
         self.mario = mario.Mario()
+        self.mario.load_images_from_sheet()
         self.mario.rect.x = self.viewport.x + 110
         self.mario.rect.bottom = c.GROUND_HEIGHT
 
