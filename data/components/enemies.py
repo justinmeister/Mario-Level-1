@@ -14,7 +14,10 @@ class Enemy(pg.sprite.Sprite):
 
     def setup_enemy(self, x, y, direction, name, setup_frames):
         """Sets up various values for enemy"""
-        self.sprite_sheet = setup.GFX['smb_enemies_sheet']
+        if c.MODE == c.ENEMYMODE:
+            self.sprite_sheet = setup.GFX['smb_enemies_sheet_enemy']
+        else:
+            self.sprite_sheet = setup.GFX['smb_enemies_sheet']
         self.frames = []
         self.frame_index = 0
         self.animate_timer = 0

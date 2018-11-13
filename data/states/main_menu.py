@@ -1,3 +1,5 @@
+import time
+
 __author__ = 'justinarmstrong'
 
 import pygame as pg
@@ -40,7 +42,7 @@ class Menu(tools._State):
         dest = (220, 358)
         self.cursor.image, self.cursor.rect = self.get_image(
             24, 160, 8, 8, dest, setup.GFX['item_objects'])
-        self.cursor.state = c.PLAYER1
+        self.cursor.state = c.NORMALMODE
 
 
     def setup_mario(self):
@@ -106,19 +108,84 @@ class Menu(tools._State):
     def update_cursor(self, keys):
         """Update the position of the cursor"""
         input_list = [pg.K_RETURN, pg.K_a, pg.K_s]
+        self.cursor.rect.y = 358
+        # self.cursor.state = c.NORMALMODE;
+        # for input in input_list:
+        #      if keys[input]:
+        #          self.reset_game_info()
+        #          self.done = True
 
-        if self.cursor.state == c.PLAYER1:
+        if self.cursor.state == c.NORMALMODE:
             self.cursor.rect.y = 358
+            c.MODE = c.NORMALMODE;
             if keys[pg.K_DOWN]:
-                self.cursor.state = c.PLAYER2
+                self.cursor.state = c.DEJAVUMODE
+            time.sleep(0.1)
             for input in input_list:
                 if keys[input]:
                     self.reset_game_info()
                     self.done = True
-        elif self.cursor.state == c.PLAYER2:
-            self.cursor.rect.y = 403
+        elif self.cursor.state == c.DEJAVUMODE:
+            self.cursor.rect.y = 388
+            c.MODE = c.DEJAVUMODE
             if keys[pg.K_UP]:
-                self.cursor.state = c.PLAYER1
+                self.cursor.state = c.NORMALMODE
+            if keys[pg.K_DOWN]:
+                self.cursor.state = c.TALLMODE
+            time.sleep(0.1)
+            for input in input_list:
+                if keys[input]:
+                    self.reset_game_info()
+                    self.done = True
+        elif self.cursor.state == c.TALLMODE:
+                self.cursor.rect.y = 418
+                c.MODE = c.TALLMODE
+                if keys[pg.K_UP]:
+                    self.cursor.state = c.DEJAVUMODE
+                if keys[pg.K_DOWN]:
+                    self.cursor.state = c.LUIGIMODE
+                time.sleep(0.1)
+                for input in input_list:
+                    if keys[input]:
+                        self.reset_game_info()
+                        self.done = True
+        elif self.cursor.state == c.LUIGIMODE:
+            self.cursor.rect.y = 448
+            c.MODE = c.LUIGIMODE
+            if keys[pg.K_UP]:
+                self.cursor.state = c.TALLMODE
+            if keys[pg.K_DOWN]:
+                self.cursor.state = c.ENEMYMODE
+            time.sleep(0.1)
+            for input in input_list:
+                if keys[input]:
+                    self.reset_game_info()
+                    self.done = True
+        elif self.cursor.state == c.ENEMYMODE:
+            self.cursor.rect.y = 478
+            c.MODE = c.ENEMYMODE;
+            if keys[pg.K_UP]:
+                self.cursor.state = c.LUIGIMODE
+            # if keys[pg.K_DOWN]:
+            #     self.cursor.state = c.HARDMODE
+            time.sleep(0.1)
+            for input in input_list:
+                if keys[input]:
+                    self.reset_game_info()
+                    self.done = True
+        # elif self.cursor.state == c.HARDMODE:
+        #     self.cursor.rect.y = 508
+        #     c.MODE = c.HARDMODE;
+        #     if keys[pg.K_UP]:
+        #         self.cursor.state = c.ENEMYMODE
+        #     time.sleep(0.1)
+        #     for input in input_list:
+        #         if keys[input]:
+        #             self.reset_game_info()
+        #             self.done = True
+
+
+        #CLASSIC - DEJAVU - TALL - LUIGI - ENEMY - HARD
 
 
     def reset_game_info(self):
@@ -128,7 +195,7 @@ class Menu(tools._State):
         self.game_info[c.LIVES] = 3
         self.game_info[c.CURRENT_TIME] = 0.0
         self.game_info[c.LEVEL_STATE] = None
-
+        self.setup_mario()
         self.persist = self.game_info
 
 

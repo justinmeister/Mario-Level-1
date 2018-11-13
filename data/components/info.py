@@ -187,9 +187,13 @@ class OverheadInfo(object):
         self.life_total_label = []
         self.create_label(self.life_total_label, str(self.total_lives),
                           450, 285)
+        #ADD HERE A CONDITION TO VERIFY WHAT MODE IS SELECTED
 
-        self.sprite_sheet = setup.GFX['mario_bros']
-        self.mario_image = self.get_image(178, 32, 12, 16)
+        #self.sprite_sheet = setup.GFX['mario_bros']
+        if c.MODE != c.DEJAVUMODE:
+            self.mario_image = self.get_image(178, 32, 12, 16)
+        else:
+            self.mario_image = self.get_image(177, 32, 16, 16) #Sprite position and size for Mario_Dejavu
         self.mario_rect = self.mario_image.get_rect(center=(320, 290))
 
 
@@ -216,16 +220,25 @@ class OverheadInfo(object):
         """Create labels for the MAIN MENU screen"""
         player_one_game = []
         player_two_game = []
+        player_three_game = []
+        player_four_game = []
+        player_five_game = []
+        player_six_game = []
         top = []
         top_score = []
 
-        self.create_label(player_one_game, '1 PLAYER GAME', 272, 360)
-        self.create_label(player_two_game, '2 PLAYER GAME', 272, 405)
-        self.create_label(top, 'TOP - ', 290, 465)
-        self.create_label(top_score, '000000', 400, 465)
+        self.create_label(player_one_game, 'CLASSIC MODE', 272, 360)
+        self.create_label(player_two_game, 'DEJAVU MODE', 272, 390)
+        self.create_label(player_three_game, 'TALL MODE', 272, 420)
+        self.create_label(player_four_game, 'LUIGI MODE', 272, 450)
+        self.create_label(player_five_game, 'ENEMY MODE', 272, 480)
+        # self.create_label(player_six_game, 'HARD MODE', 272, 510)
+        #self.create_label(top, 'TOP - ', 290, 465)
+        #self.create_label(top_score, '000000', 400, 465)
 
-        self.main_menu_labels = [player_one_game, player_two_game,
-                                 top, top_score]
+        self.main_menu_labels = [player_one_game, player_two_game,player_three_game,player_four_game,player_five_game]
+                                 #,player_six_game]
+                                 #top, top_score]
 
 
     def update(self, level_info, mario=None):
