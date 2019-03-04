@@ -3,6 +3,7 @@ from ..states import level1
 from ..components import powerups
 from ..components import collider
 from .. import constants as c
+from ..components import enemies
 from pprint import pprint
 
 
@@ -19,8 +20,29 @@ class TestLevel1(unittest.TestCase):
                         c.MARIO_DEAD: False}
 
     def test_adjust_mario_position(self):
-        # TODO
-        None
+        l1 = level1.Level1()
+        l1.startup(0.0, self.persist)
+        l1.viewport.x = 200
+
+        # mario in transition state, mario.x < viewport.x
+        l1.mario.in_transition_state = True
+        l1.adjust_mario_position()
+        self.assertEquals(l1.mario.rect.y, 498)
+        self.assertEquals(l1.mario.rect.x, 205)
+
+        # mario not in transition state, mario.x < viewport.x
+        l1.mario.in_transition_state = False
+        l1.mario.y_vel = 10
+        l1.adjust_mario_position()
+        self.assertEquals(l1.mario.rect.y, 498)
+        self.assertEquals(l1.mario.rect.x, 205)
+
+        # mario not in transition state, mario.x > viewport.x
+        l1.mario.rect.x = 500
+        l1.adjust_mario_position()
+        self.assertEquals(l1.mario.rect.y, 498)
+        self.assertEquals(l1.mario.rect.x, 500)
+
 
     def test_adjust_mario_for_x_collisions(self):
         # Setup
@@ -39,6 +61,31 @@ class TestLevel1(unittest.TestCase):
         self.assertEqual(l1.mario.rect.x, 110)
         self.assertEqual(l1.mario.rect.right, 140)
         self.assertEqual(l1.mario.x_vel, 0)
+
+    def test_adjust_enemy_position(self):
+        # Setup
+        goombaA = enemies.Goomba()
+        goombaA.rect.x = 200
+        goombaA.x_vel = 10
+        goombaB = enemies.Goomba()
+        goombaB.rect.x = 250
+        goombaB.x_vel = -10
+        goombaC = enemies.Goomba()
+        goombaC.rect.x = 150
+        goombaC.x_vel = 10
+        l1 = level1.Level1()
+        l1.startup(0.0, self.persist)
+        l1.enemy_group.add(goombaA, goombaB, goombaC)
+        # A and B collide, C collides with nothing
+        l1.adjust_enemy_position()
+
+        # Assertions
+        self.assertEquals(goombaA.rect.x, 280)
+        self.assertEquals(goombaA.x_vel, 2)
+        self.assertEquals(goombaB.rect.x, 240)
+        self.assertEquals(goombaB.x_vel, -2)
+        self.assertEquals(goombaC.rect.x, 160)
+        self.assertEquals(goombaC.x_vel, 10)
 
     def test_adjust_fireball_position(self):
         # Setup
@@ -92,7 +139,7 @@ class TestLevel1(unittest.TestCase):
         self.assertEquals(fb2.y_vel, -8)
         self.assertEquals(fb2.x_vel, -15)
         self.assertEqual(fb2.state, 'bouncing')
-        
+
 
 
 if __name__ == '__main__':
