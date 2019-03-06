@@ -1,1 +1,2 @@
 python -m data.tests.testLevel1
+python -m data.tests.test_enemies
