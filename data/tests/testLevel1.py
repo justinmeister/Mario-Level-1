@@ -80,10 +80,10 @@ class TestLevel1(unittest.TestCase):
         l1.adjust_enemy_position()
 
         # Assertions
-        self.assertEquals(goombaA.rect.x, 280)
-        self.assertEquals(goombaA.x_vel, 2)
-        self.assertEquals(goombaB.rect.x, 240)
-        self.assertEquals(goombaB.x_vel, -2)
+        self.assertEquals(goombaA.rect.x, 210)
+        self.assertEquals(goombaA.x_vel, -2)
+        self.assertEquals(goombaB.rect.x, 250)
+        self.assertEquals(goombaB.x_vel, 2)
         self.assertEquals(goombaC.rect.x, 160)
         self.assertEquals(goombaC.x_vel, 10)
 
