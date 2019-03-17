@@ -65,7 +65,17 @@ class Flag(pg.sprite.Sprite):
 
 
 class Pole(pg.sprite.Sprite):
-    """Pole that the flag is on top of"""
+    """Pole that the flag is on top of
+    Following Properties:
+        Sprite
+
+    Attributes:
+        _Sprite__g: A associative array of all groups the sprite belongs to.
+        frames: array of collision frames matching the sprite image dimensions.
+        image: The dimensions of the sprite image and orientation
+        rect: A rect object that holds relative directions for the sprite
+        sprite_sheet: Surface object that holds dimensions for the sprite sheet
+    """
     def __init__(self, x, y):
         super(Pole, self).__init__()
         self.sprite_sheet = setup.GFX['tile_set']
@@ -95,14 +105,23 @@ class Pole(pg.sprite.Sprite):
 
 
 class Finial(pg.sprite.Sprite):
-    """The top of the flag pole"""
+    """The top of the flag pole
+    Following Properties:
+        Sprite
+
+    Attributes:
+        _Sprite__g: A associative array of all groups the sprite belongs to.
+        frames: array of collision frames matching the sprite image dimensions.
+        image: The dimensions of the sprite image and orientation
+        rect: A rect object that holds relative directions for the sprite
+        sprite_sheet: Surface object that holds dimensions for the sprite sheet
+    """
     def __init__(self, x, y):
         super(Finial, self).__init__()
         self.sprite_sheet = setup.GFX['tile_set']
         self.frames = []
         self.frames.append(
             self.get_image(228, 120, 8, 8))
-        self.setup_frames()
         self.image = self.frames[0]
         self.rect = self.image.get_rect()
         self.rect.centerx = x
