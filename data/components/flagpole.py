@@ -24,7 +24,6 @@ class Flag(pg.sprite.Sprite):
         self.frames = []
         self.frames.append(
             self.get_image(128, 32, 16, 16))
-        self.setup_images()
         self.image = self.frames[0]
         self.rect = self.image.get_rect()
         self.rect.right = x
