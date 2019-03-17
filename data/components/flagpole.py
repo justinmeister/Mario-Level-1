@@ -4,11 +4,24 @@ import pygame as pg
 from .. import setup
 from .. import constants as c
 
+
 class Flag(pg.sprite.Sprite):
-    """Flag on top of the flag pole at the end of the level"""
+    """Flag on top of the flag pole at the end of the level
+    Following Properties:
+        Sprite
+
+    Attributes:
+        _Sprite__g: A associative array of all groups the sprite belongs to.
+        frames: array of collision frames matching the sprite image dimensions.
+        image: The dimensions of the sprite image and orientation
+        rect: A rect object that holds relative directions for the sprite
+        sprite_sheet: Surface object that holds dimensions for the sprite sheet
+        state: A string to be matched against
+    """
     def __init__(self, x, y):
         super(Flag, self).__init__()
         self.sprite_sheet = setup.GFX['item_objects']
+        self.frames = []
         self.setup_images()
         self.image = self.frames[0]
         self.rect = self.image.get_rect()
@@ -16,14 +29,11 @@ class Flag(pg.sprite.Sprite):
         self.rect.y = y
         self.state = c.TOP_OF_POLE
 
-
     def setup_images(self):
         """Sets up a list of image frames"""
-        self.frames = []
 
         self.frames.append(
             self.get_image(128, 32, 16, 16))
-
 
     def get_image(self, x, y, width, height):
         """Extracts image from sprite sheet"""
@@ -37,11 +47,9 @@ class Flag(pg.sprite.Sprite):
                                     int(rect.height*c.BRICK_SIZE_MULTIPLIER)))
         return image
 
-
     def update(self, *args):
         """Updates behavior"""
         self.handle_state()
-
 
     def handle_state(self):
         """Determines behavior based on state"""
@@ -51,7 +59,6 @@ class Flag(pg.sprite.Sprite):
             self.sliding_down()
         elif self.state == c.BOTTOM_OF_POLE:
             self.image = self.frames[0]
-
 
     def sliding_down(self):
         """State when Mario reaches flag pole"""
@@ -67,20 +74,18 @@ class Pole(pg.sprite.Sprite):
     def __init__(self, x, y):
         super(Pole, self).__init__()
         self.sprite_sheet = setup.GFX['tile_set']
+        self.frames = []
         self.setup_frames()
         self.image = self.frames[0]
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
-
     def setup_frames(self):
         """Create the frame list"""
-        self.frames = []
 
         self.frames.append(
             self.get_image(263, 144, 2, 16))
-
 
     def get_image(self, x, y, width, height):
         """Extracts image from sprite sheet"""
@@ -94,7 +99,6 @@ class Pole(pg.sprite.Sprite):
                                     int(rect.height*c.BRICK_SIZE_MULTIPLIER)))
         return image
 
-
     def update(self, *args):
         """Placeholder for update, since there is nothing to update"""
         pass
@@ -105,20 +109,18 @@ class Finial(pg.sprite.Sprite):
     def __init__(self, x, y):
         super(Finial, self).__init__()
         self.sprite_sheet = setup.GFX['tile_set']
+        self.frames = []
         self.setup_frames()
         self.image = self.frames[0]
         self.rect = self.image.get_rect()
         self.rect.centerx = x
         self.rect.bottom = y
 
-
     def setup_frames(self):
         """Creates the self.frames list"""
-        self.frames = []
 
         self.frames.append(
             self.get_image(228, 120, 8, 8))
-
 
     def get_image(self, x, y, width, height):
         """Extracts image from sprite sheet"""
@@ -131,7 +133,6 @@ class Finial(pg.sprite.Sprite):
                                    (int(rect.width*c.SIZE_MULTIPLIER),
                                     int(rect.height*c.SIZE_MULTIPLIER)))
         return image
-
 
     def update(self, *args):
         pass
