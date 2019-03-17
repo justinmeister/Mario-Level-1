@@ -22,18 +22,14 @@ class Flag(pg.sprite.Sprite):
         super(Flag, self).__init__()
         self.sprite_sheet = setup.GFX['item_objects']
         self.frames = []
+        self.frames.append(
+            self.get_image(128, 32, 16, 16))
         self.setup_images()
         self.image = self.frames[0]
         self.rect = self.image.get_rect()
         self.rect.right = x
         self.rect.y = y
         self.state = c.TOP_OF_POLE
-
-    def setup_images(self):
-        """Sets up a list of image frames"""
-
-        self.frames.append(
-            self.get_image(128, 32, 16, 16))
 
     def get_image(self, x, y, width, height):
         """Extracts image from sprite sheet"""
@@ -75,17 +71,12 @@ class Pole(pg.sprite.Sprite):
         super(Pole, self).__init__()
         self.sprite_sheet = setup.GFX['tile_set']
         self.frames = []
-        self.setup_frames()
+        self.frames.append(
+            self.get_image(263, 144, 2, 16))
         self.image = self.frames[0]
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-
-    def setup_frames(self):
-        """Create the frame list"""
-
-        self.frames.append(
-            self.get_image(263, 144, 2, 16))
 
     def get_image(self, x, y, width, height):
         """Extracts image from sprite sheet"""
@@ -110,17 +101,13 @@ class Finial(pg.sprite.Sprite):
         super(Finial, self).__init__()
         self.sprite_sheet = setup.GFX['tile_set']
         self.frames = []
+        self.frames.append(
+            self.get_image(228, 120, 8, 8))
         self.setup_frames()
         self.image = self.frames[0]
         self.rect = self.image.get_rect()
         self.rect.centerx = x
         self.rect.bottom = y
-
-    def setup_frames(self):
-        """Creates the self.frames list"""
-
-        self.frames.append(
-            self.get_image(228, 120, 8, 8))
 
     def get_image(self, x, y, width, height):
         """Extracts image from sprite sheet"""
