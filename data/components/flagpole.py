@@ -135,6 +135,3 @@ class Finial(pg.sprite.Sprite):
 
     def update(self, *args):
         pass
-
-
-
