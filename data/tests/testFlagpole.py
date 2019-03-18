@@ -9,7 +9,9 @@ from pprint import pprint
 class TestFlagpole(unittest.TestCase):
 
     def setUp(self):
-        self.flag = flagpole.Finial(1, 1)
+        self.flag = flagpole.Pole(1, 1)
+        self.pole = flagpole.Pole(1, 1)
+        self.final = flagpole.Pole(1, 1)
         self.hi = "Hi there"
 
     def test_flag(self):
