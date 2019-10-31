@@ -2,7 +2,7 @@ __author__ = 'justinarmstrong'
 
 import os
 import pygame as pg
-
+import constants as c
 keybinding = {
     'action':pg.K_s,
     'jump':pg.K_a,
@@ -40,6 +40,10 @@ class Control(object):
         elif self.state.done:
             self.flip_state()
         self.state.update(self.screen, self.keys, self.current_time)
+        if(self.state_name) == c.LEVEL1:
+            pg.image.save(self.screen, "frame.png")
+            print("Score: ", self.state_dict[c.LEVEL1].game_info[c.SCORE])
+            print("Coins: ", self.state_dict[c.LEVEL1].game_info[c.COIN_TOTAL])
 
     def flip_state(self):
         previous, self.state_name = self.state_name, self.state.next
