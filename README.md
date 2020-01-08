@@ -1,4 +1,4 @@
-Super Mario Bros Level 1
+[![Run on Repl.it](https://repl.it/badge/github/justinmeister/Mario-Level-1)](https://repl.it/github/justinmeister/Mario-Level-1)
 =============
 
 An attempt to recreate the first level of Super Mario Bros.
