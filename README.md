@@ -31,3 +31,4 @@ http://www.youtube.com/watch?v=HBbzYKMfx5Y
 DISCLAIMER:
 
 This project is intended for non-commercial educational purposes.
+[![Run on Repl.it](https://repl.it/badge/github/justinmeister/Mario-Level-1)](https://repl.it/github/justinmeister/Mario-Level-1)
