@@ -35,18 +35,25 @@ BACKGROUND_MULTIPLER = 2.679
 GROUND_HEIGHT = SCREEN_HEIGHT - 62
 
 #MARIO FORCES
-WALK_ACCEL = .15
+# WALK_ACCEL = .15
+WALK_ACCEL = 10 # R: this makes mario instantly move at speed 10
+                #    and continue accelerating at this rate, but
+                #    I capped the speed at 10 below.
 RUN_ACCEL = 20
 SMALL_TURNAROUND = .35
 
 GRAVITY = 1.01
-JUMP_GRAVITY = .31
-JUMP_VEL = -10
+# JUMP_GRAVITY = .31
+JUMP_GRAVITY = .17 # R: this decreases the gravity
+# JUMP_VEL = -10
+JUMP_VEL = -20 # R: this makes mario jump really fast
 FAST_JUMP_VEL = -12.5
 MAX_Y_VEL = 11
 
-MAX_RUN_SPEED = 800
-MAX_WALK_SPEED = 6
+# MAX_RUN_SPEED = 800
+MAX_RUN_SPEED = 10 # R: this limits mario's run speed to 10
+# MAX_WALK_SPEED = 60
+MAX_WALK_SPEED = 10 # R: this limits mario's walk speed to 10
 
 
 #Mario States
