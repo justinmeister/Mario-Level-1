@@ -20,7 +20,7 @@ class OverheadInfo(object):
     def __init__(self, game_info, state):
         self.sprite_sheet = setup.GFX['text_images']
         self.coin_total = game_info[c.COIN_TOTAL]
-        self.time = 401
+        self.time = 501
         self.current_time = 0
         self.total_lives = game_info[c.LIVES]
         self.top_score = game_info[c.TOP_SCORE]
