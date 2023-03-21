@@ -22,9 +22,16 @@ To install dependencies:
 
 	pip install -r requirements.txt
 
+HOW TO RUN:
+
+	python mario_level_1.py
+
+Or:
+
+	.\mario_level_1.exe
+
 VIDEO DEMO:
 
-http://www.youtube.com/watch?v=HBbzYKMfx5Y
    
 DISCLAIMER:
 
