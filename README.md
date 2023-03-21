@@ -20,7 +20,7 @@ Pygame 2.3.0
 
 To install dependencies:
 
-	pip3 install pygame
+	pip3 install -r requirements.txt
 
 HOW TO RUN:
 
