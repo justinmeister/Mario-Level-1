@@ -396,20 +396,20 @@ class Mario(pg.sprite.Sprite):
         return image
 
 
-    def update(self, keys, game_info, fire_group):
+    def update(self, keys, game_info, fire_group, speech_events):
         """Updates Mario's states and animations once per frame"""
         self.current_time = game_info[c.CURRENT_TIME]
-        self.handle_state(keys, fire_group)
+        self.handle_state(keys, fire_group, speech_events)
         self.check_for_special_state()
         self.animation()
 
 
-    def handle_state(self, keys, fire_group):
+    def handle_state(self, keys, fire_group, speech_events):
         """Determines Mario's behavior based on his state"""
         if self.state == c.STAND:
-            self.standing(keys, fire_group)
+            self.standing(keys, fire_group, speech_events)
         elif self.state == c.WALK:
-            self.walking(keys, fire_group)
+            self.walking(keys, fire_group, speech_events)
         elif self.state == c.JUMP:
             self.jumping(keys, fire_group)
         elif self.state == c.FALL:
@@ -432,7 +432,7 @@ class Mario(pg.sprite.Sprite):
             self.falling_at_end_of_level()
 
 
-    def standing(self, keys, fire_group):
+    def standing(self, keys, fire_group, speech_events):
         """This function is called if Mario is standing still"""
         self.check_to_allow_jump(keys)
         self.check_to_allow_fireball(keys)
@@ -448,15 +448,15 @@ class Mario(pg.sprite.Sprite):
         if keys[tools.keybinding['down']]:
             self.crouching = True
 
-        if keys[tools.keybinding['left']]:
+        if speech_events and speech_events[-1][0].lower() == 'left':
             self.facing_right = False
             self.get_out_of_crouch()
             self.state = c.WALK
-        elif keys[tools.keybinding['right']]:
+        elif speech_events and speech_events[-1][0].lower() == 'right':
             self.facing_right = True
             self.get_out_of_crouch()
             self.state = c.WALK
-        elif keys[tools.keybinding['jump']]:
+        elif speech_events and speech_events[-1][0].lower() == 'jump' and speech_events[-1][1] == False:
             if self.allow_jump:
                 if self.big:
                     setup.SFX['big_jump'].play()
@@ -464,6 +464,7 @@ class Mario(pg.sprite.Sprite):
                     setup.SFX['small_jump'].play()
                 self.state = c.JUMP
                 self.y_vel = c.JUMP_VEL
+                speech_events[-1][1] = True
         else:
             self.state = c.STAND
 
@@ -527,7 +528,7 @@ class Mario(pg.sprite.Sprite):
         return len(fireball_list)
 
 
-    def walking(self, keys, fire_group):
+    def walking(self, keys, fire_group, speech_events):
         """This function is called when Mario is in a walking state
         It changes the frame, checks for holding down the run button,
         checks for a jump, then adjusts the state if necessary"""
@@ -557,20 +558,21 @@ class Mario(pg.sprite.Sprite):
             self.max_x_vel = c.MAX_WALK_SPEED
             self.x_accel = c.WALK_ACCEL
 
-        if keys[tools.keybinding['jump']]:
+        if speech_events and speech_events[-1][0].lower() == 'jump' and speech_events[-1][1] == False:
             if self.allow_jump:
                 if self.big:
                     setup.SFX['big_jump'].play()
                 else:
                     setup.SFX['small_jump'].play()
                 self.state = c.JUMP
+                speech_events[-1][1] = True
                 if self.x_vel > 4.5 or self.x_vel < -4.5:
                     self.y_vel = c.JUMP_VEL - .5
                 else:
                     self.y_vel = c.JUMP_VEL
 
 
-        if keys[tools.keybinding['left']]:
+        if speech_events and speech_events[-1][0].lower() == 'left':
             self.get_out_of_crouch()
             self.facing_right = False
             if self.x_vel > 0:
@@ -586,7 +588,7 @@ class Mario(pg.sprite.Sprite):
             elif self.x_vel < (self.max_x_vel * -1):
                 self.x_vel += self.x_accel
 
-        elif keys[tools.keybinding['right']]:
+        elif speech_events and speech_events[-1][0].lower() == 'right':
             self.get_out_of_crouch()
             self.facing_right = True
             if self.x_vel < 0:
@@ -601,6 +603,10 @@ class Mario(pg.sprite.Sprite):
                     self.x_vel = 0.5
             elif self.x_vel > self.max_x_vel:
                 self.x_vel -= self.x_accel
+
+        elif speech_events and speech_events[-1][0].lower() == 'stop':
+            self.get_out_of_crouch()
+            self.state = c.STAND
 
         else:
             if self.facing_right:

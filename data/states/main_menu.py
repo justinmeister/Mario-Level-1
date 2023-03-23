@@ -7,7 +7,7 @@ from .. components import info, mario
 
 
 class Menu(tools._State):
-    def __init__(self):
+    def __init__(self, recognizer):
         """Initializes the state"""
         tools._State.__init__(self)
         persist = {c.COIN_TOTAL: 0,
@@ -19,6 +19,7 @@ class Menu(tools._State):
                    c.CAMERA_START_X: 0,
                    c.MARIO_DEAD: False}
         self.startup(0.0, persist)
+        self.recognizer = recognizer
 
     def startup(self, current_time, persist):
         """Called every time the game's state becomes this one.  Initializes
@@ -92,7 +93,7 @@ class Menu(tools._State):
         """Updates the state every refresh"""
         self.current_time = current_time
         self.game_info[c.CURRENT_TIME] = self.current_time
-        self.update_cursor(keys)
+        self.update_cursor(keys, self.recognizer.all_events)
         self.overhead_info.update(self.game_info)
 
         surface.blit(self.background, self.viewport, self.viewport)
@@ -103,22 +104,22 @@ class Menu(tools._State):
         self.overhead_info.draw(surface)
 
 
-    def update_cursor(self, keys):
+    def update_cursor(self, keys, speech_events):
         """Update the position of the cursor"""
-        input_list = [pg.K_RETURN, pg.K_a, pg.K_s]
-
         if self.cursor.state == c.PLAYER1:
             self.cursor.rect.y = 358
             if keys[pg.K_DOWN]:
                 self.cursor.state = c.PLAYER2
-            for input in input_list:
-                if keys[input]:
-                    self.reset_game_info()
-                    self.done = True
+            if speech_events and speech_events[-1][0].lower() == 'start' and speech_events[-1][1] == False:
+                self.reset_game_info()
+                self.done = True
         elif self.cursor.state == c.PLAYER2:
             self.cursor.rect.y = 403
             if keys[pg.K_UP]:
                 self.cursor.state = c.PLAYER1
+        
+        if speech_events:
+            speech_events[-1][1] = True
 
 
     def reset_game_info(self):
