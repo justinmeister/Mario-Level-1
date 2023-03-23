@@ -48,7 +48,7 @@ class Level1(tools._State):
         self.setup_coin_boxes()
         self.setup_flag_pole()
         self.setup_enemies()
-        self.setup_mario()
+        self.setup_mario(self.recognizer)
         self.setup_checkpoints()
         self.setup_spritegroups()
 
@@ -307,9 +307,9 @@ class Level1(tools._State):
                                  enemy_group10]
 
 
-    def setup_mario(self):
+    def setup_mario(self, recognizer):
         """Places Mario at the beginning of the level"""
-        self.mario = mario.Mario()
+        self.mario = mario.Mario(recognizer)
         self.mario.rect.x = self.viewport.x + 110
         self.mario.rect.bottom = c.GROUND_HEIGHT
 
@@ -404,7 +404,7 @@ class Level1(tools._State):
 
     def update_all_sprites(self, keys, speech_events):
         """Updates the location of all sprites on the screen."""
-        self.mario.update(keys, self.game_info, self.powerup_group, speech_events)
+        self.mario.update(keys, self.game_info, self.powerup_group)
         for score in self.moving_score_list:
             score.update(self.moving_score_list, self.game_info)
         if self.flag_score:

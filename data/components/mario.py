@@ -7,7 +7,9 @@ from . import powerups
 
 
 class Mario(pg.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, recognizer):
+        self.recognizer = recognizer
+
         pg.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['mario_bros']
 
@@ -396,10 +398,10 @@ class Mario(pg.sprite.Sprite):
         return image
 
 
-    def update(self, keys, game_info, fire_group, speech_events):
+    def update(self, keys, game_info, fire_group):
         """Updates Mario's states and animations once per frame"""
         self.current_time = game_info[c.CURRENT_TIME]
-        self.handle_state(keys, fire_group, speech_events)
+        self.handle_state(keys, fire_group, self.recognizer.all_events)
         self.check_for_special_state()
         self.animation()
 
@@ -448,15 +450,15 @@ class Mario(pg.sprite.Sprite):
         if keys[tools.keybinding['down']]:
             self.crouching = True
 
-        if speech_events and speech_events[-1][0].lower() == 'left':
+        if keys[tools.keybinding['left']] or (speech_events and speech_events[-1][0].lower() == 'left'):
             self.facing_right = False
             self.get_out_of_crouch()
             self.state = c.WALK
-        elif speech_events and speech_events[-1][0].lower() == 'right':
+        elif keys[tools.keybinding['right']] or (speech_events and speech_events[-1][0].lower() == 'right'):
             self.facing_right = True
             self.get_out_of_crouch()
             self.state = c.WALK
-        elif speech_events and speech_events[-1][0].lower() == 'jump' and speech_events[-1][1] == False:
+        elif keys[tools.keybinding['jump']] or (speech_events and speech_events[-1][0].lower() == 'jump' and speech_events[-1][1] == False):
             if self.allow_jump:
                 if self.big:
                     setup.SFX['big_jump'].play()
@@ -558,7 +560,7 @@ class Mario(pg.sprite.Sprite):
             self.max_x_vel = c.MAX_WALK_SPEED
             self.x_accel = c.WALK_ACCEL
 
-        if speech_events and speech_events[-1][0].lower() == 'jump' and speech_events[-1][1] == False:
+        if keys[tools.keybinding['jump']] or (speech_events and speech_events[-1][0].lower() == 'jump' and speech_events[-1][1] == False):
             if self.allow_jump:
                 if self.big:
                     setup.SFX['big_jump'].play()
@@ -572,7 +574,7 @@ class Mario(pg.sprite.Sprite):
                     self.y_vel = c.JUMP_VEL
 
 
-        if speech_events and speech_events[-1][0].lower() == 'left':
+        if keys[tools.keybinding['left']] or (speech_events and speech_events[-1][0].lower() == 'left'):
             self.get_out_of_crouch()
             self.facing_right = False
             if self.x_vel > 0:
@@ -588,7 +590,7 @@ class Mario(pg.sprite.Sprite):
             elif self.x_vel < (self.max_x_vel * -1):
                 self.x_vel += self.x_accel
 
-        elif speech_events and speech_events[-1][0].lower() == 'right':
+        elif keys[tools.keybinding['right']] or (speech_events and speech_events[-1][0].lower() == 'right'):
             self.get_out_of_crouch()
             self.facing_right = True
             if self.x_vel < 0:

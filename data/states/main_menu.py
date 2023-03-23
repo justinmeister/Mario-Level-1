@@ -18,10 +18,10 @@ class Menu(tools._State):
                    c.LEVEL_STATE: None,
                    c.CAMERA_START_X: 0,
                    c.MARIO_DEAD: False}
-        self.startup(0.0, persist)
+        self.startup(0.0, persist, recognizer)
         self.recognizer = recognizer
 
-    def startup(self, current_time, persist):
+    def startup(self, current_time, persist, recognizer):
         """Called every time the game's state becomes this one.  Initializes
         certain values"""
         self.next = c.LOAD_SCREEN
@@ -31,7 +31,7 @@ class Menu(tools._State):
 
         self.sprite_sheet = setup.GFX['title_screen']
         self.setup_background()
-        self.setup_mario()
+        self.setup_mario(recognizer)
         self.setup_cursor()
 
 
@@ -44,9 +44,9 @@ class Menu(tools._State):
         self.cursor.state = c.PLAYER1
 
 
-    def setup_mario(self):
+    def setup_mario(self, recognizer):
         """Places Mario at the beginning of the level"""
-        self.mario = mario.Mario()
+        self.mario = mario.Mario(recognizer)
         self.mario.rect.x = 110
         self.mario.rect.bottom = c.GROUND_HEIGHT
 
