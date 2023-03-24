@@ -109,15 +109,16 @@ class Menu(tools._State):
         if self.cursor.state == c.PLAYER1:
             self.cursor.rect.y = 358
             if keys[pg.K_DOWN] or speech_events and speech_events[-1][0].lower() == 'down' and speech_events[-1][1] == False:
-                print("Cursor Down")
+                print("down")
                 self.cursor.state = c.PLAYER2
             if speech_events and speech_events[-1][0].lower() == 'start' and speech_events[-1][1] == False:
+                print("start")
                 self.reset_game_info()
                 self.done = True
         elif self.cursor.state == c.PLAYER2:
             self.cursor.rect.y = 403
             if keys[pg.K_UP] or speech_events and speech_events[-1][0].lower() == 'up' and speech_events[-1][1] == False:
-                print("Cursor Up")
+                print("up")
                 self.cursor.state = c.PLAYER1
         
         if speech_events:
