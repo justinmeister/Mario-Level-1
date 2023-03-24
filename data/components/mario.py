@@ -451,14 +451,17 @@ class Mario(pg.sprite.Sprite):
             self.crouching = True
 
         if keys[tools.keybinding['left']] or (speech_events and speech_events[-1][0].lower() == 'left'):
+            print('left')
             self.facing_right = False
             self.get_out_of_crouch()
             self.state = c.WALK
         elif keys[tools.keybinding['right']] or (speech_events and speech_events[-1][0].lower() == 'right'):
+            print('right')
             self.facing_right = True
             self.get_out_of_crouch()
             self.state = c.WALK
         elif keys[tools.keybinding['jump']] or (speech_events and speech_events[-1][0].lower() == 'jump' and speech_events[-1][1] == False):
+            print('jump')
             if self.allow_jump:
                 if self.big:
                     setup.SFX['big_jump'].play()
@@ -561,6 +564,7 @@ class Mario(pg.sprite.Sprite):
             self.x_accel = c.WALK_ACCEL
 
         if keys[tools.keybinding['jump']] or (speech_events and speech_events[-1][0].lower() == 'jump' and speech_events[-1][1] == False):
+            print('jump')
             if self.allow_jump:
                 if self.big:
                     setup.SFX['big_jump'].play()
@@ -575,6 +579,7 @@ class Mario(pg.sprite.Sprite):
 
 
         if keys[tools.keybinding['left']] or (speech_events and speech_events[-1][0].lower() == 'left'):
+            print('left')
             self.get_out_of_crouch()
             self.facing_right = False
             if self.x_vel > 0:
@@ -591,6 +596,7 @@ class Mario(pg.sprite.Sprite):
                 self.x_vel += self.x_accel
 
         elif keys[tools.keybinding['right']] or (speech_events and speech_events[-1][0].lower() == 'right'):
+            print('right')
             self.get_out_of_crouch()
             self.facing_right = True
             if self.x_vel < 0:
@@ -607,6 +613,7 @@ class Mario(pg.sprite.Sprite):
                 self.x_vel -= self.x_accel
 
         elif speech_events and speech_events[-1][0].lower() == 'stop':
+            print('stop')
             self.get_out_of_crouch()
             self.state = c.STAND
 
