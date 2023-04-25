@@ -18,8 +18,9 @@ from .. components import castle_flag
 
 
 class Level1(tools._State):
-    def __init__(self):
+    def __init__(self, recognizer):
         tools._State.__init__(self)
+        self.recognizer = recognizer
 
     def startup(self, current_time, persist):
         """Called when the State object is created"""
@@ -47,7 +48,7 @@ class Level1(tools._State):
         self.setup_coin_boxes()
         self.setup_flag_pole()
         self.setup_enemies()
-        self.setup_mario()
+        self.setup_mario(self.recognizer)
         self.setup_checkpoints()
         self.setup_spritegroups()
 
@@ -306,9 +307,9 @@ class Level1(tools._State):
                                  enemy_group10]
 
 
-    def setup_mario(self):
+    def setup_mario(self, recognizer):
         """Places Mario at the beginning of the level"""
-        self.mario = mario.Mario()
+        self.mario = mario.Mario(recognizer)
         self.mario.rect.x = self.viewport.x + 110
         self.mario.rect.bottom = c.GROUND_HEIGHT
 
@@ -354,19 +355,19 @@ class Level1(tools._State):
     def update(self, surface, keys, current_time):
         """Updates Entire level using states.  Called by the control object"""
         self.game_info[c.CURRENT_TIME] = self.current_time = current_time
-        self.handle_states(keys)
+        self.handle_states(keys, self.recognizer.all_events)
         self.check_if_time_out()
         self.blit_everything(surface)
         self.sound_manager.update(self.game_info, self.mario)
 
 
 
-    def handle_states(self, keys):
+    def handle_states(self, keys, speech_events):
         """If the level is in a FROZEN state, only mario will update"""
         if self.state == c.FROZEN:
             self.update_during_transition_state(keys)
         elif self.state == c.NOT_FROZEN:
-            self.update_all_sprites(keys)
+            self.update_all_sprites(keys, speech_events)
         elif self.state == c.IN_CASTLE:
             self.update_while_in_castle()
         elif self.state == c.FLAG_AND_FIREWORKS:
@@ -401,7 +402,7 @@ class Level1(tools._State):
                 self.game_info[c.LEVEL_STATE] = self.state = c.NOT_FROZEN
 
 
-    def update_all_sprites(self, keys):
+    def update_all_sprites(self, keys, speech_events):
         """Updates the location of all sprites on the screen."""
         self.mario.update(keys, self.game_info, self.powerup_group)
         for score in self.moving_score_list:

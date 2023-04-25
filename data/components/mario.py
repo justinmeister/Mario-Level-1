@@ -7,7 +7,9 @@ from . import powerups
 
 
 class Mario(pg.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, recognizer):
+        self.recognizer = recognizer
+
         pg.sprite.Sprite.__init__(self)
         self.sprite_sheet = setup.GFX['mario_bros']
 
@@ -399,21 +401,21 @@ class Mario(pg.sprite.Sprite):
     def update(self, keys, game_info, fire_group):
         """Updates Mario's states and animations once per frame"""
         self.current_time = game_info[c.CURRENT_TIME]
-        self.handle_state(keys, fire_group)
+        self.handle_state(keys, fire_group, self.recognizer.all_events)
         self.check_for_special_state()
         self.animation()
 
 
-    def handle_state(self, keys, fire_group):
+    def handle_state(self, keys, fire_group, speech_events):
         """Determines Mario's behavior based on his state"""
         if self.state == c.STAND:
-            self.standing(keys, fire_group)
+            self.standing(keys, fire_group, speech_events)
         elif self.state == c.WALK:
-            self.walking(keys, fire_group)
+            self.walking(keys, fire_group, speech_events)
         elif self.state == c.JUMP:
-            self.jumping(keys, fire_group)
+            self.jumping(keys, fire_group, speech_events)
         elif self.state == c.FALL:
-            self.falling(keys, fire_group)
+            self.falling(keys, fire_group, speech_events)
         elif self.state == c.DEATH_JUMP:
             self.jumping_to_death()
         elif self.state == c.SMALL_TO_BIG:
@@ -432,31 +434,36 @@ class Mario(pg.sprite.Sprite):
             self.falling_at_end_of_level()
 
 
-    def standing(self, keys, fire_group):
+    def standing(self, keys, fire_group, speech_events):
         """This function is called if Mario is standing still"""
         self.check_to_allow_jump(keys)
-        self.check_to_allow_fireball(keys)
+        self.check_to_allow_fireball(keys, speech_events)
         
         self.frame_index = 0
         self.x_vel = 0
         self.y_vel = 0
 
-        if keys[tools.keybinding['action']]:
+        if keys[tools.keybinding['action']] or (speech_events and speech_events[-1][0].lower() == 'fire'):
             if self.fire and self.allow_fireball:
                 self.shoot_fireball(fire_group)
 
-        if keys[tools.keybinding['down']]:
+        if keys[tools.keybinding['down']] or (speech_events and speech_events[-1][0].lower() == 'down'):
+            print('down')
             self.crouching = True
 
-        if keys[tools.keybinding['left']]:
+        if keys[tools.keybinding['left']] or (speech_events and speech_events[-1][0].lower() == 'left'):
+            print('left')
             self.facing_right = False
             self.get_out_of_crouch()
             self.state = c.WALK
-        elif keys[tools.keybinding['right']]:
+        elif keys[tools.keybinding['right']] or (speech_events and speech_events[-1][0].lower() == 'right'):
+            print('right')
             self.facing_right = True
             self.get_out_of_crouch()
             self.state = c.WALK
-        elif keys[tools.keybinding['jump']]:
+        elif keys[tools.keybinding['jump']] or (speech_events and speech_events[-1][0].lower() == 'jump' and speech_events[-1][1] == False):
+            print('jump')
+            self.get_out_of_crouch()
             if self.allow_jump:
                 if self.big:
                     setup.SFX['big_jump'].play()
@@ -464,10 +471,15 @@ class Mario(pg.sprite.Sprite):
                     setup.SFX['small_jump'].play()
                 self.state = c.JUMP
                 self.y_vel = c.JUMP_VEL
+                speech_events[-1][1] = True
+        elif speech_events and speech_events[-1][0].lower() == 'stop':
+            print('stop')
+            self.get_out_of_crouch()
+            self.state = c.STAND
         else:
             self.state = c.STAND
 
-        if not keys[tools.keybinding['down']]:
+        if not speech_events and speech_events[-1][0].lower() == 'down':
             self.get_out_of_crouch()
 
 
@@ -483,6 +495,7 @@ class Mario(pg.sprite.Sprite):
         self.rect.bottom = bottom
         self.rect.x = left
         self.crouching = False
+        
 
 
     def check_to_allow_jump(self, keys):
@@ -491,9 +504,9 @@ class Mario(pg.sprite.Sprite):
             self.allow_jump = True
 
 
-    def check_to_allow_fireball(self, keys):
+    def check_to_allow_fireball(self, keys, speech_events):
         """Check to allow the shooting of a fireball"""
-        if not keys[tools.keybinding['action']]:
+        if not keys[tools.keybinding['action']] or (speech_events and speech_events[-1][0].lower() == 'down'):
             self.allow_fireball = True
 
 
@@ -527,13 +540,13 @@ class Mario(pg.sprite.Sprite):
         return len(fireball_list)
 
 
-    def walking(self, keys, fire_group):
+    def walking(self, keys, fire_group, speech_events):
         """This function is called when Mario is in a walking state
         It changes the frame, checks for holding down the run button,
         checks for a jump, then adjusts the state if necessary"""
 
         self.check_to_allow_jump(keys)
-        self.check_to_allow_fireball(keys)
+        self.check_to_allow_fireball(keys, speech_events)
 
         if self.frame_index == 0:
             self.frame_index += 1
@@ -548,7 +561,7 @@ class Mario(pg.sprite.Sprite):
 
                 self.walking_timer = self.current_time
 
-        if keys[tools.keybinding['action']]:
+        if keys[tools.keybinding['action']] or (speech_events and speech_events[-1][0].lower() == 'fire'):
             self.max_x_vel = c.MAX_RUN_SPEED
             self.x_accel = c.RUN_ACCEL
             if self.fire and self.allow_fireball:
@@ -557,20 +570,28 @@ class Mario(pg.sprite.Sprite):
             self.max_x_vel = c.MAX_WALK_SPEED
             self.x_accel = c.WALK_ACCEL
 
-        if keys[tools.keybinding['jump']]:
+        if keys[tools.keybinding['down']] or (speech_events and speech_events[-1][0].lower() == 'down'):
+            print('down')
+            self.crouching = True
+
+        if keys[tools.keybinding['jump']] or (speech_events and speech_events[-1][0].lower() == 'jump' and speech_events[-1][1] == False):
+            print('jump')
+            self.get_out_of_crouch()
             if self.allow_jump:
                 if self.big:
                     setup.SFX['big_jump'].play()
                 else:
                     setup.SFX['small_jump'].play()
                 self.state = c.JUMP
+                speech_events[-1][1] = True
                 if self.x_vel > 4.5 or self.x_vel < -4.5:
-                    self.y_vel = c.JUMP_VEL - .5
+                    self.y_vel = c.JUMP_VEL +10
                 else:
-                    self.y_vel = c.JUMP_VEL
+                    self.y_vel = c.JUMP_VEL +10
 
 
-        if keys[tools.keybinding['left']]:
+        if keys[tools.keybinding['left']] or (speech_events and speech_events[-1][0].lower() == 'left'):
+            print('left')
             self.get_out_of_crouch()
             self.facing_right = False
             if self.x_vel > 0:
@@ -586,7 +607,9 @@ class Mario(pg.sprite.Sprite):
             elif self.x_vel < (self.max_x_vel * -1):
                 self.x_vel += self.x_accel
 
-        elif keys[tools.keybinding['right']]:
+        elif keys[tools.keybinding['right']] or (speech_events and speech_events[-1][0].lower() == 'right'):
+            print('right')
+            #print(self.x_vel)
             self.get_out_of_crouch()
             self.facing_right = True
             if self.x_vel < 0:
@@ -601,6 +624,18 @@ class Mario(pg.sprite.Sprite):
                     self.x_vel = 0.5
             elif self.x_vel > self.max_x_vel:
                 self.x_vel -= self.x_accel
+
+        elif speech_events and speech_events[-1][0].lower() == 'stop':
+            print('stop')
+            self.get_out_of_crouch()
+            self.state = c.STAND
+
+        elif (speech_events and speech_events[-1][0].lower() == 'run' and speech_events[-1][1] == False) and self.x_vel > 0:
+             print('run')
+             self.x_vel += self.x_accel 
+            # print(self.x_vel)
+             if(self.x_vel == self.max_x_vel * 0.1):
+                 speech_events[-1][1] = True;  
 
         else:
             if self.facing_right:
@@ -630,13 +665,13 @@ class Mario(pg.sprite.Sprite):
         return animation_speed
 
 
-    def jumping(self, keys, fire_group):
+    def jumping(self, keys, fire_group, speech_events):
         """Called when Mario is in a JUMP state."""
         self.allow_jump = False
         self.frame_index = 4
         self.gravity = c.JUMP_GRAVITY
         self.y_vel += self.gravity
-        self.check_to_allow_fireball(keys)
+        self.check_to_allow_fireball(keys, speech_events)
 
         if self.y_vel >= 0 and self.y_vel < self.max_y_vel:
             self.gravity = c.GRAVITY
@@ -650,18 +685,18 @@ class Mario(pg.sprite.Sprite):
             if self.x_vel < self.max_x_vel:
                 self.x_vel += self.x_accel
 
-        if not keys[tools.keybinding['jump']]:
+        if not keys[tools.keybinding['jump']]: #this might be it.
             self.gravity = c.GRAVITY
             self.state = c.FALL
 
-        if keys[tools.keybinding['action']]:
+        if keys[tools.keybinding['action']] or (speech_events and speech_events[-1][0].lower() == 'fire'):
             if self.fire and self.allow_fireball:
                 self.shoot_fireball(fire_group)
 
 
-    def falling(self, keys, fire_group):
+    def falling(self, keys, fire_group, speech_events):
         """Called when Mario is in a FALL state"""
-        self.check_to_allow_fireball(keys)
+        self.check_to_allow_fireball(keys, speech_events)
         if self.y_vel < c.MAX_Y_VEL:
             self.y_vel += self.gravity
 
@@ -673,7 +708,7 @@ class Mario(pg.sprite.Sprite):
             if self.x_vel < self.max_x_vel:
                 self.x_vel += self.x_accel
 
-        if keys[tools.keybinding['action']]:
+        if keys[tools.keybinding['action']] or (speech_events and speech_events[-1][0].lower() == 'fire'):
             if self.fire and self.allow_fireball:
                 self.shoot_fireball(fire_group)
 

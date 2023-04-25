@@ -16,17 +16,22 @@ Arrow keys for direction
 
 DEPENDENCIES:
 
-Pygame 1.9.1 (Python 2)
+Pygame 2.3.0
 
-Pygame 1.9.2 (Python 3) - a little trickier to get going.
+To install dependencies:
 
-To install dependencies for Python 2.x:
+	pip3 install -r requirements.txt
 
-	pip install -r requirements.txt
+HOW TO RUN:
+
+	python mario_level_1.py
+
+Or:
+
+	.\mario_level_1.exe
 
 VIDEO DEMO:
 
-http://www.youtube.com/watch?v=HBbzYKMfx5Y
    
 DISCLAIMER:
 
