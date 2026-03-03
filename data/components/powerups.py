@@ -1,21 +1,41 @@
-__author__ = 'justinarmstrong'
+"""Powerup classes for Super Mario Bros."""
+
+from __future__ import annotations
+
+from typing import Any, Callable, Dict, List
 
 import pygame as pg
-from .. import constants as c
+
+from data import constants as c
 from .. import setup
+from ..tools import sprite_utils
 
 
 class Powerup(pg.sprite.Sprite):
     """Base class for all powerup_group"""
-    def __init__(self, x, y):
+
+    image: pg.Surface
+    rect: pg.Rect
+
+    def __init__(self, x: int, y: int) -> None:
         super(Powerup, self).__init__()
+        self.sprite_sheet: pg.Surface = setup.GFX["item_objects"]
+        self.frames: List[pg.Surface] = []
+        self.frame_index: int = 0
+        self.state: str = c.REVEAL
+        self.y_vel: float = -1
+        self.x_vel: float = 0
+        self.direction: str = c.RIGHT
+        self.box_height: int = y
+        self.gravity: float = 1
+        self.max_y_vel: float = 8
+        self.animate_timer: float = 0
+        self.name: str = ""
+        self.current_time: float = 0
 
-
-    def setup_powerup(self, x, y, name, setup_frames):
+    def setup_powerup(self, x: int, y: int, name: str, setup_frames: Callable[[], None]) -> None:
         """This separate setup function allows me to pass a different
         setup_frames method depending on what the powerup is"""
-        self.sprite_sheet = setup.GFX['item_objects']
-        self.frames = []
         self.frame_index = 0
         setup_frames()
         self.image = self.frames[self.frame_index]
@@ -26,40 +46,27 @@ class Powerup(pg.sprite.Sprite):
         self.y_vel = -1
         self.x_vel = 0
         self.direction = c.RIGHT
-        self.box_height = y
+        self.box_height = y - self.rect.height  # Top of the box where powerup came from
         self.gravity = 1
         self.max_y_vel = 8
         self.animate_timer = 0
         self.name = name
 
-
-    def get_image(self, x, y, width, height):
+    def get_image(self, x: int, y: int, width: int, height: int) -> pg.Surface:
         """Get the image frames from the sprite sheet"""
+        return sprite_utils.extract_image(
+            self.sprite_sheet, x, y, width, height, c.SIZE_MULTIPLIER, c.BLACK
+        )
 
-        image = pg.Surface([width, height]).convert()
-        rect = image.get_rect()
-
-        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
-        image.set_colorkey(c.BLACK)
-
-
-        image = pg.transform.scale(image,
-                                   (int(rect.width*c.SIZE_MULTIPLIER),
-                                    int(rect.height*c.SIZE_MULTIPLIER)))
-        return image
-
-
-    def update(self, game_info, *args):
+    def update(self, game_info: Dict[str, Any], *args: Any) -> None:
         """Updates powerup behavior"""
         self.current_time = game_info[c.CURRENT_TIME]
         self.handle_state()
 
-
-    def handle_state(self):
+    def handle_state(self) -> None:
         pass
 
-
-    def revealing(self, *args):
+    def revealing(self, *args: Any) -> None:
         """Action when powerup leaves the coin box or brick"""
         self.rect.y += self.y_vel
 
@@ -68,16 +75,14 @@ class Powerup(pg.sprite.Sprite):
             self.y_vel = 0
             self.state = c.SLIDE
 
-
-    def sliding(self):
+    def sliding(self) -> None:
         """Action for when powerup slides along the ground"""
         if self.direction == c.RIGHT:
             self.x_vel = 3
         else:
             self.x_vel = -3
 
-
-    def falling(self):
+    def falling(self) -> None:
         """When powerups fall of a ledge"""
         if self.y_vel < self.max_y_vel:
             self.y_vel += self.gravity
@@ -85,17 +90,16 @@ class Powerup(pg.sprite.Sprite):
 
 class Mushroom(Powerup):
     """Powerup that makes Mario become bigger"""
-    def __init__(self, x, y, name='mushroom'):
+
+    def __init__(self, x: int, y: int, name: str = "mushroom") -> None:
         super(Mushroom, self).__init__(x, y)
         self.setup_powerup(x, y, name, self.setup_frames)
 
-
-    def setup_frames(self):
+    def setup_frames(self) -> None:
         """Sets up frame list"""
         self.frames.append(self.get_image(0, 0, 16, 16))
 
-
-    def handle_state(self):
+    def handle_state(self) -> None:
         """Handles behavior based on state"""
         if self.state == c.REVEAL:
             self.revealing()
@@ -107,42 +111,37 @@ class Mushroom(Powerup):
 
 class LifeMushroom(Mushroom):
     """1up mushroom"""
-    def __init__(self, x, y, name='1up_mushroom'):
+
+    def __init__(self, x: int, y: int, name: str = "1up_mushroom") -> None:
         super(LifeMushroom, self).__init__(x, y)
         self.setup_powerup(x, y, name, self.setup_frames)
 
-    def setup_frames(self):
+    def setup_frames(self) -> None:
         self.frames.append(self.get_image(16, 0, 16, 16))
 
 
 class FireFlower(Powerup):
     """Powerup that allows Mario to throw fire balls"""
-    def __init__(self, x, y, name=c.FIREFLOWER):
+
+    def __init__(self, x: int, y: int, name: str = c.FIREFLOWER) -> None:
         super(FireFlower, self).__init__(x, y)
         self.setup_powerup(x, y, name, self.setup_frames)
 
-
-    def setup_frames(self):
+    def setup_frames(self) -> None:
         """Sets up frame list"""
-        self.frames.append(
-            self.get_image(0, 32, 16, 16))
-        self.frames.append(
-            self.get_image(16, 32, 16, 16))
-        self.frames.append(
-            self.get_image(32, 32, 16, 16))
-        self.frames.append(
-            self.get_image(48, 32, 16, 16))
+        self.frames.append(self.get_image(0, 32, 16, 16))
+        self.frames.append(self.get_image(16, 32, 16, 16))
+        self.frames.append(self.get_image(32, 32, 16, 16))
+        self.frames.append(self.get_image(48, 32, 16, 16))
 
-
-    def handle_state(self):
+    def handle_state(self) -> None:
         """Handle behavior based on state"""
         if self.state == c.REVEAL:
             self.revealing()
         elif self.state == c.RESTING:
             self.resting()
 
-
-    def revealing(self):
+    def revealing(self) -> None:
         """Animation of flower coming out of box"""
         self.rect.y += self.y_vel
 
@@ -152,13 +151,11 @@ class FireFlower(Powerup):
 
         self.animation()
 
-
-    def resting(self):
+    def resting(self) -> None:
         """Fire Flower staying still on opened box"""
         self.animation()
 
-
-    def animation(self):
+    def animation(self) -> None:
         """Method to make the Fire Flower blink"""
         if (self.current_time - self.animate_timer) > 30:
             if self.frame_index < 3:
@@ -172,15 +169,15 @@ class FireFlower(Powerup):
 
 class Star(Powerup):
     """A powerup that gives mario invincibility"""
-    def __init__(self, x, y, name='star'):
+
+    def __init__(self, x: int, y: int, name: str = "star") -> None:
         super(Star, self).__init__(x, y)
         self.setup_powerup(x, y, name, self.setup_frames)
         self.animate_timer = 0
-        self.rect.y += 1  #looks more centered offset one pixel
-        self.gravity = .4
+        self.rect.y += 1
+        self.gravity = 0.4
 
-
-    def setup_frames(self):
+    def setup_frames(self) -> None:
         """Creating the self.frames list where the images for the animation
         are stored"""
         self.frames.append(self.get_image(1, 48, 15, 16))
@@ -188,16 +185,14 @@ class Star(Powerup):
         self.frames.append(self.get_image(33, 48, 15, 16))
         self.frames.append(self.get_image(49, 48, 15, 16))
 
-
-    def handle_state(self):
+    def handle_state(self) -> None:
         """Handles behavior based on state"""
         if self.state == c.REVEAL:
             self.revealing()
         elif self.state == c.BOUNCE:
             self.bouncing()
 
-
-    def revealing(self):
+    def revealing(self) -> None:
         """When the star comes out of the box"""
         self.rect.y += self.y_vel
 
@@ -208,8 +203,7 @@ class Star(Powerup):
 
         self.animation()
 
-
-    def animation(self):
+    def animation(self) -> None:
         """sets image for animation"""
         if (self.current_time - self.animate_timer) > 30:
             if self.frame_index < 3:
@@ -219,13 +213,11 @@ class Star(Powerup):
             self.animate_timer = self.current_time
             self.image = self.frames[self.frame_index]
 
-
-    def start_bounce(self, vel):
+    def start_bounce(self, vel: float) -> None:
         """Transitions into bouncing state"""
         self.y_vel = vel
 
-
-    def bouncing(self):
+    def bouncing(self) -> None:
         """Action when the star is bouncing around"""
         self.animation()
 
@@ -235,12 +227,16 @@ class Star(Powerup):
             self.x_vel = 5
 
 
-
 class FireBall(pg.sprite.Sprite):
     """Shot from Fire Mario"""
-    def __init__(self, x, y, facing_right, name=c.FIREBALL):
+
+    image: pg.Surface
+    rect: pg.Rect
+
+    def __init__(self, x: int, y: int, facing_right: bool, name: str = c.FIREBALL) -> None:
         super(FireBall, self).__init__()
-        self.sprite_sheet = setup.GFX['item_objects']
+        self.sprite_sheet = setup.GFX["item_objects"]
+        self.frames: List[pg.Surface] = []
         self.setup_frames()
         if facing_right:
             self.direction = c.RIGHT
@@ -248,62 +244,41 @@ class FireBall(pg.sprite.Sprite):
         else:
             self.direction = c.LEFT
             self.x_vel = -12
-        self.y_vel = 10
-        self.gravity = .9
-        self.frame_index = 0
-        self.animation_timer = 0
+        self.y_vel: float = 10
+        self.gravity: float = 0.9
+        self.frame_index: int = 0
+        self.animation_timer: float = 0
         self.state = c.FLYING
         self.image = self.frames[self.frame_index]
         self.rect = self.image.get_rect()
         self.rect.right = x
         self.rect.y = y
         self.name = name
+        self.current_time: float = 0
 
-
-    def setup_frames(self):
+    def setup_frames(self) -> None:
         """Sets up animation frames"""
-        self.frames = []
+        self.frames.append(self.get_image(96, 144, 8, 8))
+        self.frames.append(self.get_image(104, 144, 8, 8))
+        self.frames.append(self.get_image(96, 152, 8, 8))
+        self.frames.append(self.get_image(104, 152, 8, 8))
+        self.frames.append(self.get_image(112, 144, 16, 16))
+        self.frames.append(self.get_image(112, 160, 16, 16))
+        self.frames.append(self.get_image(112, 176, 16, 16))
 
-        self.frames.append(
-            self.get_image(96, 144, 8, 8)) #Frame 1 of flying
-        self.frames.append(
-            self.get_image(104, 144, 8, 8))  #Frame 2 of Flying
-        self.frames.append(
-            self.get_image(96, 152, 8, 8))   #Frame 3 of Flying
-        self.frames.append(
-            self.get_image(104, 152, 8, 8))  #Frame 4 of flying
-        self.frames.append(
-            self.get_image(112, 144, 16, 16))   #frame 1 of exploding
-        self.frames.append(
-            self.get_image(112, 160, 16, 16))  #frame 2 of exploding
-        self.frames.append(
-            self.get_image(112, 176, 16, 16))  #frame 3 of exploding
-
-
-    def get_image(self, x, y, width, height):
+    def get_image(self, x: int, y: int, width: int, height: int) -> pg.Surface:
         """Get the image frames from the sprite sheet"""
+        return sprite_utils.extract_image(
+            self.sprite_sheet, x, y, width, height, c.SIZE_MULTIPLIER, c.BLACK
+        )
 
-        image = pg.Surface([width, height]).convert()
-        rect = image.get_rect()
-
-        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
-        image.set_colorkey(c.BLACK)
-
-
-        image = pg.transform.scale(image,
-                                   (int(rect.width*c.SIZE_MULTIPLIER),
-                                    int(rect.height*c.SIZE_MULTIPLIER)))
-        return image
-
-
-    def update(self, game_info, viewport):
+    def update(self, game_info: Dict[str, Any], viewport: pg.Rect) -> None:
         """Updates fireball behavior"""
         self.current_time = game_info[c.CURRENT_TIME]
         self.handle_state()
         self.check_if_off_screen(viewport)
 
-
-    def handle_state(self):
+    def handle_state(self) -> None:
         """Handles behavior based on state"""
         if self.state == c.FLYING:
             self.animation()
@@ -312,8 +287,7 @@ class FireBall(pg.sprite.Sprite):
         elif self.state == c.EXPLODING:
             self.animation()
 
-
-    def animation(self):
+    def animation(self) -> None:
         """adjusts frame for animation"""
         if self.state == c.FLYING or self.state == c.BOUNCING:
             if (self.current_time - self.animation_timer) > 200:
@@ -324,7 +298,6 @@ class FireBall(pg.sprite.Sprite):
                 self.animation_timer = self.current_time
                 self.image = self.frames[self.frame_index]
 
-
         elif self.state == c.EXPLODING:
             if (self.current_time - self.animation_timer) > 50:
                 if self.frame_index < 6:
@@ -334,8 +307,7 @@ class FireBall(pg.sprite.Sprite):
                 else:
                     self.kill()
 
-
-    def explode_transition(self):
+    def explode_transition(self) -> None:
         """Transitions fireball to EXPLODING state"""
         self.frame_index = 4
         centerx = self.rect.centerx
@@ -343,19 +315,46 @@ class FireBall(pg.sprite.Sprite):
         self.rect.centerx = centerx
         self.state = c.EXPLODING
 
-
-    def check_if_off_screen(self, viewport):
+    def check_if_off_screen(self, viewport: pg.Rect) -> None:
         """Removes from sprite group if off screen"""
-        if (self.rect.x > viewport.right) or (self.rect.y > viewport.bottom) \
-            or (self.rect.right < viewport.x):
+        if (self.rect.x > viewport.right) or (self.rect.y > viewport.bottom) or (self.rect.right < viewport.x):
             self.kill()
 
 
+class Hammer(Powerup):
+    """Hammer projectile thrown by Hammer Bro."""
 
+    def __init__(self, x: int, y: int, direction: str = c.RIGHT) -> None:
+        super().__init__(x, y)
+        self.name = "hammer"
+        self.direction = direction
+        self.state = c.THROWN
+        self.x_vel = 3 if direction == c.RIGHT else -3
+        self.y_vel = -8
+        self.gravity = 0.5
+        self.rect.y = y
 
+    def update(self, game_info: Dict[str, Any]) -> None:
+        """Update hammer physics"""
+        self.current_time = game_info[c.CURRENT_TIME]
+        self.x_vel = 3 if self.direction == c.RIGHT else -3
 
+        if self.state == c.THROWN:
+            self.rect.x += self.x_vel
+            self.rect.y += self.y_vel
+            self.y_vel += self.gravity
 
+            if self.rect.y >= self.box_height:
+                self.rect.y = self.box_height
+                self.y_vel = 0
+                self.state = c.SLIDE
 
+        elif self.state == c.SLIDE:
+            self.rect.x += self.x_vel
 
+        self.check_if_off_screen(pg.Rect(0, 0, c.SCREEN_WIDTH, c.SCREEN_HEIGHT))
 
-
+    def check_if_off_screen(self, viewport: pg.Rect) -> None:
+        """Removes from sprite group if off screen"""
+        if (self.rect.x > viewport.right) or (self.rect.y > viewport.bottom) or (self.rect.right < viewport.x):
+            self.kill()

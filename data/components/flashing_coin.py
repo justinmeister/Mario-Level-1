@@ -1,26 +1,33 @@
-__author__ = 'justinarmstrong'
+"""Flashing coin component for Super Mario Bros."""
+
+from __future__ import annotations
+
+from typing import List
 
 import pygame as pg
+
+from data import constants as c
 from .. import setup
-from .. import constants as c
+from ..tools import sprite_utils
 
 
 class Coin(pg.sprite.Sprite):
     """Flashing coin next to coin total info"""
-    def __init__(self, x, y):
+
+    def __init__(self, x: int, y: int) -> None:
         super(Coin, self).__init__()
-        self.sprite_sheet = setup.GFX['item_objects']
+        self.sprite_sheet = setup.GFX["item_objects"]
+        self.frames: List[pg.Surface] = []
         self.create_frames()
         self.image = self.frames[0]
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.timer = 0
+        self.timer: float = 0
         self.first_half = True
-        self.frame_index = 0
+        self.frame_index: int = 0
 
-
-    def create_frames(self):
+    def create_frames(self) -> None:
         """Extract coin images from sprite sheet and assign them to a list"""
         self.frames = []
         self.frame_index = 0
@@ -29,21 +36,13 @@ class Coin(pg.sprite.Sprite):
         self.frames.append(self.get_image(9, 160, 5, 8))
         self.frames.append(self.get_image(17, 160, 5, 8))
 
-
-    def get_image(self, x, y, width, height):
+    def get_image(self, x: int, y: int, width: int, height: int) -> pg.Surface:
         """Extracts image from sprite sheet"""
-        image = pg.Surface([width, height])
-        rect = image.get_rect()
+        return sprite_utils.extract_image(
+            self.sprite_sheet, x, y, width, height, c.BRICK_SIZE_MULTIPLIER, c.BLACK
+        )
 
-        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
-        image.set_colorkey(c.BLACK)
-        image = pg.transform.scale(image,
-                                   (int(rect.width*c.BRICK_SIZE_MULTIPLIER),
-                                    int(rect.height*c.BRICK_SIZE_MULTIPLIER)))
-        return image
-
-
-    def update(self, current_time):
+    def update(self, current_time: float) -> None:
         """Animates flashing coin"""
         if self.first_half:
             if self.frame_index == 0:

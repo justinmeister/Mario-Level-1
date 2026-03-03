@@ -1,0 +1,187 @@
+{
+  "quests": [
+    {
+      "id": "first_steps",
+      "name": "\u041f\u0435\u0440\u0432\u044b\u0435 \u0448\u0430\u0433\u0438",
+      "description": "\u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u0441\u0432\u043e\u0451 \u043f\u0440\u0438\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u0435!",
+      "quest_type": "MAIN",
+      "category": "PLATFORMING",
+      "objectives": [
+        {
+          "id": "move",
+          "description": "\u041f\u0440\u043e\u0439\u0434\u0438\u0442\u0435 \u0432\u043f\u0435\u0440\u0451\u0434",
+          "target_type": "distance",
+          "target_id": null,
+          "target_count": 100,
+          "current_count": 0,
+          "completed": false
+        }
+      ],
+      "reward": {
+        "coins": 50,
+        "xp": 100,
+        "items": [],
+        "unlockables": [],
+        "stat_bonus": null
+      },
+      "prerequisites": [],
+      "state": "AVAILABLE",
+      "time_limit": null,
+      "created_at": 1771956368.944843,
+      "accepted_at": null,
+      "completed_at": null,
+      "npc_giver": null,
+      "is_repeatable": false,
+      "min_level": 1
+    },
+    {
+      "id": "goomba_slayer",
+      "name": "\u0423\u0431\u0438\u0439\u0446\u0430 \u0413\u0443\u043c\u0431\u0430",
+      "description": "\u041f\u043e\u0431\u0435\u0434\u0438\u0442\u0435 \u0432\u0440\u0430\u0433\u043e\u0432 \u0432 \u043f\u0435\u0440\u0432\u043e\u043c \u0443\u0440\u043e\u0432\u043d\u0435",
+      "quest_type": "SIDE",
+      "category": "COMBAT",
+      "objectives": [
+        {
+          "id": "kill_goombas",
+          "description": "\u041f\u043e\u0431\u0435\u0434\u0438\u0442\u0435 \u0413\u0443\u043c\u0431\u0430",
+          "target_type": "enemy",
+          "target_id": "goomba",
+          "target_count": 10,
+          "current_count": 0,
+          "completed": false
+        }
+      ],
+      "reward": {
+        "coins": 100,
+        "xp": 200,
+        "items": [
+          "mushroom"
+        ],
+        "unlockables": [],
+        "stat_bonus": null
+      },
+      "prerequisites": [
+        "first_steps"
+      ],
+      "state": "AVAILABLE",
+      "time_limit": null,
+      "created_at": 1771956368.9448507,
+      "accepted_at": null,
+      "completed_at": null,
+      "npc_giver": null,
+      "is_repeatable": false,
+      "min_level": 1
+    },
+    {
+      "id": "coin_collector",
+      "name": "\u041a\u043e\u043b\u043b\u0435\u043a\u0446\u0438\u043e\u043d\u0435\u0440 \u043c\u043e\u043d\u0435\u0442",
+      "description": "\u0421\u043e\u0431\u0435\u0440\u0438\u0442\u0435 \u043c\u043e\u043d\u0435\u0442\u044b \u043f\u043e \u0432\u0441\u0435\u043c\u0443 \u0443\u0440\u043e\u0432\u043d\u044e",
+      "quest_type": "SIDE",
+      "category": "COLLECTION",
+      "objectives": [
+        {
+          "id": "collect_coins",
+          "description": "\u0421\u043e\u0431\u0435\u0440\u0438\u0442\u0435 \u043c\u043e\u043d\u0435\u0442\u044b",
+          "target_type": "coin",
+          "target_id": null,
+          "target_count": 50,
+          "current_count": 0,
+          "completed": false
+        }
+      ],
+      "reward": {
+        "coins": 150,
+        "xp": 250,
+        "items": [],
+        "unlockables": [],
+        "stat_bonus": null
+      },
+      "prerequisites": [],
+      "state": "AVAILABLE",
+      "time_limit": null,
+      "created_at": 1771956368.9448555,
+      "accepted_at": null,
+      "completed_at": null,
+      "npc_giver": null,
+      "is_repeatable": false,
+      "min_level": 1
+    },
+    {
+      "id": "daily_warrior",
+      "name": "\u0415\u0436\u0435\u0434\u043d\u0435\u0432\u043d\u044b\u0439 \u0432\u043e\u0438\u043d",
+      "description": "\u041f\u043e\u0431\u0435\u0434\u0438\u0442\u0435 \u0432\u0440\u0430\u0433\u043e\u0432 \u0441\u0435\u0433\u043e\u0434\u043d\u044f",
+      "quest_type": "DAILY",
+      "category": "COMBAT",
+      "objectives": [
+        {
+          "id": "daily_kills",
+          "description": "\u041f\u043e\u0431\u0435\u0434\u0438\u0442\u0435 \u0432\u0440\u0430\u0433\u043e\u0432",
+          "target_type": "enemy",
+          "target_id": null,
+          "target_count": 20,
+          "current_count": 0,
+          "completed": false
+        }
+      ],
+      "reward": {
+        "coins": 80,
+        "xp": 150,
+        "items": [],
+        "unlockables": [],
+        "stat_bonus": null
+      },
+      "prerequisites": [],
+      "state": "AVAILABLE",
+      "time_limit": 86400000,
+      "created_at": 1771956368.9448597,
+      "accepted_at": null,
+      "completed_at": null,
+      "npc_giver": null,
+      "is_repeatable": true,
+      "min_level": 1
+    },
+    {
+      "id": "boss_hunter",
+      "name": "\u041e\u0445\u043e\u0442\u043d\u0438\u043a \u043d\u0430 \u0431\u043e\u0441\u0441\u043e\u0432",
+      "description": "\u041f\u043e\u0431\u0435\u0434\u0438\u0442\u0435 \u0431\u043e\u0441\u0441\u0430",
+      "quest_type": "MAIN",
+      "category": "BOSS",
+      "objectives": [
+        {
+          "id": "defeat_boss",
+          "description": "\u041f\u043e\u0431\u0435\u0434\u0438\u0442\u0435 \u0431\u043e\u0441\u0441\u0430",
+          "target_type": "boss",
+          "target_id": "bowser",
+          "target_count": 1,
+          "current_count": 0,
+          "completed": false
+        }
+      ],
+      "reward": {
+        "coins": 500,
+        "xp": 1000,
+        "items": [],
+        "unlockables": [
+          "fire_mario"
+        ],
+        "stat_bonus": null
+      },
+      "prerequisites": [
+        "goomba_slayer",
+        "coin_collector"
+      ],
+      "state": "LOCKED",
+      "time_limit": null,
+      "created_at": 1771956368.9448645,
+      "accepted_at": null,
+      "completed_at": null,
+      "npc_giver": null,
+      "is_repeatable": false,
+      "min_level": 5
+    }
+  ],
+  "completed": [],
+  "player_level": 1,
+  "last_daily_reset": 0,
+  "last_weekly_reset": 0
+}

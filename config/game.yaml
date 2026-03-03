@@ -1,0 +1,138 @@
+# Super Mario Bros Level 1 - Configuration
+# This file contains game settings that can be customized without modifying code.
+
+# =============================================================================
+# DISPLAY SETTINGS
+# =============================================================================
+display:
+  screen_width: 800
+  screen_height: 600
+  fps: 60
+  fullscreen: false
+  vsync: true
+  show_fps: false  # Press F5 to toggle in-game
+
+# =============================================================================
+# AUDIO SETTINGS
+# =============================================================================
+audio:
+  enabled: true
+  music_volume: 0.5    # 0.0 to 1.0
+  sfx_volume: 0.7      # 0.0 to 1.0
+  sound_quality: high  # low, medium, high
+
+# =============================================================================
+# GAMEPLAY SETTINGS
+# =============================================================================
+gameplay:
+  starting_lives: 3
+  enable_auto_save: true
+  auto_save_interval: 300  # seconds
+  difficulty: normal  # easy, normal, hard, extreme
+  
+  # Time limits (in seconds)
+  level_time_limit: 400
+  time_warning: 100  # Show warning when time below this
+
+  # Scoring
+  score_multiplier: 1.0
+  enable_combo_system: true
+  combo_decay_rate: 0.5  # Combo decay per second
+
+# =============================================================================
+# CONTROLS
+# =============================================================================
+controls:
+  # Default key bindings
+  jump: K_a
+  action: K_s
+  left: K_LEFT
+  right: K_RIGHT
+  down: K_DOWN
+  
+  # Alternative bindings (for 2-player or custom setups)
+  alt_jump: K_SPACE
+  alt_action: K_k
+
+  # Controller support
+  controller_enabled: true
+  controller_jump: 0  # Button index
+  controller_action: 1
+
+# =============================================================================
+# GRAPHICS SETTINGS
+# =============================================================================
+graphics:
+  # Visual effects
+  enable_particles: true
+  max_particles: 1000
+  enable_weather: true
+  enable_parallax: true
+  
+  # Quality presets: low, medium, high, ultra
+  quality_preset: high
+  
+  # Specific settings
+  texture_filtering: true
+  anti_aliasing: false
+  shadow_quality: medium
+
+# =============================================================================
+# PERFORMANCE SETTINGS
+# =============================================================================
+performance:
+  # Object pooling
+  enable_object_pooling: true
+  enemy_pool_size: 20
+  particle_pool_size: 200
+  fireball_pool_size: 10
+  
+  # Threading
+  enable_async_loading: true
+  worker_threads: 2
+  
+  # Memory limits
+  max_texture_memory: 256  # MB
+  cache_sprites: true
+
+# =============================================================================
+# DEBUG SETTINGS (for development)
+# =============================================================================
+debug:
+  enabled: false
+  show_hitboxes: false
+  show_fps_graph: false
+  god_mode: false
+  infinite_time: false
+  unlock_all_skins: false
+  skip_intro: true
+
+# =============================================================================
+# SAVE SYSTEM
+# =============================================================================
+save:
+  max_save_slots: 3
+  compression_enabled: true
+  backup_enabled: true
+  max_backups_per_slot: 3
+
+# =============================================================================
+# ACHIEVEMENTS & CHALLENGES
+# =============================================================================
+achievements:
+  enabled: true
+  show_notifications: true
+  sync_to_cloud: false
+
+challenges:
+  enabled: true
+  daily_refresh_hour: 0  # UTC hour
+  weekly_refresh_day: monday
+
+# =============================================================================
+# NETWORK (future features)
+# =============================================================================
+network:
+  enabled: false
+  leaderboard_url: ""
+  sync_interval: 600  # seconds

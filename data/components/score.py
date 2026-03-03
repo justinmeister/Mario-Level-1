@@ -1,35 +1,48 @@
-__author__ = 'justinarmstrong'
+"""Score classes for Super Mario Bros."""
+
+from __future__ import annotations
+
+from typing import Any, Dict, List, Optional
 
 import pygame as pg
+
+from data import constants as c
 from .. import setup
-from .. import constants as c
+from ..tools import sprite_utils
 
 
 class Digit(pg.sprite.Sprite):
     """Individual digit for score"""
-    def __init__(self, image):
+
+    image: pg.Surface
+    rect: pg.Rect
+
+    def __init__(self, image: pg.Surface) -> None:
         super(Digit, self).__init__()
         self.image = image
         self.rect = image.get_rect()
 
 
-class Score(object):
+class Score:
     """Scores that appear, float up, and disappear"""
-    def __init__(self, x, y, score, flag_pole=False):
+
+    def __init__(self, x: int, y: int, score: int, flag_pole: bool = False) -> None:
         self.x = x
         self.y = y
         if flag_pole:
             self.y_vel = -4
         else:
             self.y_vel = -3
-        self.sprite_sheet = setup.GFX['item_objects']
+        self.sprite_sheet = setup.GFX["item_objects"]
+        self.image_dict: Dict[str, pg.Surface] = {}
         self.create_image_dict()
         self.score_string = str(score)
+        self.digit_list: List[Digit] = []
+        self.digit_group: Optional[pg.sprite.Group] = None
         self.create_digit_list()
         self.flag_pole_score = flag_pole
 
-
-    def create_image_dict(self):
+    def create_image_dict(self) -> None:
         """Creates the dictionary for all the number images needed"""
         self.image_dict = {}
 
@@ -43,31 +56,23 @@ class Score(object):
         image10 = self.get_image(37, 168, 6, 8)
         image11 = self.get_image(43, 168, 5, 8)
 
-        self.image_dict['0'] = image0
-        self.image_dict['1'] = image1
-        self.image_dict['2'] = image2
-        self.image_dict['4'] = image4
-        self.image_dict['5'] = image5
-        self.image_dict['8'] = image8
-        self.image_dict['3'] = image9
-        self.image_dict['7'] = image10
-        self.image_dict['9'] = image11
+        self.image_dict["0"] = image0
+        self.image_dict["1"] = image1
+        self.image_dict["2"] = image2
+        self.image_dict["4"] = image4
+        self.image_dict["5"] = image5
+        self.image_dict["8"] = image8
+        self.image_dict["3"] = image9
+        self.image_dict["7"] = image10
+        self.image_dict["9"] = image11
 
-
-    def get_image(self, x, y, width, height):
+    def get_image(self, x: int, y: int, width: int, height: int) -> pg.Surface:
         """Extracts image from sprite sheet"""
-        image = pg.Surface([width, height]).convert()
-        rect = image.get_rect()
+        return sprite_utils.extract_image(
+            self.sprite_sheet, x, y, width, height, c.BRICK_SIZE_MULTIPLIER, c.BLACK
+        )
 
-        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
-        image.set_colorkey(c.BLACK)
-        image = pg.transform.scale(image,
-                                   (int(rect.width*c.BRICK_SIZE_MULTIPLIER),
-                                    int(rect.height*c.BRICK_SIZE_MULTIPLIER)))
-        return image
-
-
-    def create_digit_list(self):
+    def create_digit_list(self) -> None:
         """Creates the group of images based on score received"""
         self.digit_list = []
         self.digit_group = pg.sprite.Group()
@@ -77,16 +82,14 @@ class Score(object):
 
         self.set_rects_for_images()
 
-
-    def set_rects_for_images(self):
+    def set_rects_for_images(self) -> None:
         """Set the rect attributes for each image in self.image_list"""
         for i, digit in enumerate(self.digit_list):
             digit.rect = digit.image.get_rect()
             digit.rect.x = self.x + (i * 10)
             digit.rect.y = self.y
 
-
-    def update(self, score_list, level_info):
+    def update(self, score_list: List[Any], level_info: Dict[str, Any]) -> None:
         """Updates score movement"""
         for number in self.digit_list:
             number.rect.y += self.y_vel
@@ -98,14 +101,12 @@ class Score(object):
             if self.digit_list[0].rect.y <= 120:
                 self.y_vel = 0
 
-
-    def draw(self, screen):
+    def draw(self, screen: pg.Surface) -> None:
         """Draws score numbers onto screen"""
         for digit in self.digit_list:
             screen.blit(digit.image, digit.rect)
 
-
-    def check_to_delete_floating_scores(self, score_list, level_info):
+    def check_to_delete_floating_scores(self, score_list: List[Any], level_info: Dict[str, Any]) -> None:
         """Check if scores need to be deleted"""
         for i, score in enumerate(score_list):
             if int(score.score_string) == 1000:
@@ -115,12 +116,3 @@ class Score(object):
             else:
                 if (score.y - score.digit_list[0].rect.y) > 75:
                     score_list.pop(i)
-
-
-
-
-
-
-
-
-

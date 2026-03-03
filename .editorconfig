@@ -1,0 +1,36 @@
+# EditorConfig - https://editorconfig.org
+# Helps maintain consistent coding styles across editors and IDEs
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.py]
+indent_size = 4
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.json]
+indent_size = 2
+
+[*.yaml]
+indent_size = 2
+
+[*.yml]
+indent_size = 2
+
+[*.toml]
+indent_size = 2
+
+[*.txt]
+indent_size = 4
+
+[Makefile]
+indent_style = tab

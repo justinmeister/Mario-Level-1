@@ -1,0 +1,112 @@
+{
+  "name": "1-2",
+  "description": "Super Mario Bros - Level 1-2 (Underground)",
+  "width": 7200,
+  "height": 600,
+  "ground_height": 538,
+  "camera_start_x": 0,
+  "background_color": [0, 0, 0],
+  "mario_start": {
+    "x": 110,
+    "y": 200
+  },
+  "flag_pole": {
+    "x": 7105,
+    "y": 100
+  },
+  "ground_sections": [
+    {"x": 0, "y": 538, "width": 1200, "height": 60},
+    {"x": 1400, "y": 538, "width": 800, "height": 60},
+    {"x": 2400, "y": 538, "width": 1400, "height": 60},
+    {"x": 4000, "y": 538, "width": 1000, "height": 60},
+    {"x": 5200, "y": 538, "width": 1200, "height": 60},
+    {"x": 6600, "y": 538, "width": 800, "height": 60}
+  ],
+  "bricks": [
+    {"x": 600, "y": 365, "contents": null},
+    {"x": 686, "y": 365, "contents": null},
+    {"x": 772, "y": 365, "contents": null},
+    {"x": 858, "y": 365, "contents": "10coins"},
+    {"x": 1100, "y": 365, "contents": null},
+    {"x": 1186, "y": 365, "contents": null},
+    {"x": 1272, "y": 365, "contents": "star"},
+    {"x": 1358, "y": 365, "contents": null},
+    {"x": 1800, "y": 280, "contents": null},
+    {"x": 1886, "y": 280, "contents": null},
+    {"x": 1972, "y": 280, "contents": null},
+    {"x": 2058, "y": 280, "contents": null},
+    {"x": 2144, "y": 280, "contents": null},
+    {"x": 2230, "y": 280, "contents": null},
+    {"x": 2316, "y": 280, "contents": null},
+    {"x": 1800, "y": 193, "contents": null},
+    {"x": 1886, "y": 193, "contents": null},
+    {"x": 1972, "y": 193, "contents": "mushroom"},
+    {"x": 2058, "y": 193, "contents": "10coins"},
+    {"x": 2144, "y": 193, "contents": null},
+    {"x": 2230, "y": 193, "contents": null},
+    {"x": 2316, "y": 193, "contents": null},
+    {"x": 2700, "y": 365, "contents": null},
+    {"x": 2786, "y": 365, "contents": null},
+    {"x": 2872, "y": 365, "contents": null},
+    {"x": 4200, "y": 365, "contents": null},
+    {"x": 4286, "y": 365, "contents": null},
+    {"x": 4372, "y": 365, "contents": "mushroom"}
+  ],
+  "coin_boxes": [
+    {"x": 300, "y": 365, "contents": "mushroom"},
+    {"x": 386, "y": 365, "contents": "coin"},
+    {"x": 472, "y": 365, "contents": "coin"},
+    {"x": 558, "y": 365, "contents": "coin"},
+    {"x": 644, "y": 365, "contents": "coin"}
+  ],
+  "pipes": [
+    {"x": 2500, "y": 452, "width": 83, "height": 82, "warp": {"x": 2600, "y": 100, "bonus_room": true}},
+    {"x": 3200, "y": 452, "width": 83, "height": 82},
+    {"x": 3600, "y": 452, "width": 83, "height": 82},
+    {"x": 6800, "y": 452, "width": 83, "height": 82}
+  ],
+  "steps": [
+    {"x": 6900, "y": 495, "width": 40, "height": 44},
+    {"x": 6943, "y": 452, "width": 40, "height": 88},
+    {"x": 6986, "y": 409, "width": 40, "height": 132},
+    {"x": 7029, "y": 366, "width": 40, "height": 176}
+  ],
+  "platforms": [
+    {"x": 4600, "y": 400, "width": 120, "height": 20, "type": "moving_vertical", "range": 150},
+    {"x": 4900, "y": 250, "width": 120, "height": 20, "type": "moving_vertical", "range": 150},
+    {"x": 5400, "y": 400, "width": 200, "height": 20, "type": "static"},
+    {"x": 5800, "y": 400, "width": 120, "height": 20, "type": "moving_vertical", "range": 150},
+    {"x": 6100, "y": 250, "width": 120, "height": 20, "type": "moving_vertical", "range": 150}
+  ],
+  "enemies": [
+    {"type": "goomba", "x": 400, "y": 538, "direction": "left", "group": 0},
+    {"type": "goomba", "x": 500, "y": 538, "direction": "left", "group": 0},
+    {"type": "goomba", "x": 900, "y": 538, "direction": "left", "group": 1},
+    {"type": "koopa", "x": 1300, "y": 538, "direction": "left", "group": 2},
+    {"type": "koopa", "x": 1500, "y": 538, "direction": "left", "group": 2},
+    {"type": "goomba", "x": 2000, "y": 538, "direction": "left", "group": 3},
+    {"type": "goomba", "x": 2100, "y": 538, "direction": "left", "group": 3},
+    {"type": "goomba", "x": 2200, "y": 538, "direction": "left", "group": 3},
+    {"type": "goomba", "x": 2300, "y": 538, "direction": "left", "group": 3},
+    {"type": "goomba", "x": 2400, "y": 538, "direction": "left", "group": 3},
+    {"type": "goomba", "x": 3000, "y": 538, "direction": "left", "group": 4},
+    {"type": "goomba", "x": 3100, "y": 538, "direction": "left", "group": 4},
+    {"type": "piranha", "x": 3200, "y": 410, "direction": "up", "group": 5},
+    {"type": "piranha", "x": 3600, "y": 410, "direction": "up", "group": 6},
+    {"type": "piranha", "x": 6800, "y": 410, "direction": "up", "group": 7},
+    {"type": "koopa", "x": 5500, "y": 358, "direction": "left", "group": 8}
+  ],
+  "checkpoints": [
+    {"x": 510, "name": "1"},
+    {"x": 1200, "name": "2"},
+    {"x": 2000, "name": "3"},
+    {"x": 2800, "name": "4"},
+    {"x": 3600, "name": "5"},
+    {"x": 4400, "name": "6"},
+    {"x": 5200, "name": "7"},
+    {"x": 6000, "name": "8"},
+    {"x": 7104, "name": "9"},
+    {"x": 7375, "name": "10"},
+    {"x": 2500, "name": "bonus_room", "width": 200, "height": 40}
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "name": "2-2",
+  "description": "Super Mario Bros - Level 2-2 (Underwater)",
+  "width": 6400,
+  "height": 600,
+  "ground_height": 538,
+  "camera_start_x": 0,
+  "background_color": [0, 100, 200],
+  "underwater": true,
+  "mario_start": {
+    "x": 110,
+    "y": 538
+  },
+  "flag_pole": {
+    "x": 6305,
+    "y": 100
+  },
+  "ground_sections": [
+    {"x": 0, "y": 538, "width": 300, "height": 60}
+  ],
+  "water_floor": [
+    {"x": 0, "y": 538, "width": 6400, "height": 60}
+  ],
+  "bricks": [],
+  "coin_boxes": [],
+  "pipes": [
+    {"x": 200, "y": 452, "width": 83, "height": 82, "warp": {"x": 300, "y": 100, "underwater": true}},
+    {"x": 6200, "y": 452, "width": 83, "height": 82, "warp": {"x": 6300, "y": 100, "exit": true}}
+  ],
+  "steps": [],
+  "platforms": [
+    {"x": 600, "y": 450, "width": 200, "height": 20, "type": "static"},
+    {"x": 1000, "y": 350, "width": 150, "height": 20, "type": "static"},
+    {"x": 1300, "y": 280, "width": 200, "height": 20, "type": "static"},
+    {"x": 1700, "y": 400, "width": 150, "height": 20, "type": "static"},
+    {"x": 2000, "y": 300, "width": 200, "height": 20, "type": "static"},
+    {"x": 2400, "y": 450, "width": 150, "height": 20, "type": "static"},
+    {"x": 2700, "y": 350, "width": 200, "height": 20, "type": "static"},
+    {"x": 3100, "y": 250, "width": 150, "height": 20, "type": "static"},
+    {"x": 3400, "y": 400, "width": 200, "height": 20, "type": "static"},
+    {"x": 3800, "y": 300, "width": 150, "height": 20, "type": "static"},
+    {"x": 4100, "y": 450, "width": 200, "height": 20, "type": "static"},
+    {"x": 4500, "y": 350, "width": 150, "height": 20, "type": "static"},
+    {"x": 4800, "y": 250, "width": 200, "height": 20, "type": "static"},
+    {"x": 5200, "y": 400, "width": 150, "height": 20, "type": "static"},
+    {"x": 5500, "y": 300, "width": 200, "height": 20, "type": "static"},
+    {"x": 5900, "y": 450, "width": 150, "height": 20, "type": "static"}
+  ],
+  "coral": [
+    {"x": 400, "y": 538, "height": 100},
+    {"x": 500, "y": 538, "height": 80},
+    {"x": 900, "y": 538, "height": 120},
+    {"x": 1200, "y": 538, "height": 90},
+    {"x": 1600, "y": 538, "height": 110},
+    {"x": 2300, "y": 538, "height": 100},
+    {"x": 2900, "y": 538, "height": 95},
+    {"x": 3300, "y": 538, "height": 105},
+    {"x": 3700, "y": 538, "height": 85},
+    {"x": 4400, "y": 538, "height": 115},
+    {"x": 5100, "y": 538, "height": 90},
+    {"x": 5800, "y": 538, "height": 100}
+  ],
+  "coins": [
+    {"x": 650, "y": 410},
+    {"x": 700, "y": 410},
+    {"x": 750, "y": 410},
+    {"x": 1050, "y": 310},
+    {"x": 1100, "y": 310},
+    {"x": 1400, "y": 240},
+    {"x": 1450, "y": 240},
+    {"x": 1500, "y": 240},
+    {"x": 1750, "y": 360},
+    {"x": 2100, "y": 260},
+    {"x": 2150, "y": 260},
+    {"x": 2450, "y": 410},
+    {"x": 2800, "y": 310},
+    {"x": 2850, "y": 310},
+    {"x": 3150, "y": 210},
+    {"x": 3200, "y": 210},
+    {"x": 3500, "y": 360},
+    {"x": 3850, "y": 260},
+    {"x": 4150, "y": 410},
+    {"x": 4200, "y": 410},
+    {"x": 4550, "y": 310},
+    {"x": 4900, "y": 210},
+    {"x": 4950, "y": 210},
+    {"x": 5250, "y": 360},
+    {"x": 5600, "y": 260},
+    {"x": 5650, "y": 260},
+    {"x": 5950, "y": 410},
+    {"x": 6000, "y": 410}
+  ],
+  "currents": [
+    {"x": 1500, "y": 0, "width": 200, "height": 600, "strength": 3},
+    {"x": 3000, "y": 0, "width": 200, "height": 600, "strength": 3},
+    {"x": 4700, "y": 0, "width": 200, "height": 600, "strength": 3}
+  ],
+  "enemies": [
+    {"type": "bloober", "x": 800, "y": 400, "direction": "left", "group": 0},
+    {"type": "bloober", "x": 1400, "y": 300, "direction": "left", "group": 1},
+    {"type": "bloober", "x": 2200, "y": 350, "direction": "left", "group": 2},
+    {"type": "bloober", "x": 3200, "y": 280, "direction": "left", "group": 3},
+    {"type": "bloober", "x": 4000, "y": 400, "direction": "left", "group": 4},
+    {"type": "bloober", "x": 5000, "y": 320, "direction": "left", "group": 5},
+    {"type": "cheep_cheep", "x": 1000, "y": 300, "direction": "left", "group": 6, "spawner": true},
+    {"type": "piranha", "x": 6200, "y": 410, "direction": "up", "group": 7}
+  ],
+  "checkpoints": [
+    {"x": 510, "name": "1"},
+    {"x": 1200, "name": "2"},
+    {"x": 2000, "name": "3"},
+    {"x": 2800, "name": "4"},
+    {"x": 3600, "name": "5"},
+    {"x": 4400, "name": "6"},
+    {"x": 5200, "name": "7"},
+    {"x": 6000, "name": "8"},
+    {"x": 6304, "name": "9"},
+    {"x": 6575, "name": "10"}
+  ]
+}

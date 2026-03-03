@@ -1,0 +1,87 @@
+{
+  "name": "2-4",
+  "description": "Super Mario Bros - Level 2-4 (Castle - Bowser)",
+  "width": 4400,
+  "height": 600,
+  "ground_height": 538,
+  "camera_start_x": 0,
+  "background_color": [0, 0, 0],
+  "mario_start": {
+    "x": 110,
+    "y": 280
+  },
+  "castle": true,
+  "boss_level": true,
+  "flag_pole": null,
+  "ground_sections": [
+    {"x": 0, "y": 538, "width": 500, "height": 60},
+    {"x": 1200, "y": 538, "width": 1000, "height": 60},
+    {"x": 2400, "y": 538, "width": 600, "height": 60},
+    {"x": 3200, "y": 538, "width": 1400, "height": 60}
+  ],
+  "lava_pits": [
+    {"x": 500, "y": 538, "width": 700},
+    {"x": 2200, "y": 538, "width": 200},
+    {"x": 3000, "y": 538, "width": 200}
+  ],
+  "bricks": [],
+  "coin_boxes": [
+    {"x": 800, "y": 365, "contents": "mushroom"}
+  ],
+  "pipes": [],
+  "steps": [
+    {"x": 100, "y": 323, "width": 40, "height": 44},
+    {"x": 143, "y": 366, "width": 40, "height": 88},
+    {"x": 186, "y": 409, "width": 40, "height": 132},
+    {"x": 229, "y": 452, "width": 40, "height": 88},
+    {"x": 272, "y": 495, "width": 40, "height": 44}
+  ],
+  "platforms": [
+    {"x": 600, "y": 450, "width": 120, "height": 20, "type": "static"},
+    {"x": 800, "y": 400, "width": 120, "height": 20, "type": "static"},
+    {"x": 1000, "y": 450, "width": 120, "height": 20, "type": "static"},
+    {"x": 2500, "y": 300, "width": 120, "height": 20, "type": "moving_vertical", "range": 200},
+    {"x": 2700, "y": 450, "width": 120, "height": 20, "type": "moving_vertical", "range": 200}
+  ],
+  "fire_bars": [
+    {"x": 1400, "y": 450, "length": 4, "rotation_speed": 2},
+    {"x": 1600, "y": 450, "length": 4, "rotation_speed": -2},
+    {"x": 1800, "y": 450, "length": 4, "rotation_speed": 2},
+    {"x": 1400, "y": 280, "length": 4, "rotation_speed": -2},
+    {"x": 1600, "y": 280, "length": 4, "rotation_speed": 2},
+    {"x": 1800, "y": 280, "length": 4, "rotation_speed": -2}
+  ],
+  "podoboos": [
+    {"x": 650, "y": 538, "jump_height": 200},
+    {"x": 950, "y": 538, "jump_height": 200}
+  ],
+  "hidden_blocks": [
+    {"x": 3500, "y": 280, "contents": "yoshi_egg"}
+  ],
+  "coins": [
+    {"x": 1100, "y": 400},
+    {"x": 1150, "y": 400},
+    {"x": 1200, "y": 400},
+    {"x": 3300, "y": 400},
+    {"x": 3350, "y": 400},
+    {"x": 3400, "y": 400}
+  ],
+  "boss": {
+    "type": "fake_bowser",
+    "x": 4000,
+    "y": 450,
+    "real_form": "koopa",
+    "fire_rate": 2.0,
+    "bridge_x": 3700,
+    "bridge_width": 300,
+    "axe_x": 4050
+  },
+  "enemies": [],
+  "checkpoints": [
+    {"x": 510, "name": "1"},
+    {"x": 1200, "name": "2"},
+    {"x": 2000, "name": "3"},
+    {"x": 2800, "name": "4"},
+    {"x": 3600, "name": "5"}
+  ]
+}

@@ -1,49 +1,49 @@
-__author__ = 'justinarmstrong'
+"""Flagpole component for Super Mario Bros."""
+
+from __future__ import annotations
+
+from typing import Any, List
 
 import pygame as pg
+
+from data import constants as c
 from .. import setup
-from .. import constants as c
+from ..tools import sprite_utils
+
 
 class Flag(pg.sprite.Sprite):
     """Flag on top of the flag pole at the end of the level"""
-    def __init__(self, x, y):
+
+    rect: pg.Rect
+
+    def __init__(self, x: int, y: int) -> None:
         super(Flag, self).__init__()
-        self.sprite_sheet = setup.GFX['item_objects']
+        self.sprite_sheet = setup.GFX["item_objects"]
+        self.frames: List[pg.Surface] = []
         self.setup_images()
         self.image = self.frames[0]
         self.rect = self.image.get_rect()
         self.rect.right = x
         self.rect.y = y
         self.state = c.TOP_OF_POLE
+        self.y_vel: float = 0
 
-
-    def setup_images(self):
+    def setup_images(self) -> None:
         """Sets up a list of image frames"""
         self.frames = []
+        self.frames.append(self.get_image(128, 32, 16, 16))
 
-        self.frames.append(
-            self.get_image(128, 32, 16, 16))
-
-
-    def get_image(self, x, y, width, height):
+    def get_image(self, x: int, y: int, width: int, height: int) -> pg.Surface:
         """Extracts image from sprite sheet"""
-        image = pg.Surface([width, height])
-        rect = image.get_rect()
+        return sprite_utils.extract_image(
+            self.sprite_sheet, x, y, width, height, c.BRICK_SIZE_MULTIPLIER, c.BLACK
+        )
 
-        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
-        image.set_colorkey(c.BLACK)
-        image = pg.transform.scale(image,
-                                   (int(rect.width*c.BRICK_SIZE_MULTIPLIER),
-                                    int(rect.height*c.BRICK_SIZE_MULTIPLIER)))
-        return image
-
-
-    def update(self, *args):
+    def update(self, *args: Any) -> None:
         """Updates behavior"""
         self.handle_state()
 
-
-    def handle_state(self):
+    def handle_state(self) -> None:
         """Determines behavior based on state"""
         if self.state == c.TOP_OF_POLE:
             self.image = self.frames[0]
@@ -52,8 +52,7 @@ class Flag(pg.sprite.Sprite):
         elif self.state == c.BOTTOM_OF_POLE:
             self.image = self.frames[0]
 
-
-    def sliding_down(self):
+    def sliding_down(self) -> None:
         """State when Mario reaches flag pole"""
         self.y_vel = 5
         self.rect.y += self.y_vel
@@ -64,77 +63,58 @@ class Flag(pg.sprite.Sprite):
 
 class Pole(pg.sprite.Sprite):
     """Pole that the flag is on top of"""
-    def __init__(self, x, y):
+
+    rect: pg.Rect
+
+    def __init__(self, x: int, y: int) -> None:
         super(Pole, self).__init__()
-        self.sprite_sheet = setup.GFX['tile_set']
+        self.sprite_sheet = setup.GFX["tile_set"]
+        self.frames: List[pg.Surface] = []
         self.setup_frames()
         self.image = self.frames[0]
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
-
-    def setup_frames(self):
+    def setup_frames(self) -> None:
         """Create the frame list"""
         self.frames = []
+        self.frames.append(self.get_image(263, 144, 2, 16))
 
-        self.frames.append(
-            self.get_image(263, 144, 2, 16))
-
-
-    def get_image(self, x, y, width, height):
+    def get_image(self, x: int, y: int, width: int, height: int) -> pg.Surface:
         """Extracts image from sprite sheet"""
-        image = pg.Surface([width, height])
-        rect = image.get_rect()
+        return sprite_utils.extract_image(
+            self.sprite_sheet, x, y, width, height, c.BRICK_SIZE_MULTIPLIER, c.BLACK
+        )
 
-        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
-        image.set_colorkey(c.BLACK)
-        image = pg.transform.scale(image,
-                                   (int(rect.width*c.BRICK_SIZE_MULTIPLIER),
-                                    int(rect.height*c.BRICK_SIZE_MULTIPLIER)))
-        return image
-
-
-    def update(self, *args):
+    def update(self, *args: Any) -> None:
         """Placeholder for update, since there is nothing to update"""
         pass
 
 
 class Finial(pg.sprite.Sprite):
     """The top of the flag pole"""
-    def __init__(self, x, y):
+
+    def __init__(self, x: int, y: int) -> None:
         super(Finial, self).__init__()
-        self.sprite_sheet = setup.GFX['tile_set']
+        self.sprite_sheet = setup.GFX["tile_set"]
+        self.frames: List[pg.Surface] = []
         self.setup_frames()
         self.image = self.frames[0]
         self.rect = self.image.get_rect()
         self.rect.centerx = x
         self.rect.bottom = y
 
-
-    def setup_frames(self):
+    def setup_frames(self) -> None:
         """Creates the self.frames list"""
         self.frames = []
+        self.frames.append(self.get_image(228, 120, 8, 8))
 
-        self.frames.append(
-            self.get_image(228, 120, 8, 8))
-
-
-    def get_image(self, x, y, width, height):
+    def get_image(self, x: int, y: int, width: int, height: int) -> pg.Surface:
         """Extracts image from sprite sheet"""
-        image = pg.Surface([width, height])
-        rect = image.get_rect()
+        return sprite_utils.extract_image(
+            self.sprite_sheet, x, y, width, height, c.SIZE_MULTIPLIER, c.BLACK
+        )
 
-        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
-        image.set_colorkey(c.BLACK)
-        image = pg.transform.scale(image,
-                                   (int(rect.width*c.SIZE_MULTIPLIER),
-                                    int(rect.height*c.SIZE_MULTIPLIER)))
-        return image
-
-
-    def update(self, *args):
+    def update(self, *args: Any) -> None:
         pass
-
-
-
